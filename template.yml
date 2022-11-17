@@ -41,6 +41,19 @@ Resources:
       MemorySize: 128
       Timeout: 60
       Description: A Lambda function that returns a static string.
+      Environment:
+        Variables:
+          DDB_TABLE: !Ref ddbTable
       Policies:
-        # Give Lambda basic execution Permission to the helloFromLambda
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ddbTable
         - AWSLambdaBasicExecutionRole
+  ddbTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
