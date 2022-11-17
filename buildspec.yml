@@ -4,12 +4,12 @@ phases:
     commands:
       # Install all dependencies (including dependencies for running tests)
       - npm install
-  pre_build:
-    commands:
+  # pre_build:
+    # commands:
       # Discover and run unit tests in the '__tests__' directory
-      - npm run test
+      # - npm run test
       # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
-      - npm prune --production
+      # - npm prune --production
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
