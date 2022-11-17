@@ -1,6 +1,7 @@
 import logging
 
 import boto3
+from boto3.dynamodb
 
 LOG = logging.getLogger(__name__)
 
@@ -18,3 +19,11 @@ class Tableclient():
         except Exception as e:
             LOG.error(e)
         return resp
+
+    def delete(self, key):
+        self.table.delete_item(key)
+
+    def put_item(self, key=None, value=None):
+        if not key or not value:
+            raise ValueError
+        self.table.put_item(key=key, value=value)
