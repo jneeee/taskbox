@@ -1,7 +1,6 @@
 import logging
 
 import boto3
-from boto3.dynamodb
 
 LOG = logging.getLogger(__name__)
 
@@ -27,3 +26,14 @@ class Tableclient():
         if not key or not value:
             raise ValueError
         self.table.put_item(key=key, value=value)
+
+
+def Task(object):
+    task_name = set()
+    def __init__(self):
+        if self.__name__ not in task_name:
+            task_name.add(self.__name__)
+        pass
+
+    def run(self):
+        raise NotImplementedError
