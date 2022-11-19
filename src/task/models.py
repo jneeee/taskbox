@@ -36,11 +36,9 @@ class Tableclient():
 
 
 def Task(object):
-    task_name = set()
     def __init__(self):
-        if self.__name__ not in task_name:
-            task_name.add(self.__name__)
-        pass
+        self.name = self.__name__
+        self.result = None
 
     def run(self):
         raise NotImplementedError

@@ -9,11 +9,9 @@ from src.utils.tools import run_cmd
 
 LOG = logging.getLogger(__name__)
 
-def get_app():
-    app = Flask(__name__)
-    app.debug = True
+app = Flask(__name__)
+app.debug = True
 
-app = get_app()
 
 @app.route('/runcmd')
 def cmdhandler():
