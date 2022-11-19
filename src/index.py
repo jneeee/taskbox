@@ -9,7 +9,7 @@ def lambda_handler(event, context):
     LOG.info(f'event: {event}')
     LOG.info(f'context: {context}')
     # TODO implement
-    table = Tableclient('ddbTable')
+    table = Tableclient('appname-ddbTable-1TUAC9NKUUB7F')
     resp = table.put_item({'id': '123', 'value': '345'})
     return {
         'statusCode': 200,

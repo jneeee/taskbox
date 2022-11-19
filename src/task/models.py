@@ -1,3 +1,4 @@
+import time
 import logging
 
 import boto3
@@ -36,9 +37,34 @@ class Tableclient():
 
 
 def Task(object):
+    tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
     def __init__(self):
-        self.name = self.__name__
+        self.name = 'task_%s' % self.__name__
         self.result = None
+        self.table = Tableclient(self.tablename)
+
+    def step(self):
+        # overwrite me
+        # update self.result in this func
+        raise NotImplementedError
 
     def run(self):
-        raise NotImplementedError
+        self.step()
+        self.last_run_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+        self._save()
+
+    def _save(self):
+        item = {'id': self.name}
+        item['last_run_time'] = self.last_run_time
+        item['result'] = self.result
+
+        self.table.put_item(item)
+        LOG.info(f'Update task: {item}')
+
+    def from_dict(cls):
+        pass
+
+    def get_history(self):
+        item = {'id': self.name}
+        resp = self.table.get_item(item)
+        return resp
