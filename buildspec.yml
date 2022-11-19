@@ -1,9 +1,9 @@
 version: 0.2
 phases:
-  install:
-    commands:
+  # install:
+    # commands:
       # Install all dependencies (including dependencies for running tests)
-      - npm install
+      # - npm install
   # pre_build:
     # commands:
       # Discover and run unit tests in the '__tests__' directory

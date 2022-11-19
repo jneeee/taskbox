@@ -1,12 +1,13 @@
 import logging
 
-from boto3 import dynamodb
+import boto3
 
 LOG = logging.getLogger(__name__)
 
 
 class Tableclient():
     def __init__(self, tablename) -> None:
+        dynamodb = boto3.resource('dynamodb')
         self.table = dynamodb.Table(tablename)
 
     def get(self, item):
