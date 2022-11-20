@@ -48,6 +48,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref ddbTable
         - AWSLambdaBasicExecutionRole
+      # aws s3api put-object  --bucket filesabc --key layer/flask.zip --body layer.zip
+      Layers:
+        - !Ref layerflask
   ddbTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -57,3 +60,11 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  layerflask:
+    Properties:
+      LayerName: flask
+      Description: Layer description
+      ContentUri: 's3://aws-ap-southeast-1-044694559979-appname-pipe/layer/flask.zip'
+      CompatibleRuntimes:
+        - python3.9
+      RetentionPolicy: Retain
