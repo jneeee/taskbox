@@ -1,14 +1,15 @@
 from flask import render_template
 
 from boto3.dynamodb.conditions import Attr
+from boto3 import resource
 
 from src.task.models import Task, Tableclient
 from src.flaskapp import app
 
 
-@app.route('/task')
+@app.route('/tasks')
 def get_db():
-    table = Tableclient(Task.tablename)
+    table = resource('dynamodb').Table(Task.tablename)
     resp = table.scan(
         FilterExpression=Attr('id').begins_with('task_')
     )

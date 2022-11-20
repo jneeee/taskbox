@@ -39,7 +39,7 @@ Resources:
       Handler: src.index.lambda_handler
       Runtime: python3.9
       MemorySize: 128
-      Timeout: 60
+      Timeout: 3
       Description: For crontask and a wsgi service.
       Environment:
         Variables:
