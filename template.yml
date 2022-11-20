@@ -64,7 +64,7 @@ Resources:
     Type: AWS::Lambda::LayerVersion
     Properties:
       LayerName: flask
-      Description: Layer description
+      Description: flask + awsgi
       Content:
         S3Bucket: aws-ap-southeast-1-044694559979-appname-pipe
         S3Key: layer/flask.zip
