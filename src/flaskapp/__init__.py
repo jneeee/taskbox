@@ -13,6 +13,11 @@ app = Flask(__name__, template_folder='src/flaskapp/templates')
 app.debug = True
 
 
+@app.route('/')
+def wsgi_root():
+    return jsonify('Coming soon!')
+
+
 @app.route('/runcmd')
 def cmdhandler():
     LOG.info(f"request.headers.cmd: {request.headers.get('cmd')}")
