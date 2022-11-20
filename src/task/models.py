@@ -5,11 +5,10 @@ import boto3
 
 LOG = logging.getLogger(__name__)
 
-
-class Tableclient():
+# https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
+class Tableclient(boto3.resource('dynamodb').Table):
     def __init__(self, tablename) -> None:
-        dynamodb = boto3.resource('dynamodb')
-        self.table = dynamodb.Table(tablename)
+        super().__init__(tablename)
 
     def get(self, item):
         # item: dict{'id': key}
@@ -17,7 +16,7 @@ class Tableclient():
             return False
         resp = None
         try:
-            resp = self.table.get_item(Key=item).get("Item")
+            resp = self.get_item(Key=item).get("Item")
         except Exception as e:
             LOG.error(e)
         return resp
@@ -26,13 +25,13 @@ class Tableclient():
         # item: dict{'id': key}
         if not isinstance(item, dict):
             return False
-        self.table.delete_item(Item=item)
+        self.delete_item(Item=item)
 
-    def put_item(self, item):
+    def put(self, item):
         # item: dict{'id': id, 'value': value}
         if not isinstance(item, dict):
             return False
-        self.table.put_item(Item=item)
+        self.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 
 
@@ -58,7 +57,7 @@ def Task(object):
         item['last_run_time'] = self.last_run_time
         item['result'] = self.result
 
-        self.table.put_item(item)
+        self.table.put(item)
         LOG.info(f'Update task: {item}')
 
     def from_dict(cls):
@@ -66,5 +65,5 @@ def Task(object):
 
     def get_history(self):
         item = {'id': self.name}
-        resp = self.table.get_item(item)
+        resp = self.table.get(item)
         return resp

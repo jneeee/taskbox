@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb18030" />
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>Lambda function</title>
+    <style type="text/css">
+        td,
+        input,
+        select,
+        body {
+            font-family: Verdana;
+            font-size: 12px;
+        }
+
+        form,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        select,
+        body,
+        textarea {
+            background: #fff;
+            font-size: 12px;
+        }
+
+        select {
+            font: normal 12px Arial;
+            line-height: 20px;
+        }
+
+        textarea {
+            width: 540px;
+            border: 1px solid #718da6;
+            padding: 3px;
+            font-family: Verdana;
+        }
+
+        img {
+            border: none
+        }
+
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .noteshod {
+            background: #eee;
+            margin: 5px 0 5px 0;
+            padding: 0 2px 2px 0;
+        }
+
+        .notestyle {
+            background: #fff;
+        }
+
+        .notetitle {
+            padding: 14px 16px 0 10px;
+            margin: 0;
+            width: 94% !important;
+            width:
+                /**/
+                99%;
+            overflow-x: hidden;
+        }
+
+        .timesep {
+            margin: 3px 0 0 28px
+        }
+
+        .sepaction {
+            margin: 12px 0 24px 28px;
+        }
+
+        .mycontent {
+            margin: 18px 18px 14px 28px;
+            width: 94% !important;
+            width:
+                /**/
+                99%;
+        }
+
+        .bigfont {
+            font-size: 14px;
+        }
+
+        .nomail {
+            border: 1px solid #fff;
+            padding: 4px 11px 3px 17px;
+            text-align: right;
+            height: 20px;
+            line-height: 18px;
+        }
+
+        .flag_indigset {
+            margin: 1px 15px 0 0;
+            cursor: pointer
+        }
+
+        .remindico {
+            position: absolute;
+            margin: -2px 0 0 -20px
+        }
+
+        .graytext {
+            color: #a0a0a0
+        }
+
+        .qqshowbd {
+            border: 1px solid #b7cde4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noteshod" style="padding:2px 2px 0px 5px">
+        <div class="qqshowbd notestyle">
+            <div class="notetitle bigfont bold"><span id="star_" class="flag_indigset"></span>
+                <b>{{ request.url }}</b>
+            </div>
+            <div class="graytext timesep"><span id="remind_" class="remindico"></span>
+                <span>11:24</span>
+            </div>
+            <div id="content" style="clear:both;height:auto!important;height:/**/200px;min-height:200px;"
+                class="bigfont mycontent">
+                {{ content }}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

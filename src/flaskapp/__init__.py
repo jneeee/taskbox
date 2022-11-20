@@ -9,7 +9,7 @@ from src.utils.tools import run_cmd
 
 LOG = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='src/flaskapp/templates')
 app.debug = True
 
 
