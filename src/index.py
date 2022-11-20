@@ -1,13 +1,15 @@
 import json
 import logging
 
+import awsgi
+
 
 LOG = logging.getLogger(__name__)
 
 def lambda_handler(event, context):
     if not event.get('crontask'):
         from src.flaskapp import app
-        return app(event, context)
+        return awsgi.response(app, event, context)
 
     return {
         'statusCode': 200,

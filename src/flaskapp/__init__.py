@@ -5,12 +5,14 @@ from flask import jsonify
 from flask import request
 
 from src.utils.tools import run_cmd
+from src.flaskapp.route_db import bp_tasks
 
 
 LOG = logging.getLogger(__name__)
 
 app = Flask(__name__, template_folder='src/flaskapp/templates')
 app.debug = True
+app.register_blueprint(bp_tasks)
 
 
 @app.route('/')
