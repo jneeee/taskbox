@@ -38,9 +38,9 @@ Resources:
       CodeUri: ./
       Handler: src.index.lambda_handler
       Runtime: python3.9
-      MemorySize: 128
-      Timeout: 3
-      Description: For crontask and a wsgi service.
+      MemorySize: 256
+      Timeout: 10
+      Description: For crontask and a web service.
       Environment:
         Variables:
           DDB_TABLE: !Ref ddbTable
@@ -48,7 +48,6 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref ddbTable
         - AWSLambdaBasicExecutionRole
-      # aws s3api put-object  --bucket filesabc --key layer/flask.zip --body layer.zip
       Layers:
         - !Ref libs
   ddbTable:
@@ -60,6 +59,7 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  # aws s3api put-object  --bucket filesabc --key layer/flask.zip --body layer.zip
   libs:
     Type: AWS::Lambda::LayerVersion
     Properties:
