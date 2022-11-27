@@ -23,9 +23,9 @@ def get_http_path(event):
         path = []
     return path
 
-def get_http_info(event):
+def get_http_header(event):
     try:
-        info = event['requestContext']['http']
+        info = event['headers']
     except KeyError:
         info = {}
     return info

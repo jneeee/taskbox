@@ -18,7 +18,7 @@ def lambda_handler(event, context):
         paths = {
             'task': route_task.get_task,
             'db': route_db,
-            'cmd': route_index.cmdhandler
+            'cmd': route_index.cmdhandler,
         }
         if not path:
             return route_index.wsgi_root(event)
