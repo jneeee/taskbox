@@ -13,3 +13,12 @@ def run_cmd(cmd_str):
         res['err'] = err.decode().strip('\n').split('\n')
         out = None
     return res
+
+def get_http_path(event):
+    # from event get http info
+    try:
+        tmp = event['requestContext']['http']
+        path = tmp['path'].split('/')[1:]
+    except KeyError:
+        path = []
+    return path

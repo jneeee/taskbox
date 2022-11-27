@@ -1,9 +1,12 @@
 import json
 import logging
 
-from src import webx
-from src.webx import index
-from src.webx import route_tasks
+from src.utils import tools
+from src.webx import (
+    index,
+    route_task,
+    route_db,
+)
 
 
 LOG = logging.getLogger(__name__)
@@ -11,12 +14,15 @@ LOG.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     if not event.get('crontask'):
-        path = event['requestContext']['http']['path']
+        path = tools.get_http_path(event)
+        # path = ['task', <id>]
         paths = {
-            '/': index.wsgi_root,
-            '/tasks': route_tasks.get_tasks,
+            'task': route_task.get_task,
+            'db': route_db
         }
-        return paths[path](event)
+        if not path:
+            return index.wsgi_root(event)
+        return paths[path[0]](event)
     return {
         'statusCode': 200,
         'body': json.dumps(f'Hello, event: {event}\ncontext: {context}')

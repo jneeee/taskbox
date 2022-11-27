@@ -1,4 +1,5 @@
 import unittest
+import copy
 
 import boto3
 from moto import mock_dynamodb
@@ -35,14 +36,14 @@ class TaskRepository:
         self.table = ddb_resource.Table(self.table_name)
 
     def create_task(self, taskinfo):
-        return self.table.put_item(Item={'id': f'task_{taskinfo}', 'taskinfo': taskinfo})
+        return self.table.put_item(Item={'id': f'Task_{taskinfo}', 'taskinfo': taskinfo})
 
 
 Fake_event = {
     "requestContext": {
         "http": {
             "method": "GET",
-            "path": "/tasks",
+            "path": "/task",
             "protocol": "HTTP/1.1",
             "sourceIp": "112.64.93.19",
             "userAgent": "Mozilla/5.0"
@@ -64,8 +65,10 @@ class Test_web_tasks(unittest.TestCase):
     def tearDown(self):
         self.table.delete()
 
-    def test_test(self):
-        import src.webx
-
     def test_get_tasks(self):
         print(lambda_handler(Fake_event, Fake_context))
+
+    def test_quary_single_task(self):
+        tmp_event = copy.deepcopy(Fake_event)
+        tmp_event['requestContext']['http']['path'] = '/task/Task_foo'
+        print(lambda_handler(tmp_event, Fake_context))

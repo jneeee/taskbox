@@ -2,6 +2,7 @@ import time
 import logging
 
 import boto3
+from boto3.dynamodb.conditions import Attr
 
 LOG = logging.getLogger(__name__)
 
@@ -35,14 +36,19 @@ class Tableclient():
         self.table.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 
+    def scan_begins_with(self, pre):
+        return self.table.scan(
+            FilterExpression=Attr('id').begins_with(pre)
+        )
+
 
 class Task():
     tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
+    tb = Tableclient(tablename)
 
     def __init__(self):
-        self.name = 'task_%s' % self.__class__.__name__
+        self.name = self.__class__.__name__
         self.result = None
-        self.table = Tableclient(self.tablename)
 
     def step(self):
         # overwrite me
@@ -59,7 +65,7 @@ class Task():
         item['last_run_time'] = self.last_run_time
         item['result'] = self.result
 
-        self.table.put(item)
+        self.tb.put(item)
         LOG.info(f'Update task: {item}')
 
     @classmethod
@@ -68,5 +74,14 @@ class Task():
 
     def get_history(self):
         item = {'id': self.name}
-        resp = self.table.get(item)
+        resp = self.tb.get(item)
         return resp
+
+    @classmethod
+    def get_by_name(cls, task_id):
+        return cls.tb.get({'id': task_id})
+
+    @classmethod
+    def get_all_tasks(cls):
+        return cls.tb.scan_begins_with('Task_')
+
