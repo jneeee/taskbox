@@ -1,9 +1,8 @@
-import json
 import logging
 
 from src.utils import tools
 from src.webx import (
-    index,
+    route_index,
     route_task,
     route_db,
 )
@@ -18,12 +17,9 @@ def lambda_handler(event, context):
         # path = ['task', <id>]
         paths = {
             'task': route_task.get_task,
-            'db': route_db
+            'db': route_db,
+            'cmd': route_index.cmdhandler
         }
         if not path:
-            return index.wsgi_root(event)
+            return route_index.wsgi_root(event)
         return paths[path[0]](event)
-    return {
-        'statusCode': 200,
-        'body': json.dumps(f'Hello, event: {event}\ncontext: {context}')
-    }

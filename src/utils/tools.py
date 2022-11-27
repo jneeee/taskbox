@@ -22,3 +22,10 @@ def get_http_path(event):
     except KeyError:
         path = []
     return path
+
+def get_http_info(event):
+    try:
+        info = event['requestContext']['http']
+    except KeyError:
+        info = {}
+    return info
