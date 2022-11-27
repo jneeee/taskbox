@@ -1,3 +1,4 @@
+from json import dumps
 import logging
 
 from src.utils.tools import (
@@ -9,7 +10,7 @@ LOG = logging.getLogger(__name__)
 
 
 def wsgi_root(*args):
-    return 'Coming soon!'
+    return 'Coming soon!\n'
 
 
 def cmdhandler(event):
@@ -19,5 +20,5 @@ def cmdhandler(event):
         return 'err: cmd is "None"!\n'
 
     res = run_cmd(cmd)
-    LOG.info(f'run cmd: {cmd}, {res}')
+    print(f'run cmd: {cmd}, {res}')
     return res

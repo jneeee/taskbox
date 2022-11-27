@@ -17,7 +17,7 @@ def lambda_handler(event, context):
         # path = ['task', <id>]
         paths = {
             'task': route_task.get_task,
-            'db': route_db,
+            'db': route_db, # (todo)
             'cmd': route_index.cmdhandler,
         }
         if not path:
