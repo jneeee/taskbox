@@ -8,7 +8,8 @@ LOG = logging.getLogger(__name__)
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
 class Tableclient():
     def __init__(self, tablename) -> None:
-        self.table = boto3.resource('dynamodb').Table(tablename)
+         _dynamo = boto3.resource('dynamodb')
+         self.table = _dynamo.Table(tablename)
 
     def get(self, item):
         # item: dict{'id': key}
@@ -35,10 +36,11 @@ class Tableclient():
         LOG.info(f'Put_item: {item}')
 
 
-def Task(object):
+class Task():
     tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
+
     def __init__(self):
-        self.name = 'task_%s' % self.__name__
+        self.name = 'task_%s' % self.__class__.__name__
         self.result = None
         self.table = Tableclient(self.tablename)
 
@@ -60,6 +62,7 @@ def Task(object):
         self.table.put(item)
         LOG.info(f'Update task: {item}')
 
+    @classmethod
     def from_dict(cls):
         pass
 

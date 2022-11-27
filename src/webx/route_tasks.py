@@ -1,12 +1,11 @@
-from flask import render_template
+from json import dumps
 
 from boto3.dynamodb.conditions import Attr
 from boto3 import resource
 
 from src.task.models import Task
 
-
-def get_tasks():
+def get_tasks(*args):
     table = resource('dynamodb').Table(Task.tablename)
     resp = table.scan(
         FilterExpression=Attr('id').begins_with('task_')
@@ -14,4 +13,7 @@ def get_tasks():
     data = {
         'content': resp['Items'],
     }
-    return render_template('index.html', **data)
+    return {
+        'statusCode': 200,
+        'body': dumps(data),
+    }
