@@ -65,7 +65,6 @@ Resources:
   HttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
-      StageName: !Ref StageName
       Tags:
         Tag: Value
       AccessLogSettings:
@@ -110,7 +109,7 @@ Outputs:
   HttpApiUrl:
     Description: URL of your API endpoint
     Value:
-      Fn::Sub: 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${StageName}/'
+      Fn::Sub: 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
   HttpApiId:
     Description: Api id of HttpApi
     Value:
