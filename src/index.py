@@ -25,4 +25,4 @@ def lambda_handler(event, context):
                 return route_index.wsgi_root(event)
             return paths[path[0]](event)
         except Exception as e:
-            return e
+            return str(e)
