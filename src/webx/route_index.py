@@ -9,7 +9,7 @@ LOG = logging.getLogger(__name__)
 
 
 def wsgi_root(*args):
-    return 'Coming soon!\n'
+    return args
 
 
 def cmdhandler(event):

@@ -20,7 +20,8 @@ def get_http_path(event):
         path = tmp['path'].strip('/').split('/')
     except KeyError:
         path = []
-    return path
+    return path if path[0] != '' else []
+
 
 def get_http_header(event):
     try:
@@ -32,8 +33,8 @@ def get_http_header(event):
 
 def resp_html(http_code=200, body=None):
     return {
-        "isBase64Encoded": True,
+        "isBase64Encoded": False,
         "statusCode": http_code,
         "headers": {"Content-Type": "text/html"},
-        "body": body if body else "Body is None"
+        "body": body if body else "Body is None",
     }

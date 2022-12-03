@@ -20,6 +20,9 @@ def lambda_handler(event, context):
             'db': route_db, # (todo)
             'cmd': route_index.cmdhandler,
         }
-        if not path:
-            return route_index.wsgi_root(event)
-        return paths[path[0]](event)
+        try:
+            if not path:
+                return route_index.wsgi_root(event)
+            return paths[path[0]](event)
+        except Exception as e:
+            return e
