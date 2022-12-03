@@ -50,6 +50,39 @@ Resources:
         - AWSLambdaBasicExecutionRole
       Layers:
         - !Ref libs
+      Events:
+        ExplicitApi: # warning: creates a public endpoint
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /
+            TimeoutInMillis: 15000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref StageName
+      Tags:
+        Tag: Value
+      AccessLogSettings:
+        DestinationArn: !GetAtt AccessLogs.Arn
+        Format: $context.requestId
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 200
+      RouteSettings:
+        "GET /":
+          ThrottlingBurstLimit: 500 # overridden in HttpApi Event
+      StageVariables:
+        StageVar: Value
+      FailOnWarnings: true
+
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
+
   ddbTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -73,3 +106,12 @@ Resources:
       CompatibleRuntimes:
         - python3.9
 
+Outputs:
+  HttpApiUrl:
+    Description: URL of your API endpoint
+    Value:
+      Fn::Sub: 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${StageName}/'
+  HttpApiId:
+    Description: Api id of HttpApi
+    Value:
+      Ref: HttpApi
