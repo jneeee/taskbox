@@ -14,9 +14,10 @@ def run_cmd(cmd_str):
 
 def get_http_path(event):
     # from event get http info
+    # path = ['path', 'to', 'smt']
     try:
         tmp = event['requestContext']['http']
-        path = tmp['path'].split('/')[1:]
+        path = tmp['path'].strip('/').split('/')
     except KeyError:
         path = []
     return path

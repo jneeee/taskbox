@@ -119,16 +119,7 @@
 <body>
     <div class="noteshod" style="padding:2px 2px 0px 5px">
         <div class="qqshowbd notestyle">
-            <div class="notetitle bigfont bold"><span id="star_" class="flag_indigset"></span>
-                <b>{{ request.url }}</b>
-            </div>
-            <div class="graytext timesep"><span id="remind_" class="remindico"></span>
-                <span>11:24</span>
-            </div>
-            <div id="content" style="clear:both;height:auto!important;height:/**/200px;min-height:200px;"
-                class="bigfont mycontent">
-                {{ content }}
-            </div>
+            {% block content %}{% endblock %}
         </div>
     </div>
 </body>

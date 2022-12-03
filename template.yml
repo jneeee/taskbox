@@ -59,12 +59,14 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  # pip install rsa -t python/
+  # zip layer.zip -r python/
   # aws s3api put-object  --bucket aws-ap-southeast-1-044694559979-appname-pipe --key layer/flask.zip --body layer.zip
   libs:
     Type: AWS::Lambda::LayerVersion
     Properties:
       LayerName: flask
-      Description: flask + flask-lambda
+      Description: flask + jinja2 + rsa
       Content:
         S3Bucket: aws-ap-southeast-1-044694559979-appname-pipe
         S3Key: layer/flask.zip
