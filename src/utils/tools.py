@@ -28,3 +28,12 @@ def get_http_header(event):
     except KeyError:
         info = {}
     return info
+
+
+def resp_html(http_code=200, body=None):
+    return {
+        "isBase64Encoded": True,
+        "statusCode": http_code,
+        "headers": {"Content-Type": "text/html"},
+        "body": body if body else "Body is None"
+    }

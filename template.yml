@@ -58,6 +58,7 @@ Resources:
             Method: GET
             Path: /
             TimeoutInMillis: 15000
+            # https://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600

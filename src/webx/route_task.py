@@ -26,8 +26,6 @@ def get_task(event):
         env = Environment(loader=PackageLoader('src.webx', 'templates'))
         template = env.get_template('tasks.html')
         resp = template.render(res=resp)
-
-    return {
-        'statusCode': 200,
-        'body': resp,
-    }
+        return tools.resp_html(body=resp)
+    else:
+        return resp
