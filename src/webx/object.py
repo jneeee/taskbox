@@ -1,4 +1,5 @@
 from base64 import b64decode
+import urllib.parse
 
 from jinja2 import PackageLoader, Environment
 
@@ -46,6 +47,8 @@ class Request():
         res = None
         if self.method == 'POST':
             res = b64decode(self.event.get('body')).decode()
+            # replace @ { } ...
+            res = urllib.parse.unquote(res)
         return res
 
     @staticmethod

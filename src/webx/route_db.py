@@ -17,9 +17,12 @@ def route(req):
         return req.make_resp(quary_res=[quary_res,], template_name='dynamodb.html')
     elif path[1] == 'putitem':
         # req.body = 'item={'id':xx}'
-        item = json.loads(req.body.split('=')[1])
-        resp = models.get_app_db().put(item)
-        LOG.info(f'{req}, put item: {item}')
+        try:
+            item = json.loads(req.body.split('=')[1])
+            resp = models.get_app_db().put(item)
+            LOG.info(f'{req}, put item: {item}')
+        except json.decoder.JSONDecodeError:
+            resp = 'Json decode error!'
         return req.make_resp(put_res=resp, template_name='dynamodb.html')
 
 
