@@ -73,8 +73,15 @@ class Test_web_tasks(unittest.TestCase):
         tmp_event['requestContext']['http']['path'] = '/task/Task_foo'
         print(lambda_handler(tmp_event, Fake_context))
 
-    def test_rum_cmd(self):
+    def test_run_cmd(self):
         tmp_event = copy.deepcopy(Fake_event)
         tmp_event['headers'] = {'cmd': 'ls'}
         tmp_event['requestContext']['http']['path'] = '/cmd'
         print(lambda_handler(tmp_event, Fake_context))
+
+    def test_db_query(self):
+        tmp_event = copy.deepcopy(Fake_event)
+        tmp_event['requestContext']['http']['path'] = '/db'
+        self.assertIn('Quary db', lambda_handler(tmp_event, Fake_context).get('body'))
+
+

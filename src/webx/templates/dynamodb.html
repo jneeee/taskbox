@@ -11,7 +11,7 @@
 id: <input  name="id"> <input type="submit" value="Quary">
 </form>
 
-{% if defined(quary_res) %}
+{% if quary_res is defined %}
 <p><b>Quary result</b>:</p>
 <!-- quary_res [{id=xx,},] -->
   <table cellspacing="1" cellpadding="6" border="0"><tbody>
