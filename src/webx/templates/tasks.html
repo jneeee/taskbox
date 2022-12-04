@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="notetitle bigfont bold"><span id="star_" class="flag_indigset"></span>
-    <b>Tasks</b>
-</div>
-<div class="graytext timesep"><span id="remind_" class="remindico"></span>
-    <span>11:24</span>
-</div>
-<div id="content" style="clear:both;height:auto!important;height:/**/200px;min-height:200px;"
-    class="bigfont mycontent">
-    <p>res: {{ res }}</p>
-</div>
+<h1>Tasks</h1>
+<p>task:  dict({'id':xx, 'result': xx, 'last_run_time': xx})</p>
+<p><b>Task list</b>:</p>
+<table cellspacing="1" cellpadding="6" border="0"><tbody>
+<tr>
+  {% for key in tasks_list[0].keys() %}
+  <th class="Title" align="center" width="60">{{ key }}</th>
+  {% endfor %}
+</tr>
+{% for task in tasks_list %}
+<tr>
+  {% for _, v in task.items() %}
+  <td class="Item" align="center">v</td>
+  {% endfor %}
+</tr>
+{% endfor %}
+</tbody></table>
 {% endblock %}

@@ -1,5 +1,4 @@
 import logging
-from jinja2 import PackageLoader, Environment
 
 from src.task.models import Task
 from src.utils import tools
@@ -23,9 +22,6 @@ def get_task(event):
 
     # if from browser, don't return json
     if 'curl' not in event.get('headers', {}).get('User-agent', ''):
-        env = Environment(loader=PackageLoader('src.webx', 'templates'))
-        template = env.get_template('tasks.html')
-        resp = template.render(res=resp)
-        return tools.resp_html(body=resp)
+        return tools.resp_html(resp, template_name='tasks.html')
     else:
         return resp

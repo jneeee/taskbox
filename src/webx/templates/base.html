@@ -1,127 +1,46 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=gb18030" />
-    <meta http-equiv="cache-control" content="no-cache">
-    <title>Lambda function</title>
-    <style type="text/css">
-        td,
-        input,
-        select,
-        body {
-            font-family: Verdana;
-            font-size: 12px;
-        }
+<link href="https://www.7-zip.org/style.css" rel="stylesheet" type="text/css">
+<title>Task board</title>
 
-        form,
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        select,
-        body,
-        textarea {
-            background: #fff;
-            font-size: 12px;
-        }
-
-        select {
-            font: normal 12px Arial;
-            line-height: 20px;
-        }
-
-        textarea {
-            width: 540px;
-            border: 1px solid #718da6;
-            padding: 3px;
-            font-family: Verdana;
-        }
-
-        img {
-            border: none
-        }
-
-        a {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .noteshod {
-            background: #eee;
-            margin: 5px 0 5px 0;
-            padding: 0 2px 2px 0;
-        }
-
-        .notestyle {
-            background: #fff;
-        }
-
-        .notetitle {
-            padding: 14px 16px 0 10px;
-            margin: 0;
-            width: 94% !important;
-            width:
-                /**/
-                99%;
-            overflow-x: hidden;
-        }
-
-        .timesep {
-            margin: 3px 0 0 28px
-        }
-
-        .sepaction {
-            margin: 12px 0 24px 28px;
-        }
-
-        .mycontent {
-            margin: 18px 18px 14px 28px;
-            width: 94% !important;
-            width:
-                /**/
-                99%;
-        }
-
-        .bigfont {
-            font-size: 14px;
-        }
-
-        .nomail {
-            border: 1px solid #fff;
-            padding: 4px 11px 3px 17px;
-            text-align: right;
-            height: 20px;
-            line-height: 18px;
-        }
-
-        .flag_indigset {
-            margin: 1px 15px 0 0;
-            cursor: pointer
-        }
-
-        .remindico {
-            position: absolute;
-            margin: -2px 0 0 -20px
-        }
-
-        .graytext {
-            color: #a0a0a0
-        }
-
-        .qqshowbd {
-            border: 1px solid #b7cde4;
-        }
-    </style>
 </head>
-
 <body>
-    <div class="noteshod" style="padding:2px 2px 0px 5px">
-        <div class="qqshowbd notestyle">
-            {% block content %}{% endblock %}
-        </div>
-    </div>
-</body>
+<table cellspacing="10" cellpadding="10" border="0" width="100%"><tbody><tr>
+<td class="MenuColumn" valign="top">
 
-</html>
+<table cellpadding="2" cellspacing="0" border="0">
+<tbody><tr><td><span class="MenuCurrent">Home</span></td></tr>
+<tr><td><a href="/task" class="MenuLink">Task list</a></td></tr>
+</tbody></table>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tbody><tr><td><hr></td></tr>
+</tbody></table>
+
+</td>
+<td valign="top">
+<table cellspacing="4" cellpadding="4"><tbody><tr>
+
+<td>
+{% block content %}{% endblock %}
+</td>
+
+<td valign="top" align="right" width="210">
+<br>
+<table class="News" cellpadding="3" cellspacing="1" border="0">
+  <tbody><tr class="NewsHeader"><td class="NewsTitle" colspan="2">Release note</td></tr>
+  <tr class="News">
+    <td class="NewsText" colspan="2">
+      <a href="/releasenote.html">Todo</a><br>
+    </td>
+  </tr>
+</tbody></table>
+</td>
+
+</tr></tbody></table>
+
+<hr>
+<p><small>Copyright (C) 2022 <a href="https://jneeee.netlify.com">Jneeee</a>.</small></p>
+</td></tr></tbody></table>
+
+</body></html>

@@ -1,4 +1,5 @@
 import subprocess
+from jinja2 import PackageLoader, Environment
 
 
 def run_cmd(cmd_str):
@@ -31,7 +32,14 @@ def get_http_header(event):
     return info
 
 
-def resp_html(http_code=200, body=None):
+def _template_render(body, template_name=None):
+    env = Environment(loader=PackageLoader('src.webx', 'templates'))
+    template = env.get_template(template_name)
+    return template.render(tasks_list=body)
+
+
+def resp_html(body, http_code=200, template_name=None):
+    body = _template_render(body, template_name=template_name)
     return {
         "isBase64Encoded": False,
         "statusCode": http_code,
