@@ -55,13 +55,14 @@ Resources:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpApi
-            Method: GET
-            Path: /
+            # route all path to one endpoint.
+            Path: $default
+            Method: ANY
             TimeoutInMillis: 15000
             # https://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
             PayloadFormatVersion: "2.0"
             RouteSettings:
-              ThrottlingBurstLimit: 600
+              ThrottlingBurstLimit: 50
 
   HttpApi:
     Type: AWS::Serverless::HttpApi
@@ -73,9 +74,6 @@ Resources:
         Format: $context.requestId
       DefaultRouteSettings:
         ThrottlingBurstLimit: 200
-      RouteSettings:
-        "GET /":
-          ThrottlingBurstLimit: 500 # overridden in HttpApi Event
       StageVariables:
         StageVar: Value
       FailOnWarnings: true

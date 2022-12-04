@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Dynamodb</h1>
+
+<p>task: dict({'id':xx, 'result': xx, 'last_run_time': xx})</p>
+
+<p><b>Quary dynamodb</b>:</p>
+
+<form action="/db/quary" method="post">
+id: <input  name="id"> <input type="submit" value="Quary">
+</form>
+
+{% if defined(quary_res) %}
+<p><b>Quary result</b>:</p>
+<!-- quary_res [{id=xx,},] -->
+  <table cellspacing="1" cellpadding="6" border="0"><tbody>
+  <tr>
+    {% for key in quary_res[0].keys() %}
+    <th class="Title" align="center" width="60">{{ key }}</th>
+    {% endfor %}
+  </tr>
+  {% for task in quary_res %}
+  <tr>
+    {% for _, v in task.items() %}
+    <td class="Item" align="center">{{ v }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+  </tbody></table>
+{% endif %}
+{% endblock %}

@@ -22,6 +22,6 @@ def get_task(event):
 
     # if from browser, don't return json
     if 'curl' not in event.get('headers', {}).get('User-agent', ''):
-        return tools.resp_html(resp, template_name='tasks.html')
+        return tools.resp_html(tasks_list=resp, template_name='tasks.html')
     else:
         return resp

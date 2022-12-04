@@ -14,12 +14,14 @@ LOG.setLevel(logging.INFO)
 def lambda_handler(event, context):
     if not event.get('crontask'):
         path = tools.get_http_path(event)
+        LOG.info(f'Get http request path: {path}')
         # path = ['task', <id>]
         paths = {
             'task': route_task.get_task,
-            'db': route_db, # (todo)
+            'db': route_db.route, # (todo)
             'cmd': route_index.cmdhandler,
         }
+
         try:
             if not path:
                 return route_index.wsgi_root(event)

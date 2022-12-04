@@ -42,6 +42,11 @@ class Tableclient():
         )
 
 
+def get_app_db():
+    tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
+    return Tableclient(tablename)
+
+
 class Task():
     tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
     tb = Tableclient(tablename)
