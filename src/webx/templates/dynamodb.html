@@ -3,9 +3,12 @@
 {% block content %}
 <h1>Dynamodb</h1>
 
-<p>task: dict({'id':xx, 'result': xx, 'last_run_time': xx})</p>
-
-<p><b>Quary dynamodb</b>:</p>
+<h2>Quary dynamodb:</h2>
+<ul>
+  <li>Task_</li>
+  <li>config_</li>
+  <li>...</li>
+</ul>
 
 <form action="/db/quary" method="post">
 id: <input  name="id"> <input type="submit" value="Quary">
@@ -28,5 +31,19 @@ id: <input  name="id"> <input type="submit" value="Quary">
   </tr>
   {% endfor %}
   </tbody></table>
+{% endif %}
+
+<h2>Put item to dynamodb</h2>
+
+<p>item: {"id":xxx, ...}</p>
+<form action="/db/putitem" method="post">
+item: <input name="item">
+<input type="submit" value="Put">
+</form>
+
+{% if put_res is defined %}
+<div class="alert-warning">
+  <strong>Notice</strong>: {{ put_res }}
+</div>
 {% endif %}
 {% endblock %}

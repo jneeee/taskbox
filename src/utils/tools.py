@@ -30,19 +30,3 @@ def get_http_header(event):
     except KeyError:
         info = {}
     return info
-
-
-def _template_render(template_name=None, **content_kw):
-    env = Environment(loader=PackageLoader('src.webx', 'templates'))
-    template = env.get_template(template_name)
-    return template.render(**content_kw)
-
-
-def resp_html(http_code=200, template_name=None, **content_kw):
-    body = _template_render(template_name=template_name, **content_kw)
-    return {
-        "isBase64Encoded": False,
-        "statusCode": http_code,
-        "headers": {"Content-Type": "text/html"},
-        "body": body if body else "Body is None",
-    }

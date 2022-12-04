@@ -2,29 +2,19 @@ import logging
 
 from src.utils import tools
 from src.webx import (
-    route_index,
-    route_task,
-    route_db,
+    object,
 )
-
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     if not event.get('crontask'):
-        path = tools.get_http_path(event)
-        LOG.info(f'Get http request path: {path}')
-        # path = ['task', <id>]
-        paths = {
-            'task': route_task.get_task,
-            'db': route_db.route, # (todo)
-            'cmd': route_index.cmdhandler,
-        }
+        req = object.Request(event)
+        LOG.info(f'Get http request path: {req.path_list}')
 
         try:
-            if not path:
-                return route_index.wsgi_root(event)
-            return paths[path[0]](event)
+            return req.route()
         except Exception as e:
+            LOG.exception(e)
             return str(e)

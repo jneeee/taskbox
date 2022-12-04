@@ -7,6 +7,7 @@ from boto3.dynamodb.conditions import Attr
 LOG = logging.getLogger(__name__)
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
+# https://hands-on.cloud/working-with-dynamodb-in-python-using-boto3/
 class Tableclient():
     def __init__(self, tablename) -> None:
          _dynamo = boto3.resource('dynamodb')
@@ -14,6 +15,7 @@ class Tableclient():
 
     def get(self, item):
         # item: dict{'id': key}
+        # return dict({'id':xx, 'result':xx ...})
         if not isinstance(item, dict):
             return False
         resp = None
@@ -37,9 +39,10 @@ class Tableclient():
         LOG.info(f'Put_item: {item}')
 
     def scan_begins_with(self, pre):
+        # return [{},]
         return self.table.scan(
             FilterExpression=Attr('id').begins_with(pre)
-        )
+        ).get('Items')
 
 
 def get_app_db():
@@ -88,5 +91,6 @@ class Task():
 
     @classmethod
     def get_all_tasks(cls):
+        # return [{},]
         return cls.tb.scan_begins_with('Task_')
 

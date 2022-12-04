@@ -1,5 +1,6 @@
 import unittest
 import copy
+import logging
 
 import boto3
 from moto import mock_dynamodb
@@ -7,6 +8,8 @@ from moto import mock_dynamodb
 from src.task.models import Task
 from src.index import lambda_handler
 from src.webx import route_task
+
+LOG = logging.getLogger()
 
 def create_user_table(table_name: str) -> dict:
     return dict(
@@ -81,7 +84,17 @@ class Test_web_tasks(unittest.TestCase):
 
     def test_db_query(self):
         tmp_event = copy.deepcopy(Fake_event)
+        tmp_event['requestContext']['http'].update(
+            {'path': '/db/quary', 'method': 'POST'}
+        )
+        tmp_event['body'] = b'aWQ9VGFza190ZXN0'
+        resp = lambda_handler(tmp_event, Fake_context)
+        LOG.error(f'========\n resp: {resp}')
+        self.assertIn('Quary db', resp.get('body'))
+
+    def test_db_putitem(self):
+        tmp_event = copy.deepcopy(Fake_event)
         tmp_event['requestContext']['http']['path'] = '/db'
-        self.assertIn('Quary db', lambda_handler(tmp_event, Fake_context).get('body'))
-
-
+        resp = lambda_handler(tmp_event, Fake_context)
+        LOG.info(f'========\n resp: {resp}')
+        self.assertIn('Quary db', resp.get('body'))
