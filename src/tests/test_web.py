@@ -60,7 +60,7 @@ Fake_context = {}
 class Test_web_tasks(unittest.TestCase):
 
     def setUp(self):
-        ddb = boto3.resource("dynamodb", "ap-southeast-1")
+        ddb = boto3.resource("dynamodb")
         self.table = ddb.create_table(**create_user_table(Task.tablename))
         self.test_repo = TaskRepository(ddb)
         self.test_repo.create_task('foo')

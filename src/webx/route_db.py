@@ -1,3 +1,4 @@
+import json
 import logging
 
 from src.task import models
@@ -16,8 +17,9 @@ def route(req):
         return req.make_resp(quary_res=[quary_res,], template_name='dynamodb.html')
     elif path[1] == 'putitem':
         # req.body = 'item={'id':xx}'
-        item = req.body.split('=')[1]
+        item = json.loads(req.body.split('=')[1])
         resp = models.get_app_db().put(item)
+        LOG.info(f'{req}, put item: {item}')
         return req.make_resp(put_res=resp, template_name='dynamodb.html')
 
 

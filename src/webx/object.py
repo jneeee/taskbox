@@ -63,3 +63,7 @@ class Request():
         if not self.path_list:
             return route_index.wsgi_root(self)
         return ROUTE[self.path_list[0]](self)
+
+    def __str__(self) -> str:
+        return f'Request: {self.method} {self.path}, body: {self.body}'
+

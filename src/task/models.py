@@ -17,7 +17,7 @@ class Tableclient():
         # item: dict{'id': key}
         # return dict({'id':xx, 'result':xx ...})
         if not isinstance(item, dict):
-            return False
+            raise ValueError('Tableclient: item is not a dict')
         resp = None
         try:
             resp = self.table.get_item(Key=item).get("Item")
@@ -28,13 +28,13 @@ class Tableclient():
     def delete(self, item):
         # item: dict{'id': key}
         if not isinstance(item, dict):
-            return False
+            raise ValueError('Tableclient: item is not a dict')
         self.table.delete_item(Item=item)
 
     def put(self, item):
         # item: dict{'id': id, 'value': value}
         if not isinstance(item, dict):
-            return False
+            raise ValueError('Tableclient: item is not a dict')
         self.table.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 

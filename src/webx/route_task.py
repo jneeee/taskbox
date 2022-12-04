@@ -19,4 +19,4 @@ def get_task(req):
     else:
         resp = Task.get_all_tasks()
 
-    req.make_resp(tasks_list=resp, template_name='tasks.html')
+    return req.make_resp(tasks_list=resp, template_name='tasks.html')
