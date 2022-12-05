@@ -7,12 +7,14 @@ from src.webx import (
     route_index,
     route_task,
     route_db,
+    route_static,
 )
 
 ROUTE = {
     'task': route_task.get_task,
     'db': route_db.route,
     'cmd': route_index.cmdhandler,
+    'static': route_static.render_static_html,
 }
 HTML_ENV = Environment(loader=PackageLoader('src.webx', 'templates'))
 

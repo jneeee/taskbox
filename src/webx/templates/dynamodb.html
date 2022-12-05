@@ -2,8 +2,13 @@
 
 {% block content %}
 <h1>Dynamodb</h1>
+{% if exe_res is defined %}
+<div class="alert-warning">
+  <strong>Notice</strong>: {{ exe_res }}
+</div>
+{% endif %}
 
-<h2>Quary dynamodb:</h2>
+<h2>1. Quary dynamodb:</h2>
 <ul>
   <li>Task_</li>
   <li>config_</li>
@@ -33,17 +38,15 @@ id: <input  name="id"> <input type="submit" value="Quary">
   </tbody></table>
 {% endif %}
 
-<h2>Put item to dynamodb</h2>
-
+<h2>2. Put item to dynamodb</h2>
 <p>item: {"id":xxx, ...}</p>
 <form action="/db/putitem" method="post">
-item: <input name="item">
-<input type="submit" value="Put">
+item: <input name="item"> <input type="submit" value="Put">
 </form>
 
-{% if put_res is defined %}
-<div class="alert-warning">
-  <strong>Notice</strong>: {{ put_res }}
-</div>
-{% endif %}
+<h2>3. Delete item</h2>
+<form action="/db/delete" method="post">
+id= <input name="id"> <input type="submit" value="Delete">
+</form>
+
 {% endblock %}

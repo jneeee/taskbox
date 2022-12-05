@@ -24,6 +24,14 @@ def route(req):
         except json.decoder.JSONDecodeError:
             resp = 'Json decode error!'
         return req.make_resp(put_res=resp, template_name='dynamodb.html')
+    elif path[1] == 'delete':
+        try:
+            idstr = req.body.split('=')[1]
+            exe_res = models.get_app_db().delete({'id': idstr})
+        except Exception as e:
+            LOG.exception(e)
+            exe_res = str(e)
+        return req.make_resp(exe_res=exe_res, template_name='dynamodb.html')
 
 
 def db_quary(event):
