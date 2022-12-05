@@ -29,7 +29,7 @@ class Tableclient():
         # item: dict{'id': key}
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
-        self.table.delete_item(Item=item)
+        self.table.delete_item(Key=item)
 
     def put(self, item):
         # item: dict{'id': id, 'value': value}

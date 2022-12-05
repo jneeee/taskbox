@@ -26,6 +26,7 @@ def route(req):
         return req.make_resp(put_res=resp, template_name='dynamodb.html')
     elif path[1] == 'delete':
         try:
+            LOG.info(f'Delete req.body: {req.body}')
             idstr = req.body.split('=')[1]
             exe_res = models.get_app_db().delete({'id': idstr})
         except Exception as e:
