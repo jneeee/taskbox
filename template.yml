@@ -54,14 +54,10 @@ Resources:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpApi
-            # route all path to one endpoint.
             TimeoutInMillis: 15000
-            Method: GET
+            Method: PUT
             Path: /
             # https://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
-            PayloadFormatVersion: "2.0"
-            RouteSettings:
-              ThrottlingBurstLimit: 50
 
   HttpApi:
     Type: AWS::Serverless::HttpApi
@@ -72,7 +68,7 @@ Resources:
         DestinationArn: !GetAtt AccessLogs.Arn
         Format: $context.requestId
       DefaultRouteSettings:
-        ThrottlingBurstLimit: 200
+        ThrottlingBurstLimit: 50
       # disable this for using custom domain
       DisableExecuteApiEndpoint: true
       # https://docs.aws.amazon.com/zh_cn/serverless-application-model/latest/developerguide/sam-property-httpapi-httpapidomainconfiguration.html
@@ -82,6 +78,9 @@ Resources:
       StageVariables:
         StageVar: Value
       FailOnWarnings: true
+      RouteSettings:
+        "PUT /":
+          ThrottlingBurstLimit: 500 # overridden in HttpApi Event
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
@@ -112,6 +111,10 @@ Resources:
 # 创建定时器 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedulev2.html
 
 Outputs:
+  HttpApiUrl:
+    Description: URL of your API endpoint
+    Value:
+      Fn::Sub: 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
   HttpApiId:
     Description: Api id of HttpApi
     Value:
