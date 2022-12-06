@@ -31,7 +31,6 @@ Resources:
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  # This is a Lambda function config associated with the source code: hello-from-lambda.js
   helloFromLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -76,9 +75,10 @@ Resources:
         ThrottlingBurstLimit: 200
       # disable this for using custom domain
       DisableExecuteApiEndpoint: true
-      RouteSettings:
-        GET /:
-          ThrottlingBurstLimit: 500
+      # https://docs.aws.amazon.com/zh_cn/serverless-application-model/latest/developerguide/sam-property-httpapi-httpapidomainconfiguration.html
+      Domain:
+        DomainName: task.168250.xyz
+        CertificateArn: !Sub 'arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/76a65d48-7f82-4f77-9f56-bcc6e3c32a0a'
       StageVariables:
         StageVar: Value
       FailOnWarnings: true
@@ -89,9 +89,12 @@ Resources:
   ddbTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
@@ -109,11 +112,9 @@ Resources:
       CompatibleRuntimes:
         - python3.9
 
+# 创建定时器 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedulev2.html
+
 Outputs:
-  HttpApiUrl:
-    Description: URL of your API endpoint
-    Value:
-      Fn::Sub: 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
   HttpApiId:
     Description: Api id of HttpApi
     Value:

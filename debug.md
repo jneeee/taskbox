@@ -63,5 +63,5 @@ event:
     stageVariables: {'StageVar': 'Value'},
     body: "aWQ9VGFza190ZXN0",
 }
-\ncontext: LambdaContext([aws_request_id=237f0819-4b3b-4973-9585-af2e884fe1a9,log_group_name=/aws/lambda/appname-helloFromLambdaFunction-4vI8IsgslTpw,log_stream_name=2022/11/19/[$LATEST]4d83a69ec1e3420091ca9b4ba056e3ac,function_name=appname-helloFromLambdaFunction-4vI8IsgslTpw,memory_limit_in_mb=128,function_version=$LATEST,invoked_function_arn=arn:aws:lambda:ap-southeast-1:044694559979:function:appname-helloFromLambdaFunction-4vI8IsgslTpw,client_context=None,identity=CognitoIdentity([cognito_identity_id=None,cognito_identity_pool_id=None])])"
+context: LambdaContext([aws_request_id=237f0819-4b3b-4973-9585-af2e884fe1a9,log_group_name=/aws/lambda/appname-helloFromLambdaFunction-4vI8IsgslTpw,log_stream_name=2022/11/19/[$LATEST]4d83a69ec1e3420091ca9b4ba056e3ac,function_name=appname-helloFromLambdaFunction-4vI8IsgslTpw,memory_limit_in_mb=128,function_version=$LATEST,invoked_function_arn=arn:aws:lambda:ap-southeast-1:044694559979:function:appname-helloFromLambdaFunction-4vI8IsgslTpw,client_context=None,identity=CognitoIdentity([cognito_identity_id=None,cognito_identity_pool_id=None])])"
 ```

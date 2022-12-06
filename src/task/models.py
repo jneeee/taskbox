@@ -5,9 +5,9 @@ import boto3
 from boto3.dynamodb.conditions import Attr
 
 LOG = logging.getLogger(__name__)
+TASK_LIST_KEY = 'task_list'
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
-# https://hands-on.cloud/working-with-dynamodb-in-python-using-boto3/
 class Tableclient():
     def __init__(self, tablename) -> None:
          _dynamo = boto3.resource('dynamodb')
@@ -38,9 +38,9 @@ class Tableclient():
         self.table.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 
-    def scan_begins_with(self, pre):
+    def quary_begins_with(self, pre):
         # return [{},]
-        return self.table.scan(
+        return self.table.query(
             FilterExpression=Attr('id').begins_with(pre)
         ).get('Items')
 
@@ -92,5 +92,5 @@ class Task():
     @classmethod
     def get_all_tasks(cls):
         # return [{},]
-        return cls.tb.scan_begins_with('Task_')
+        return cls.tb.get({'id': TASK_LIST_KEY})
 
