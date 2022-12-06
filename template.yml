@@ -89,12 +89,9 @@ Resources:
   ddbTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
+      PrimaryKey:
+        Name: id
+        Type: String
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
