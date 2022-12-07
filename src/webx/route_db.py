@@ -13,7 +13,11 @@ def route(req):
         return req.make_resp(template_name='dynamodb.html')
     elif path[1] == 'quary':
         # req.body = 'id=Task_xxx'
-        quary_res = models.get_app_db().get({'id': req.body.split('=')[1]})
+        key = req.body.split('=')[1]
+        quary_res = models.get_app_db().get({'id': key})
+        if not quary_res:
+            warn_msg = f'No such key: {key}!'
+            return req.make_resp(warn_msg=warn_msg, template_name='dynamodb.html')
         return req.make_resp(quary_res=[quary_res,], template_name='dynamodb.html')
     elif path[1] == 'putitem':
         # req.body = 'item={'id':xx}'

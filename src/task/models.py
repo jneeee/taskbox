@@ -47,7 +47,7 @@ class Tableclient():
 
     def quary_begins_with(self, pre):
         # return [{},]
-        return self.table.query(
+        return self.table.scan(
             FilterExpression=Attr('id').begins_with(pre)
         ).get('Items')
 
