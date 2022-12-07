@@ -1,7 +1,6 @@
 import logging
 
 from src.task.models import Task
-from src.utils import tools
 
 
 LOG = logging.getLogger(__name__)

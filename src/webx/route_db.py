@@ -23,7 +23,7 @@ def route(req):
             LOG.info(f'{req}, put item: {item}')
         except json.decoder.JSONDecodeError:
             resp = 'Json decode error!'
-        return req.make_resp(put_res=resp, template_name='dynamodb.html')
+        return req.make_resp(warn_msg=resp, template_name='dynamodb.html')
     elif path[1] == 'delete':
         try:
             LOG.info(f'Delete req.body: {req.body}')
@@ -32,7 +32,7 @@ def route(req):
         except Exception as e:
             LOG.exception(e)
             exe_res = str(e)
-        return req.make_resp(exe_res=exe_res, template_name='dynamodb.html')
+        return req.make_resp(warn_msg=exe_res, template_name='dynamodb.html')
 
 
 def db_quary(event):

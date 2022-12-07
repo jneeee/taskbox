@@ -14,11 +14,16 @@ class Tableclient():
          self.table = _dynamo.Table(tablename)
 
     def get(self, item):
-        # item: dict{'id': key}
-        # return dict({'id':xx, 'result':xx ...})
+        '''Get item by key
+
+        item: dict{'id': key}
+        return dict({'id':xx, 'result':xx ...})
+        '''
+
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
         resp = None
+
         try:
             resp = self.table.get_item(Key=item).get("Item")
         except Exception as e:
@@ -30,9 +35,11 @@ class Tableclient():
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
         self.table.delete_item(Key=item)
+        return f'Delete {item} success!'
 
     def put(self, item):
         # item: dict{'id': id, 'value': value}
+        # TODO threading
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
         self.table.put_item(Item=item)
@@ -92,5 +99,7 @@ class Task():
     @classmethod
     def get_all_tasks(cls):
         # return [{},]
-        return cls.tb.get({'id': TASK_LIST_KEY})
+        return cls.tb.quary_begins_with('Task_')
 
+    def registe_crontab(cron_str):
+        pass
