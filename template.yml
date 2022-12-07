@@ -70,11 +70,6 @@ Resources:
       DefaultRouteSettings:
         ThrottlingBurstLimit: 50
       # disable this for using custom domain
-      DisableExecuteApiEndpoint: true
-      # https://docs.aws.amazon.com/zh_cn/serverless-application-model/latest/developerguide/sam-property-httpapi-httpapidomainconfiguration.html
-      Domain:
-        DomainName: task.168250.xyz
-        CertificateArn: !Sub 'arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/76a65d48-7f82-4f77-9f56-bcc6e3c32a0a'
       StageVariables:
         StageVar: Value
       FailOnWarnings: true
