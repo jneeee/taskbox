@@ -1,3 +1,4 @@
+import os
 import unittest
 from unittest import mock
 import copy
@@ -6,14 +7,15 @@ import logging
 import boto3
 from moto import mock_dynamodb
 
-from src.task.models import Task
 from src.index import lambda_handler
 
 LOG = logging.getLogger()
+os.environ['DDB_TABLE'] = 'table_name'
 
-def create_user_table(table_name: str) -> dict:
+
+def create_user_table() -> dict:
     return dict(
-        TableName=table_name,
+        TableName='table_name',
         KeySchema=[
             {
                 'AttributeName': 'id',
@@ -31,12 +33,11 @@ def create_user_table(table_name: str) -> dict:
 
 
 class TaskRepository:
-    table_name = Task.tablename
 
     def __init__(self, ddb_resource):
         if not ddb_resource:
             ddb_resource = boto3.resource('dynamodb')
-        self.table = ddb_resource.Table(self.table_name)
+        self.table = ddb_resource.Table('table_name')
 
     def do_db_init(self):
         self.table.put_item(Item={'id': 'Task_foo', 'taskinfo': 'foo'})
@@ -53,17 +54,25 @@ Fake_event = {
             "sourceIp": "112.64.93.19",
             "userAgent": "Mozilla/5.0"
         },
-    }
+    },
+    'body': b'aWQ9VGFza190ZXN0',
 }
 
 Fake_context = {}
 
+
 @mock_dynamodb
 class Test_web_tasks(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.env_patcher = mock.patch.dict(os.environ, {"DDB_TABLE": "table_name"})
+        cls.env_patcher.start()
+        super().setUpClass()
+
     def setUp(self):
         ddb = boto3.resource("dynamodb")
-        self.table = ddb.create_table(**create_user_table(Task.tablename))
+        self.table = ddb.create_table(**create_user_table())
         self.test_repo = TaskRepository(ddb)
         self.test_repo.do_db_init()
 
@@ -89,17 +98,14 @@ class Test_web_tasks(unittest.TestCase):
         tmp_event['requestContext']['http'].update(
             {'path': '/db/quary', 'method': 'POST'}
         )
-        tmp_event['body'] = b'aWQ9VGFza190ZXN0'
         resp = lambda_handler(tmp_event, Fake_context)
-        LOG.error(f'========\n resp: {resp}')
-        self.assertIn('Quary db', resp.get('body'))
+        self.assertIn('Quary db', resp.get('body', None))
 
     def test_db_putitem(self):
         tmp_event = copy.deepcopy(Fake_event)
         tmp_event['requestContext']['http'].update(
             {'path': '/db/quary', 'method': 'POST'}
         )
-        tmp_event['body'] = b'aWQ9VGFza190ZXN0'
         resp = lambda_handler(tmp_event, Fake_context)
         self.assertIn('Quary db', resp.get('body'))
 
@@ -116,7 +122,6 @@ class Test_web_tasks(unittest.TestCase):
         tmp_event['requestContext']['http'].update(
             {'path': '/auth/login', 'method': 'POST'}
         )
-        tmp_event['body'] = b'aWQ9VGFza190ZXN0'
         import os
         os.getenv = mock.MagicMock()
         os.getenv.return_value = 'asd'

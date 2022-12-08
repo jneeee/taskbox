@@ -5,15 +5,13 @@
 <h3>Todo</h3>
 <ul>
   <li>🚧 从 task 类里面读取对应任务的config: conf_taskname</li>
-  <li>优化 Task 查询性能 scan -> get_item</li>
   <li>增加单独 task 显示页, (触发执行，修改配置),emoji显示task状态🔴🟡🟢</li>
   <li>增加 /app/init 执行初始化(写入必要的db数据), 复位等</li>
   <li>储存/查看 task 历史</li>
   <li>db: 存储显示所有的 key</li>
   <li>输入管理密码后记录正确源IP, 通过记录源IP的方式“登录”</li>
-  <li>异步数据库操作, 非必要的写入操作等web返回完再处理</li>
+  <li>异步数据库操作, 非必要的写入操作等web返回完再处理。在 req.__del__ 中实现线程 db.batch_write 等</li>
   <li>压缩css, 丰富 alert 标签; api-gw 配置静态文件不转到 lambda</li>
-  <li>table name 等通过 SAM 写入环境变量获得</li>
   <li>移植 Task</li>
   <li>🔴网站健康监控(http)继承 task 类</li>
 </ul>
@@ -22,7 +20,7 @@
 
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
 <tr><td class="Item">2022-12-8</td>
-<td class="Item">登录功能</td></tr>
+<td class="Item">登录功能, web 回显操作结果消息。table name 通过 SAM 写入环境变量获得</td></tr>
 <tr><td class="Item">2022-12-5</td>
 <td class="Item">网页增删改查 dynamodb</td></tr>
 <tr><td class="Item">2022-11-27</td>

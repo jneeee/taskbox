@@ -1,8 +1,9 @@
+from os import getenv
 import time
 import logging
 
 import boto3
-from boto3.dynamodb.conditions import Attr, Key
+from boto3.dynamodb.conditions import Attr
 
 LOG = logging.getLogger(__name__)
 TASK_LIST_KEY = 'task_list'
@@ -44,10 +45,6 @@ class Tableclient():
         self.table.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 
-    def quary(self, **kwargs):
-        # return [{},]
-        return self.table.query(**kwargs).get('Items')
-
     def update(self, item):
         '''update item as dict.update
 
@@ -59,13 +56,11 @@ class Tableclient():
 
 
 def get_app_db():
-    tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
-    return Tableclient(tablename)
+    return Tableclient(getenv('DDB_TABLE'))
 
 
 class Task():
-    tablename = 'appname-ddbTable-1TUAC9NKUUB7F'
-    tb = Tableclient(tablename)
+    tb = Tableclient(getenv('DDB_TABLE'))
 
     def __init__(self):
         self.name = self.__class__.__name__
@@ -86,7 +81,7 @@ class Task():
         item = {'id': self.name}
         item['date'] = self.last_run_time
         item['result'] = self.result
-        item['data_type'] = 'task_latest_log'
+        item['data_type'] = 'latest_log'
 
         self.tb.put(item)
         LOG.info(f'Update task: {item}')
@@ -110,11 +105,13 @@ class Task():
 
         return [{},]
         '''
-        quary_kw = {
-            # 'FilterExpression': Attr('data_type').eq('task_latest_log'),
-            'KeyConditionExpression': Key('id').begins_with('Task_'),
-        }
-        return cls.tb.quary(**quary_kw)
+        try:
+            resp = cls.tb.table.scan(
+            FilterExpression=Attr('id').begins_with('Task_') & Attr('data_type').eq('latest_log')
+        )
+        except:
+            resp = [{},]
+        return resp
 
-    def registe_crontab(cron_str):
+    def registe_crontab(self, cron_str):
         pass
