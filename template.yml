@@ -43,6 +43,7 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref ddbTable
+          auth_passwd: 'authpass'
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ddbTable
