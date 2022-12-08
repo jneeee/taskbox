@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Login</h1>
+<p>Session will expire after one day.</p>
+<form action="/login" method="post">
+id: <input  name="passwd"> <input type="submit" value="Log in">
+</form>
+{% endblock %}

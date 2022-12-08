@@ -8,13 +8,16 @@ from src.webx import (
     route_task,
     route_db,
     route_static,
+    route_user,
 )
+from src.task import models
 
 ROUTE = {
     'task': route_task.get_task,
     'db': route_db.route,
     'cmd': route_index.cmdhandler,
     'static': route_static.render_static_html,
+    'auth': route_user.auth,
 }
 HTML_ENV = Environment(loader=PackageLoader('src.webx', 'templates'))
 
@@ -22,18 +25,21 @@ HTML_ENV = Environment(loader=PackageLoader('src.webx', 'templates'))
 class Request():
     def __init__(self, event) -> None:
         httpinfo = event.get('requestContext').get('http')
+        self.httpinfo = httpinfo
         self.method = httpinfo.get('method') # 'POST' ...
         self.path = httpinfo.get('path')
         self.useragent = httpinfo.get('userAgent')
         self.event = event
         self.body = self._get_body()
+        self.is_authed = self.check_is_authed()
 
     def make_resp(self, http_code=200, template_name=None, **content_kw):
         if 'curl' in self.useragent:
             return content_kw
         else:
             return Request._resp_html(http_code=http_code,
-                                      template_name=template_name, **content_kw)
+                                      template_name=template_name,
+                                      req=self, **content_kw)
 
     @property
     def path_list(self):
@@ -64,7 +70,6 @@ class Request():
         }
 
     def route(self):
-        # import pdb;pdb.set_trace()
         if not self.path_list:
             return route_index.wsgi_root(self)
         return ROUTE[self.path_list[0]](self)
@@ -72,3 +77,17 @@ class Request():
     def __str__(self) -> str:
         return f'Request: {self.method} {self.path}, body: {self.body}'
 
+    def check_is_authed(self):
+        # {"id": "cur_authed_srip", "value": set()}
+        app_context = models.get_app_db().get({'id': 'app_context'})
+        return self.httpinfo['sourceIp'] in app_context.get('cur_authed_srip')
+
+    def do_auth_login(self):
+        app_context = models.get_app_db().get({'id': 'app_context'})
+        app_context.get('cur_authed_srip').append(self.httpinfo['sourceIp'])
+        models.get_app_db().update(app_context)
+
+    def do_auth_logout(self):
+        app_context = models.get_app_db().get({'id': 'app_context'})
+        app_context.get('cur_authed_srip').remove(self.httpinfo['sourceIp'])
+        models.get_app_db().update(app_context)

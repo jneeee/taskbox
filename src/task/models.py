@@ -2,7 +2,7 @@ import time
 import logging
 
 import boto3
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Attr, Key
 
 LOG = logging.getLogger(__name__)
 TASK_LIST_KEY = 'task_list'
@@ -27,7 +27,7 @@ class Tableclient():
         try:
             resp = self.table.get_item(Key=item).get("Item")
         except Exception as e:
-            LOG.error(e)
+            LOG.exception(e)
         return resp
 
     def delete(self, item):
@@ -45,11 +45,18 @@ class Tableclient():
         self.table.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 
-    def quary_begins_with(self, pre):
+    def quary(self, **kwargs):
         # return [{},]
-        return self.table.query(
-            FilterExpression=Attr('id').begins_with(pre)
-        ).get('Items')
+        return self.table.query(**kwargs).get('Items')
+
+    def update(self, item):
+        '''update item as dict.update
+
+        return None
+        '''
+        old = self.table.get_item(Key=item).get("Item")
+        old.update(item)
+        self.table.put_item(Item=old)
 
 
 def get_app_db():
@@ -71,14 +78,16 @@ class Task():
         raise NotImplementedError
 
     def run(self):
+        # run task and save to db
         self.step()
         self.last_run_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
         self._save()
 
     def _save(self):
         item = {'id': self.name}
-        item['last_run_time'] = self.last_run_time
+        item['date'] = self.last_run_time
         item['result'] = self.result
+        item['data_type'] = 'task_latest_log'
 
         self.tb.put(item)
         LOG.info(f'Update task: {item}')
@@ -98,8 +107,15 @@ class Task():
 
     @classmethod
     def get_all_tasks(cls):
-        # return [{},]
-        return cls.tb.quary_begins_with('Task_')
+        '''Get all task list(latest)
+
+        return [{},]
+        '''
+        quary_kw = {
+            'FilterExpression': Attr('data_type').eq('task_latest_log'),
+            'KeyConditionExpression': Key('id').begins_with('Task_'),
+        }
+        return cls.tb.quary(**quary_kw)
 
     def registe_crontab(cron_str):
         pass

@@ -34,7 +34,12 @@
   <tbody><tr class="NewsHeader"><td class="NewsTitle" colspan="2">Release note</td></tr>
   <tr class="News">
     <td class="NewsText" colspan="2">
-      <a href="/releasenote.html">Todo</a><br>
+      {% if req.is_authed %}
+      <a href="/auth/logout">Logout</a><br>
+      {% else %}
+      <a href="/auth/login">Login</a><br>
+      {% endif %}
+      <dev> </dev><br>
     </td>
   </tr>
 </tbody></table>

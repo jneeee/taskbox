@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 import copy
 import logging
 
@@ -7,7 +8,6 @@ from moto import mock_dynamodb
 
 from src.task.models import Task
 from src.index import lambda_handler
-from src.webx import route_task
 
 LOG = logging.getLogger()
 
@@ -38,8 +38,10 @@ class TaskRepository:
             ddb_resource = boto3.resource('dynamodb')
         self.table = ddb_resource.Table(self.table_name)
 
-    def create_task(self, taskinfo):
-        return self.table.put_item(Item={'id': f'Task_{taskinfo}', 'taskinfo': taskinfo})
+    def do_db_init(self):
+        self.table.put_item(Item={'id': 'Task_foo', 'taskinfo': 'foo'})
+        item = {'id': 'app_context', 'cur_authed_srip': []}
+        self.table.put_item(Item=item)
 
 
 Fake_event = {
@@ -63,7 +65,7 @@ class Test_web_tasks(unittest.TestCase):
         ddb = boto3.resource("dynamodb")
         self.table = ddb.create_table(**create_user_table(Task.tablename))
         self.test_repo = TaskRepository(ddb)
-        self.test_repo.create_task('foo')
+        self.test_repo.do_db_init()
 
     def tearDown(self):
         self.table.delete()
@@ -99,5 +101,24 @@ class Test_web_tasks(unittest.TestCase):
         )
         tmp_event['body'] = b'aWQ9VGFza190ZXN0'
         resp = lambda_handler(tmp_event, Fake_context)
-        LOG.info(f'========\n resp: {resp}')
         self.assertIn('Quary db', resp.get('body'))
+
+    def test_auth_login_get(self):
+        tmp_event = copy.deepcopy(Fake_event)
+        tmp_event['requestContext']['http'].update(
+            {'path': '/auth/login', 'method': 'GET'}
+        )
+        resp = lambda_handler(tmp_event, Fake_context)
+        self.assertIn('Session will expire after one day.', resp.get('body'))
+
+    def test_auth_login_post(self):
+        tmp_event = copy.deepcopy(Fake_event)
+        tmp_event['requestContext']['http'].update(
+            {'path': '/auth/login', 'method': 'POST'}
+        )
+        tmp_event['body'] = b'aWQ9VGFza190ZXN0'
+        import os
+        os.getenv = mock.MagicMock()
+        os.getenv.return_value = 'asd'
+        resp = lambda_handler(tmp_event, Fake_context)
+        self.assertIn('Login fail!', resp.get('body'))
