@@ -33,6 +33,7 @@ class Request():
         self.event = event
         self.body = self._get_body()
         self.is_authed = self.check_is_authed()
+        # req.msg: {'type':success,info,warning,danger, 'info': any}
 
     def make_resp(self, http_code=200, template_name=None, **content_kw):
         if 'curl' in self.useragent:

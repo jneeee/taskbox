@@ -16,27 +16,30 @@ def route(req):
         key = req.body.split('=')[1]
         quary_res = models.get_app_db().get({'id': key})
         if not quary_res:
-            warn_msg = f'No such key: {key}!'
-            return req.make_resp(warn_msg=warn_msg, template_name='dynamodb.html')
+            req.msg = {'type': 'warning', 'info': f'No such key: {key}!'}
+            return req.make_resp(template_name='dynamodb.html')
         return req.make_resp(quary_res=[quary_res,], template_name='dynamodb.html')
     elif path[1] == 'putitem':
         # req.body = 'item={'id':xx}'
         try:
             item = json.loads(req.body.split('=')[1])
-            resp = models.get_app_db().put(item)
-            LOG.info(f'{req}, put item: {item}')
-        except json.decoder.JSONDecodeError:
-            resp = 'Json decode error!'
-        return req.make_resp(warn_msg=resp, template_name='dynamodb.html')
+            models.get_app_db().put(item)
+            msg = f'Put item: {item}'
+            req.msg = {'type': 'success', 'info': msg}
+        except Exception as e:
+            LOG.exception(e)
+            req.msg = {'type': 'danger', 'info': e}
+        return req.make_resp(template_name='dynamodb.html')
     elif path[1] == 'delete':
         try:
             LOG.info(f'Delete req.body: {req.body}')
             idstr = req.body.split('=')[1]
-            exe_res = models.get_app_db().delete({'id': idstr})
+            models.get_app_db().delete({'id': idstr})
+            req.msg = {'type': 'success', 'info': 'Delete success'}
         except Exception as e:
             LOG.exception(e)
-            exe_res = str(e)
-        return req.make_resp(warn_msg=exe_res, template_name='dynamodb.html')
+            req.msg = {'type': 'danger', 'info': e}
+        return req.make_resp(template_name='dynamodb.html')
 
 
 def db_quary(event):

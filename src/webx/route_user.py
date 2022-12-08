@@ -12,7 +12,7 @@ def auth(req):
         return eval(path[1])(req)
     except Exception as e:
         LOG.exception(e)
-        req.msg = str(e)
+        req.msg = {'type':'danger', 'info':e}
         return req.make_resp(template_name='login.html')
 
 
@@ -20,14 +20,14 @@ def login(req):
     if req.method == 'GET':
         return req.make_resp(template_name='login.html')
     elif req.method == 'POST':
-        req_passwd = json.loads(req.body.split('=')[1])
+        req_passwd = req.body.split('=')[1]
 
         if os.getenv('auth_passwd') == req_passwd:
             req.do_auth()
-            msg = 'Login success!'
+            req.msg = {'type':'success', 'info':'Login success!'}
         else:
-            msg = 'Login fail!'
-        return req.make_resp(msg=msg, template_name='login.html')
+            req.msg = {'type':'danger', 'info':'Login failed!'}
+        return req.make_resp(template_name='login.html')
 
 
 def logout(req):

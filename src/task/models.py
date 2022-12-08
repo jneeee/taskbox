@@ -35,7 +35,6 @@ class Tableclient():
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
         self.table.delete_item(Key=item)
-        return f'Delete {item} success!'
 
     def put(self, item):
         # item: dict{'id': id, 'value': value}
@@ -112,7 +111,7 @@ class Task():
         return [{},]
         '''
         quary_kw = {
-            'FilterExpression': Attr('data_type').eq('task_latest_log'),
+            # 'FilterExpression': Attr('data_type').eq('task_latest_log'),
             'KeyConditionExpression': Key('id').begins_with('Task_'),
         }
         return cls.tb.quary(**quary_kw)

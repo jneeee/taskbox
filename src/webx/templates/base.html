@@ -3,7 +3,11 @@
 <link href="https://www.7-zip.org/style.css" rel="stylesheet" type="text/css">
 <title>Task board</title>
 <style type="text/css">
-.alert-warning {color: #856404;background-color: #fff3cd;border-color: #ffeeba;}
+.alert {position: relative;padding: .75rem 1.25rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: .25rem}
+.alert-success {color: #155724;background-color: #d4edda;border-color: #c3e6cb}
+.alert-warning {color: #856404;background-color: #fff3cd;border-color: #ffeeba}
+.alert-info {color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb}
+.alert-danger {color: #721c24;background-color: #f8d7da;border-color: #f5c6cb}
 </style>
 </head>
 <body>
@@ -25,6 +29,11 @@
 <table cellspacing="4" cellpadding="4"><tbody><tr>
 
 <td>
+{% if req.msg %}
+<div class="alert alert-{{ req.msg.type }}">
+📌 {{ req.msg.info }}
+</div>
+{% endif %}
 {% block content %}{% endblock %}
 </td>
 
@@ -44,11 +53,10 @@
   </tr>
 </tbody></table>
 </td>
-
 </tr></tbody></table>
 
 <hr>
-<p><small>Copyright (C) 2022 <a href="https://jneeee.netlify.com">Jneeee</a>.</small></p>
+<p><small>Copyright (C) 2022 <a href="https://blog.hiii.top">blog.hiii.top</a>.</small></p>
 </td></tr></tbody></table>
 
 </body></html>

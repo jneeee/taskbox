@@ -71,7 +71,7 @@ class Test_web_tasks(unittest.TestCase):
         self.table.delete()
 
     def test_get_tasks(self):
-        print(lambda_handler(Fake_event, Fake_context))
+        lambda_handler(Fake_event, Fake_context)
 
     def test_quary_single_task(self):
         tmp_event = copy.deepcopy(Fake_event)
@@ -121,4 +121,4 @@ class Test_web_tasks(unittest.TestCase):
         os.getenv = mock.MagicMock()
         os.getenv.return_value = 'asd'
         resp = lambda_handler(tmp_event, Fake_context)
-        self.assertIn('Login fail!', resp.get('body'))
+        self.assertIn('Login failed', resp.get('body'))
