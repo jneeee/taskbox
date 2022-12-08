@@ -12,6 +12,7 @@ from src.webx import (
 )
 from src.task import models
 
+
 ROUTE = {
     'task': route_task.get_task,
     'db': route_db.route,
@@ -80,6 +81,10 @@ class Request():
     def check_is_authed(self):
         # {"id": "cur_authed_srip", "value": set()}
         app_context = models.get_app_db().get({'id': 'app_context'})
+        if not app_context:
+            # Got Typeerror if cur_authed_srip = {None, } here, So just asign a list
+            app_context = {'id': 'app_context', 'cur_authed_srip': []}
+            return False
         return self.httpinfo['sourceIp'] in app_context.get('cur_authed_srip')
 
     def do_auth_login(self):
