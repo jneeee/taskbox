@@ -9,8 +9,8 @@
   <li>...</li>
 </ul>
 
-<form action="/db/quary" method="post">
-id: <input  name="id"> <input type="submit" value="Quary">
+<form action="/db" method="post">
+id: <input  name="quary_id"> <input type="submit" value="Quary">
 </form>
 
 {% if quary_res is defined %}
@@ -34,13 +34,13 @@ id: <input  name="id"> <input type="submit" value="Quary">
 
 <h2>2. Put item to dynamodb</h2>
 <p>item: {"id":xxx, ...}</p>
-<form action="/db/putitem" method="post">
-item: <input name="item"> <input type="submit" value="Put">
+<form action="/db" method="post">
+item: <input name="put_item"> <input type="submit" value="Putitem">
 </form>
 
 <h2>3. Delete item</h2>
-<form action="/db/delete" method="post">
-id= <input name="id"> <input type="submit" value="Delete">
+<form action="/db" method="post">
+id= <input name="delete_id"> <input type="submit" value="Delete">
 </form>
 
 {% endblock %}

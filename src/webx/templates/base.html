@@ -19,44 +19,29 @@
 <tr><td><a href="/task" class="MenuLink">Task list</a></td></tr>
 <tr><td><a href="/db" class="MenuLink">Quary db</a></td></tr>
 <tr><td><a href="/static/release_note.html" class="MenuLink">Release note</a></td></tr>
-</tbody></table>
-<table cellpadding="2" cellspacing="0" border="0" width="100%">
-<tbody><tr><td><hr></td></tr>
-</tbody></table>
+<br>
+<tr><td>
+{% if req.is_authed %}
+<a href="/auth/logout">Logout</a><br>
+{% else %}
+<a href="/auth/login">Login</a><br>
+{% endif %}
+</td></tr></tbody></table>
 
 </td>
 <td valign="top">
 <table cellspacing="4" cellpadding="4"><tbody><tr>
-
 <td>
 {% if req.msg %}
-<div class="alert alert-{{ req.msg.type }}">
-📌 {{ req.msg.info }}
+<div class="alert alert-{{ req.msg[0] }}">
+📌 {{ req.msg[1] }}
 </div>
 {% endif %}
 {% block content %}{% endblock %}
 </td>
 
-<td valign="top" align="right" width="210">
-<br>
-<table class="News" cellpadding="3" cellspacing="1" border="0">
-  <tbody><tr class="NewsHeader"><td class="NewsTitle" colspan="2">Release note</td></tr>
-  <tr class="News">
-    <td class="NewsText" colspan="2">
-      {% if req.is_authed %}
-      <a href="/auth/logout">Logout</a><br>
-      {% else %}
-      <a href="/auth/login">Login</a><br>
-      {% endif %}
-      <dev> </dev><br>
-    </td>
-  </tr>
-</tbody></table>
-</td>
 </tr></tbody></table>
 
 <hr>
 <p><small>Copyright (C) 2022 <a href="https://blog.hiii.top">blog.hiii.top</a>.</small></p>
-</td></tr></tbody></table>
-
-</body></html>
+</td></tr></tbody></table></body></html>

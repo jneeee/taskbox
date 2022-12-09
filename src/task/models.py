@@ -104,6 +104,7 @@ class Task():
         '''Get all task list(latest)
 
         return [{},]
+        {"id":"Task_test", "data_type":"latest_log", "result":"OK!", "date":"2022-12-8"}
         '''
         try:
             resp = cls.tb.table.scan(

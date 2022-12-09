@@ -96,7 +96,7 @@ class Test_web_tasks(unittest.TestCase):
     def test_db_query(self):
         tmp_event = copy.deepcopy(Fake_event)
         tmp_event['requestContext']['http'].update(
-            {'path': '/db/quary', 'method': 'POST'}
+            {'path': '/db', 'method': 'POST'}
         )
         resp = lambda_handler(tmp_event, Fake_context)
         self.assertIn('Quary db', resp.get('body', None))
@@ -104,7 +104,7 @@ class Test_web_tasks(unittest.TestCase):
     def test_db_putitem(self):
         tmp_event = copy.deepcopy(Fake_event)
         tmp_event['requestContext']['http'].update(
-            {'path': '/db/quary', 'method': 'POST'}
+            {'path': '/db', 'method': 'POST'}
         )
         resp = lambda_handler(tmp_event, Fake_context)
         self.assertIn('Quary db', resp.get('body'))

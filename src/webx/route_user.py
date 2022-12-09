@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 
@@ -12,7 +11,7 @@ def auth(req):
         return eval(path[1])(req)
     except Exception as e:
         LOG.exception(e)
-        req.msg = {'type':'danger', 'info':e}
+        req.msg = ('danger', e)
         return req.make_resp(template_name='login.html')
 
 
@@ -23,13 +22,14 @@ def login(req):
         req_passwd = req.body.split('=')[1]
 
         if os.getenv('auth_passwd') == req_passwd:
-            req.do_auth()
-            req.msg = {'type':'success', 'info':'Login success!'}
+            req.do_auth_login()
+            req.msg = ('success', 'Login success!')
         else:
-            req.msg = {'type':'danger', 'info':'Login failed!'}
+            req.msg = ('danger', 'Login failed!')
         return req.make_resp(template_name='login.html')
 
 
 def logout(req):
     req.do_auth_logout()
-    return req.make_resp(msg='Logout success!', template_name='login.html')
+    req.msg = ('success', 'Logout success!')
+    return req.make_resp(template_name='login.html')
