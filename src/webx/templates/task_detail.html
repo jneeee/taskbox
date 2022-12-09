@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Task detail</h1>
+<table cellspacing="1" cellpadding="6" border="0"><tbody>
+<tr>
+{% for key in task.keys() %}
+<th class="Title" align="center" width="60">{{ key }}</th>
+{% endfor %}
+</tr>
+<tr>
+{% for _, val in task.items() %}
+<td class="Item" align="center">{{ val }}</td>
+{% endfor %}
+</tr>
+</tbody></table>
+{% endblock %}

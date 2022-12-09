@@ -14,4 +14,5 @@ def lambda_handler(event, context):
         return req.route()
     except Exception as e:
         LOG.exception(e)
-        return str(e)
+        req.msg = ('danger', e)
+        return req.make_resp(template_name='release_note.html')

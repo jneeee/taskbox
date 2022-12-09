@@ -8,26 +8,23 @@
 .alert-warning {color: #856404;background-color: #fff3cd;border-color: #ffeeba}
 .alert-info {color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb}
 .alert-danger {color: #721c24;background-color: #f8d7da;border-color: #f5c6cb}
-</style>
-</head>
+</style></head>
 <body>
 <table cellspacing="10" cellpadding="10" border="0" width="100%"><tbody><tr>
 <td class="MenuColumn" valign="top">
-
 <table cellpadding="2" cellspacing="0" border="0">
-<tbody><tr><td><span class="MenuCurrent">Home</span></td></tr>
+<tbody><tr>📝<b>Task Dashboard</b></tr><hr><tr><td><span class="MenuCurrent">Home</span></td></tr>
 <tr><td><a href="/task" class="MenuLink">Task list</a></td></tr>
 <tr><td><a href="/db" class="MenuLink">Quary db</a></td></tr>
 <tr><td><a href="/static/release_note.html" class="MenuLink">Release note</a></td></tr>
-<br>
+<hr>
 <tr><td>
 {% if req.is_authed %}
-<a href="/auth/logout">Logout</a><br>
+<a href="/auth/logout">Logout</a>
 {% else %}
-<a href="/auth/login">Login</a><br>
+<a href="/auth/login">Login</a>
 {% endif %}
 </td></tr></tbody></table>
-
 </td>
 <td valign="top">
 <table cellspacing="4" cellpadding="4"><tbody><tr>
@@ -38,9 +35,7 @@
 </div>
 {% endif %}
 {% block content %}{% endblock %}
-</td>
-
-</tr></tbody></table>
+</td></tr></tbody></table>
 
 <hr>
 <p><small>Copyright (C) 2022 <a href="https://blog.hiii.top">blog.hiii.top</a>.</small></p>

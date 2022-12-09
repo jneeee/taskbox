@@ -1,11 +1,14 @@
 import base64
-import os
 import re
 import time
+import logging
 
 import requests
 import rsa
 
+from src.task.models import Task
+
+LOG = logging.getLogger()
 
 class CheckIn(object):
     client = requests.Session()
@@ -39,25 +42,25 @@ class CheckIn(object):
         response = self.client.get(self.sign_url % rand, headers=headers)
         net_disk_bonus = response.json()["netdiskBonus"]
         if response.json()["isSign"] == "false":
-            log.info(f"未签到，签到获得 {net_disk_bonus}M 空间")
+            LOG.info(f"未签到，签到获得 {net_disk_bonus}M 空间")
         else:
-            log.info(f"已经签到过了，签到获得 {net_disk_bonus}M 空间")
+            LOG.info(f"已经签到过了，签到获得 {net_disk_bonus}M 空间")
         self.res['checkin_space'] = int(net_disk_bonus)
 
         self.res['lottery_space'] = 0
         response = self.client.get(url, headers=headers)
         if "errorCode" in response.text:
-            log.info(response.text)
+            LOG.info(response.text)
         else:
             prize_name = (response.json() or {}).get("prizeName")
-            log.info(f"抽奖获得 {prize_name}")
+            LOG.info(f"抽奖获得 {prize_name}")
             self.res['lottery_space'] += 50
         response = self.client.get(url2, headers=headers)
         if "errorCode" in response.text:
-            log.info(response.text)
+            LOG.info(response.text)
         else:
             prize_name = (response.json() or {}).get("prizeName")
-            log.info(f"抽奖获得 {prize_name}")
+            LOG.info(f"抽奖获得 {prize_name}")
             self.res['lottery_space'] += 50
         return self.res
 
@@ -65,7 +68,7 @@ class CheckIn(object):
     def rsa_encode(rsa_key, string):
         rsa_key = f"-----BEGIN PUBLIC KEY-----\n{rsa_key}\n-----END PUBLIC KEY-----"
         pubkey = rsa.PublicKey.load_pkcs1_openssl_pem(rsa_key.encode())
-        result = b64_to_hex((base64.b64encode(rsa.encrypt(f"{string}".encode(), pubkey))).decode())
+        result = _b64_to_hex((base64.b64encode(rsa.encrypt(f"{string}".encode(), pubkey))).decode())
         return result
 
     def login(self):
@@ -92,21 +95,17 @@ class CheckIn(object):
             "paramId": param_id,
         }
         r = self.client.post(self.submit_login_url, data=data, headers=headers, timeout=5)
-        log.info(r.json()["msg"])
+        LOG.info(r.json()["msg"])
         if '图形验证码错误' in r.json()["msg"]:
             raise Exception("账户风控中，请手动登录后重试")
         redirect_url = r.json()["toUrl"]
         self.client.get(redirect_url)
 
 
-def _chr(a):
-    return "0123456789abcdefghijklmnopqrstuvwxyz"[a]
-
-
-b64map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-
-
-def b64_to_hex(a):
+def _b64_to_hex(a):
+    def _chr(a):
+        return "0123456789abcdefghijklmnopqrstuvwxyz"[a]
+    b64map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     d = ""
     e = 0
     c = 0
@@ -134,25 +133,24 @@ def b64_to_hex(a):
         d += _chr(c << 2)
     return d
 
-def runner():
-    if not all([os.environ.get('phone'), os.environ.get('pswd189')]):
-        log.error('phone or passwd is None, do nothing!')
-        return
-    res = CheckIn(os.environ.get('phone'), os.environ.get('pswd189')).check_in()
-    process189ret(res)
-    return res
 
-def process189ret(ret):
-    # 'checkin189' : {'time':x, 'checkin_space':x, 'lottery_space':x, 'total':x}
-    if not ret:
-        log.error(f'process189ret get empty ret')
-        return
-    before = dbclient.select('checkin189')
-    if not before:
-        ret['total'] = sum([v for k,v in ret.items() if k != 'time'])
-        cur = ret
-    else:
-        cur = before
-        cur['total'] += sum([v for k,v in ret.items() if k != 'time'])
-        cur.update(ret)
-    log.info(f'store in db: "checkin189": {cur}')
+class cloud189(Task):
+
+    def __init__(self):
+        super().__init__()
+
+    def step(self):
+
+        # 'checkin189' : {'time':x, 'checkin_space':x, 'lottery_space':x, 'total':x}
+        if not ret:
+            LOG.error(f'process189ret get empty ret')
+            return
+        before = dbclient.select('checkin189')
+        if not before:
+            ret['total'] = sum([v for k,v in ret.items() if k != 'time'])
+            cur = ret
+        else:
+            cur = before
+            cur['total'] += sum([v for k,v in ret.items() if k != 'time'])
+            cur.update(ret)
+        LOG.info(f'store in db: "checkin189": {cur}')

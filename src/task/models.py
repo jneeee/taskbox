@@ -18,7 +18,7 @@ class Tableclient():
         '''Get item by key
 
         item: dict{'id': key}
-        return dict({'id':xx, 'result':xx ...})
+        return: dict({'id':xx, 'result':xx ...})
         '''
 
         if not isinstance(item, dict):
@@ -64,6 +64,7 @@ class Task():
 
     def __init__(self):
         self.name = self.__class__.__name__
+        self.CONF = Task.tb.get({'id': f'conf_{self.name}'})
         self.result = None
 
     def step(self):
@@ -109,7 +110,7 @@ class Task():
         try:
             resp = cls.tb.table.scan(
             FilterExpression=Attr('id').begins_with('Task_') & Attr('data_type').eq('latest_log')
-        )
+        ).get('Items')
         except:
             resp = [{},]
         return resp

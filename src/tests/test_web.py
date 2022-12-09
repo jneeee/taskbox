@@ -80,7 +80,9 @@ class Test_web_tasks(unittest.TestCase):
         self.table.delete()
 
     def test_get_tasks(self):
-        lambda_handler(Fake_event, Fake_context)
+        resp = lambda_handler(Fake_event, Fake_context)
+        print(resp.get('body'))
+        self.assertIn('Task', resp.get('body'))
 
     def test_quary_single_task(self):
         tmp_event = copy.deepcopy(Fake_event)
