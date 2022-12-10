@@ -6,8 +6,8 @@ import copy
 import boto3
 from moto import mock_dynamodb
 
-from src.index import lambda_handler
-from src.utils.tools import LOG
+from taskdb.index import lambda_handler
+from taskdb.utils.tools import LOG
 
 os.environ['DDB_TABLE'] = 'table_name'
 

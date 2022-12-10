@@ -4,7 +4,7 @@ import time
 import boto3
 from boto3.dynamodb.conditions import Attr
 
-from src.utils.tools import LOG
+from taskdb.utils.tools import LOG
 
 TASK_LIST_KEY = 'task_list'
 

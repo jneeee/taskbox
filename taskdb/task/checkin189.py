@@ -5,8 +5,8 @@ import time
 import requests
 import rsa
 
-from src.task.models import Task
-from src.utils.tools import LOG
+from taskdb.task.models import Task
+from taskdb.utils.tools import LOG
 
 
 class CheckIn(object):

@@ -1,8 +1,7 @@
 import traceback
-import logging
 
-from src.webx import object
-from src.utils.tools import LOG
+from taskdb.webx import object
+from taskdb.utils.tools import LOG
 
 
 def lambda_handler(event, context):

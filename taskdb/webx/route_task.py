@@ -1,5 +1,5 @@
-from src.task.models import Task
-from src.utils.tools import LOG
+from taskdb.task.models import Task
+from taskdb.utils.tools import LOG
 
 
 def get_single_task(task_id):

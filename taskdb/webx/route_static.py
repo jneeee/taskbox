@@ -1,4 +1,4 @@
-from src.utils.tools import LOG
+from taskdb.utils.tools import LOG
 
 
 def render_static_html(req):

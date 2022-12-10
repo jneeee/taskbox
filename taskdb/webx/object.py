@@ -4,14 +4,14 @@ from functools import lru_cache
 
 from jinja2 import PackageLoader, Environment
 
-from src.webx import (
+from taskdb.webx import (
+    route_auth,
     route_index,
     route_task,
     route_db,
     route_static,
-    route_user,
 )
-from src.task import models
+from taskdb.task import models
 
 
 ROUTE = {
@@ -19,7 +19,7 @@ ROUTE = {
     'db': route_db.route,
     'cmd': route_index.cmdhandler,
     'static': route_static.render_static_html,
-    'auth': route_user.auth,
+    'auth': route_auth.auth,
 }
 HTML_ENV = Environment(loader=PackageLoader('src.webx', 'templates'))
 

@@ -1,6 +1,6 @@
 import os
 
-from src.utils.tools import LOG
+from taskdb.utils.tools import LOG
 
 
 def auth(req):

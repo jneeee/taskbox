@@ -1,7 +1,7 @@
 import json
 
-from src.task import models
-from src.utils.tools import LOG
+from taskdb.task import models
+from taskdb.utils.tools import LOG
 
 
 def route(req):
