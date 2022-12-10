@@ -1,11 +1,11 @@
 from os import getenv
 import time
-import logging
 
 import boto3
 from boto3.dynamodb.conditions import Attr
 
-LOG = logging.getLogger(__name__)
+from src.utils.tools import LOG
+
 TASK_LIST_KEY = 'task_list'
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
@@ -48,9 +48,10 @@ class Tableclient():
     def update(self, item):
         '''update item as dict.update
 
-        return None
+        item: {id:, val:,}
+        return: None
         '''
-        old = self.table.get_item(Key=item).get("Item")
+        old = self.get({'id':item['id']})
         old.update(item)
         self.table.put_item(Item=old)
 
@@ -98,7 +99,13 @@ class Task():
 
     @classmethod
     def get_by_name(cls, task_id):
-        return cls.tb.get({'id': task_id})
+        '''Get task by name
+
+        task_id: str
+        return: dict()
+        '''
+        res = cls.tb.get({'id': task_id})
+        return res or {}
 
     @classmethod
     def get_all_tasks(cls):

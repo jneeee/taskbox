@@ -1,17 +1,17 @@
 import json
-import logging
 
 from src.task import models
-
-LOG = logging.getLogger(__name__)
-LOG.setLevel(logging.INFO)
+from src.utils.tools import LOG
 
 
 def route(req):
-    path = req.path_list
-    if len(path) == 1:
+    if req.method == 'GET':
         return req.make_resp(template_name='dynamodb.html')
     elif req.method == 'POST':
+        if not req.is_authed:
+            req.msg = ('warning', '该操作需要登录!')
+            return req.make_resp(template_name='dynamodb.html')
+
         # req.body = 'id=Task_xxx'
         key, val = req.body.split('=')
         if key == 'quary_id':
@@ -20,6 +20,7 @@ def route(req):
                 req.msg = ('warning', f'No such key: {val}!')
                 return req.make_resp(template_name='dynamodb.html')
             return req.make_resp(quary_res=[quary_res,], template_name='dynamodb.html')
+
         elif key == 'put_item':
             # req.body = 'item={'id':xx}'
             try:
@@ -30,16 +31,15 @@ def route(req):
                 LOG.exception(e)
                 req.msg = ('danger', e)
             return req.make_resp(template_name='dynamodb.html')
-    elif req.method == 'delete':
-        try:
-            LOG.info(f'Delete req.body: {req.body}')
-            idstr = req.body.split('=')[1]
-            models.get_app_db().delete({'id': idstr})
-            req.msg = ('success', 'Delete success')
-        except Exception as e:
-            LOG.exception(e)
-            req.msg = ('danger', e)
-        return req.make_resp(template_name='dynamodb.html')
+
+        elif key == 'delete_id':
+            try:
+                models.get_app_db().delete({'id': val})
+                req.msg = ('success', f'Delete id: {val} success')
+            except Exception as e:
+                LOG.exception(e)
+                req.msg = ('danger', e)
+            return req.make_resp(template_name='dynamodb.html')
 
 
 def db_quary(event):

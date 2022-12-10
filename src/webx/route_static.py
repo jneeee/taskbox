@@ -1,6 +1,4 @@
-import logging
-
-LOG = logging.getLogger(__name__)
+from src.utils.tools import LOG
 
 
 def render_static_html(req):

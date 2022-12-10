@@ -1,14 +1,13 @@
 import base64
 import re
 import time
-import logging
 
 import requests
 import rsa
 
 from src.task.models import Task
+from src.utils.tools import LOG
 
-LOG = logging.getLogger()
 
 class CheckIn(object):
     client = requests.Session()

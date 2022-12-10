@@ -2,14 +2,13 @@ import os
 import unittest
 from unittest import mock
 import copy
-import logging
 
 import boto3
 from moto import mock_dynamodb
 
 from src.index import lambda_handler
+from src.utils.tools import LOG
 
-LOG = logging.getLogger()
 os.environ['DDB_TABLE'] = 'table_name'
 
 

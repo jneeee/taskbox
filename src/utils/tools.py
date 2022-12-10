@@ -1,6 +1,9 @@
 import subprocess
-from jinja2 import PackageLoader, Environment
+import logging
 
+
+LOG = logging.getLogger('taskdb')
+LOG.setLevel(logging.INFO)
 
 def run_cmd(cmd_str):
     res = b''

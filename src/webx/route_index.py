@@ -1,11 +1,8 @@
-import logging
-
 from src.utils.tools import (
+    LOG,
     run_cmd,
     get_http_header,
 )
-
-LOG = logging.getLogger(__name__)
 
 
 def wsgi_root(*args):

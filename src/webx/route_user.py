@@ -1,7 +1,6 @@
-import logging
 import os
 
-LOG = logging.getLogger()
+from src.utils.tools import LOG
 
 
 def auth(req):

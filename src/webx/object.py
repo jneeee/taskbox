@@ -32,6 +32,7 @@ class Request():
         self.useragent = httpinfo.get('userAgent')
         self.event = event
         self.body = self._get_body()
+        self.path_list = self._get_path_list()
         self.is_authed = self.check_is_authed()
         # req.msg: {'type':success,info,warning,danger, 'info': any}
 
@@ -43,8 +44,7 @@ class Request():
                                       template_name=template_name,
                                       req=self, **content_kw)
 
-    @property
-    def path_list(self):
+    def _get_path_list(self):
         # from event get http info
         # path = ['path', 'to', 'smt']
         try:
