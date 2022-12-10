@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-
+{% block menu %}
+<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><span class="MenuCurrent">数据库</span></td></tr>
+{% endblock %}
 {% block content %}
-
 <h3>Todo</h3>
 <ul>
   <li>🚧 从 task 类里面读取对应任务的config: conf_taskname</li>

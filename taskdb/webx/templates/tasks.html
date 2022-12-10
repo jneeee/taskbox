@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-
+{% block menu %}
+<tr><td><span class="MenuCurrent">首页</span></td></tr>
+<tr><td><a href="/db">数据库</a></td></tr>
+{% endblock %}
 {% block content %}
-<h1>Tasks</h1>
-<p>task:  dict({'id':xx, 'result': xx, 'last_run_time': xx})</p>
-<p><b>Task list</b>:</p>
+<p><b>任务列表</b>:</p>
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
 <tr>
   {% for key in tasks_list[0].keys() %}

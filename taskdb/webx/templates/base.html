@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="https://www.7-zip.org/style.css" rel="stylesheet" type="text/css">
-<title>Task board</title>
+<title>Task Dashboard</title>
 <style type="text/css">
 .alert {position: relative;padding: .75rem 1.25rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: .25rem}
 .alert-success {color: #155724;background-color: #d4edda;border-color: #c3e6cb}
@@ -11,16 +11,14 @@
 </style></head><body>
 <table cellspacing="10" cellpadding="10" border="0" width="100%"><tbody><tr>
 <td class="MenuColumn" valign="top">
+<div class="MenuCurrent">📝Task Dashboard</div><hr>
 <table cellpadding="2" cellspacing="0" border="0"><tbody>
-<tr>📝<b>Task Dashboard</b></tr>
-<tr><td><a href="/" class="MenuLink">Home</a></td></tr>
-<tr><td><a href="/db" class="MenuLink">Db</a></td></tr>
-<tr><td><a href="/static/release_note.html" class="MenuLink">Release note</a></td></tr>
+{% block menu %}{% endblock %}
 </tbody></table><hr>
 {% if req.is_authed %}
-<a href="/auth/logout" class="MenuLink">Log out</a>
+<a href="/auth/logout" class="MenuLink">退出登录</a>
 {% else %}
-<a href="/auth/login" class="MenuLink">Log in</a>
+<a href="/auth/login" class="MenuLink">登录</a>
 {% endif %}
 </td>
 <td valign="top">

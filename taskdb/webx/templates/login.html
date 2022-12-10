@@ -1,8 +1,11 @@
 {% extends "base.html" %}
-
+{% block menu %}
+<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
+{% endblock %}
 {% block content %}
-<h1>Login</h1>
-<p>Session will expire after one day.</p>
+<h1>登录</h1>
+<p>Todo: 会话会在一天后过期。多次错误IP会被加黑名单。</p>
 <form action="/auth/login" method="post">
 Password: <input name="passwd"> <input type="submit" value="Log in">
 </form>

@@ -1,7 +1,10 @@
 {% extends "base.html" %}
-
+{% block menu %}
+<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
+{% endblock %}
 {% block content %}
-<h1>Task detail</h1>
+<h1>任务详情</h1>
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
 <tr>
 {% for key in task.keys() %}
@@ -12,6 +15,5 @@
 {% for _, val in task.items() %}
 <td class="Item" align="center">{{ val }}</td>
 {% endfor %}
-</tr>
-</tbody></table>
+</tr></tbody></table>
 {% endblock %}

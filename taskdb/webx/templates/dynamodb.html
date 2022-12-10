@@ -1,17 +1,18 @@
 {% extends "base.html" %}
-
+{% block menu %}
+<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><span class="MenuCurrent">数据库</span></td></tr>
+{% endblock %}
 {% block content %}
 <h1>Dynamodb</h1>
-<div class="alert alert-info">本页的 api 属于底层接口，用于调试，需要登录。非必要别用。</div>
-<h2>1. Quary dynamodb:</h2>
+<div class="alert alert-info">本页的 api 属于底层接口，用于调试，<b>需要登录</b>。非必要别用。</div>
+<h4>1. 查询</h4>
 <p>任务以 Task_ 开头。</p>
 <form action="/db" method="post">
-id: <input  name="quary_id"> <input type="submit" value="Quary">
+id: <input  name="quary_id"> <input type="submit" value="查询">
 </form>
-
 {% if quary_res is defined %}
-<p><b>Quary result</b>:</p>
-<!-- quary_res [{id=xx,},] -->
+<p><b>查询结果</b>:</p>
   <table cellspacing="1" cellpadding="6" border="0"><tbody>
   <tr>
     {% for key in quary_res[0].keys() %}
@@ -27,16 +28,13 @@ id: <input  name="quary_id"> <input type="submit" value="Quary">
   {% endfor %}
   </tbody></table>
 {% endif %}
-
-<h2>2. Put item to dynamodb</h2>
-<p>item: {"id": "xxx", "val":[], ...}</p>
+<h2>2. 添加数据</h2>
+<p>item 数据格式: {"id": "xxx", "val":[], ...}</p>
 <form action="/db" method="post">
-item: <input name="put_item"> <input type="submit" value="Putitem">
+item: <input name="put_item"> <input type="submit" value="添加">
 </form>
-
-<h2>3. Delete item</h2>
+<h4>3. 删除</h4>
 <form action="/db" method="post">
-id: <input name="delete_id"> <input type="submit" value="Delete">
+id: <input name="delete_id"> <input type="submit" value="删除">
 </form>
-
 {% endblock %}

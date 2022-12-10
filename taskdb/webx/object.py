@@ -23,7 +23,7 @@ ROUTE = {
     'static': route_static.render_static_html,
     'auth': route_auth.auth,
 }
-HTML_ENV = Environment(loader=PackageLoader('src.webx', 'templates'))
+HTML_ENV = Environment(loader=PackageLoader('taskdb.webx', 'templates'))
 
 
 class Request():
