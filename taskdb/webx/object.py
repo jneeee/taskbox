@@ -7,7 +7,7 @@ from jinja2 import PackageLoader, Environment
 
 from taskdb.webx import (
     route_auth,
-    route_index,
+    route_eval,
     route_task,
     route_db,
     route_static,
@@ -20,7 +20,7 @@ ROUTE = {
     '': route_task.get_task,
     'task': route_task.get_task,
     'db': route_db.route,
-    'cmd': route_index.cmdhandler,
+    'cmd': route_eval.cmdhandler,
     'static': route_static.render_static_html,
     'auth': route_auth.auth,
 }
@@ -42,6 +42,11 @@ class Request():
         # req.msg: {'type':success,info,warning,danger, 'info': any}
 
     def make_resp(self, http_code=200, template_name=None, **content_kw):
+        '''response with html if the req is not from curl cmd
+
+        content_kw: is a dict which is just what we return to curl cmd.
+        TODO: need a json key for aws server to read.
+        '''
         if 'curl' in self.useragent:
             return content_kw
         else:
@@ -75,8 +80,6 @@ class Request():
         }
 
     def route(self):
-        if not self.path_list:
-            return route_index.wsgi_root(self)
         return ROUTE[self.path_list[0]](self)
 
     def __str__(self) -> str:

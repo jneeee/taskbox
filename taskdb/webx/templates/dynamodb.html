@@ -2,6 +2,7 @@
 {% block menu %}
 <tr><td><a href="/" class="MenuLink">首页</a></td></tr>
 <tr><td><span class="MenuCurrent">数据库</span></td></tr>
+<tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>
 {% endblock %}
 {% block content %}
 <h1>Dynamodb</h1>
@@ -28,7 +29,7 @@ id: <input  name="quary_id"> <input type="submit" value="查询">
   {% endfor %}
   </tbody></table>
 {% endif %}
-<h2>2. 添加数据</h2>
+<h4>2. 添加数据</h4>
 <p>item 数据格式: {"id": "xxx", "val":[], ...}</p>
 <form action="/db" method="post">
 item: <input name="put_item"> <input type="submit" value="添加">

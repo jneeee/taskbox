@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block menu %}
+<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
+<tr><td><span class="MenuCurrent">执行</span></td></tr>
+{% endblock %}
+{% block content %}
+<div class="alert alert-warning">提醒：本页操作需要登录。</div>
+<h4>1. 执行 Python</h4>
+<p>利用 Python eval 关键字执行简单Python语句，不能执行 import 等。</p>
+<form action="/cmd" method="post">
+Python line: <input  name="python"> <input type="submit" value="执行">
+</form>
+
+<h4>2. 执行 Shell</h4>
+<p>示例: uptime/whoami/pwd/... 注意执行高耗时命令会占用 aws 的免费额度: 40wGBs</p>
+<form action="/cmd" method="post">
+Python line: <input  name="shell"> <input type="submit" value="执行">
+</form>
+
+{% if exc_res is defined %}
+<p><b>执行结果</b>:</p>
+<p>{{exc_res}}</p>
+{% endif %}
+{% endblock %}
