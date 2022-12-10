@@ -1,8 +1,7 @@
 from taskdb.utils.tools import LOG, run_cmd
-from taskdb.webx.object import Request
 
 
-def cmdhandler(req: Request):
+def cmdhandler(req):
     if req.method == 'GET':
         return req.make_resp(template_name='cmd.html')
     if not req.is_authed:
@@ -11,8 +10,14 @@ def cmdhandler(req: Request):
 
     key, val = req.body.split('=')
     if key == 'python':
+        # Add module if need.
+        import requests, time
         res = eval(val)
     elif key == 'shell':
-        res = run_cmd(val)
+        cmdres = run_cmd(val)
+        if cmdres[0]:
+            res = f'🟢: {cmdres[0]}'
+        else:
+            res = f'🔴: {cmdres[1]}'
     LOG.info(f'Run cmd: {val}, {res}')
     return req.make_resp(exc_res=res, template_name='cmd.html')

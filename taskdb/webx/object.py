@@ -7,7 +7,7 @@ from jinja2 import PackageLoader, Environment
 
 from taskdb.webx import (
     route_auth,
-    route_eval,
+    route_cmd,
     route_task,
     route_db,
     route_static,
@@ -20,7 +20,7 @@ ROUTE = {
     '': route_task.get_task,
     'task': route_task.get_task,
     'db': route_db.route,
-    'cmd': route_eval.cmdhandler,
+    'cmd': route_cmd.cmdhandler,
     'static': route_static.render_static_html,
     'auth': route_auth.auth,
 }
@@ -50,7 +50,7 @@ class Request():
         if 'curl' in self.useragent:
             return content_kw
         else:
-            self.timecost = time.perf_counter() - self.starttime
+            self.timecost = round(time.perf_counter() - self.starttime, 6)
             return Request._resp_html(http_code=http_code,
                                       template_name=template_name,
                                       req=self, **content_kw)
