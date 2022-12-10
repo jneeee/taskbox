@@ -1,5 +1,6 @@
 from base64 import b64decode
 import urllib.parse
+from functools import lru_cache
 
 from jinja2 import PackageLoader, Environment
 
@@ -33,7 +34,7 @@ class Request():
         self.event = event
         self.body = self._get_body()
         self.path_list = self._get_path_list()
-        self.is_authed = self.check_is_authed()
+        self.is_authed = _check_ip_is_authed(self.httpinfo['sourceIp'])
         # req.msg: {'type':success,info,warning,danger, 'info': any}
 
     def make_resp(self, http_code=200, template_name=None, **content_kw):
@@ -79,21 +80,26 @@ class Request():
     def __str__(self) -> str:
         return f'Request: {self.method} {self.path}, body: {self.body}'
 
-    def check_is_authed(self):
-        # {"id": "cur_authed_srip", "value": set()}
-        app_context = models.get_app_db().get({'id': 'app_context'})
-        if not app_context:
-            # Got Typeerror if cur_authed_srip = {None, } here, So just asign a list
-            app_context = {'id': 'app_context', 'cur_authed_srip': []}
-            return False
-        return self.httpinfo['sourceIp'] in app_context.get('cur_authed_srip')
-
     def do_auth_login(self):
         app_context = models.get_app_db().get({'id': 'app_context'})
         app_context.get('cur_authed_srip').append(self.httpinfo['sourceIp'])
+        _check_ip_is_authed.cache_clear()
         models.get_app_db().update(app_context)
 
     def do_auth_logout(self):
         app_context = models.get_app_db().get({'id': 'app_context'})
         app_context.get('cur_authed_srip').remove(self.httpinfo['sourceIp'])
+        _check_ip_is_authed.cache_clear()
         models.get_app_db().update(app_context)
+
+
+@lru_cache
+def _check_ip_is_authed(ip_str):
+    # {"id": "cur_authed_srip", "value": set()}
+    app_context = models.get_app_db().get({'id': 'app_context'})
+    if not app_context:
+        # Got Typeerror if cur_authed_srip = {None, } here, So just asign a list
+        app_context = {'id': 'app_context', 'cur_authed_srip': []}
+        return False
+    return ip_str in app_context.get('cur_authed_srip')
+
