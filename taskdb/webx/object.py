@@ -1,6 +1,7 @@
 from base64 import b64decode
-import urllib.parse
 from functools import lru_cache
+import time
+import urllib.parse
 
 from jinja2 import PackageLoader, Environment
 
@@ -28,6 +29,7 @@ HTML_ENV = Environment(loader=PackageLoader('taskdb.webx', 'templates'))
 
 class Request():
     def __init__(self, event) -> None:
+        self.starttime = time.perf_counter()
         httpinfo = event.get('requestContext').get('http')
         self.httpinfo = httpinfo
         self.method = httpinfo.get('method') # 'POST' ...
@@ -43,6 +45,7 @@ class Request():
         if 'curl' in self.useragent:
             return content_kw
         else:
+            self.timecost = time.perf_counter() - self.starttime
             return Request._resp_html(http_code=http_code,
                                       template_name=template_name,
                                       req=self, **content_kw)
