@@ -37,8 +37,8 @@ Resources:
       CodeUri: ./
       Handler: src.index.lambda_handler
       Runtime: python3.9
-      MemorySize: 256
-      Timeout: 10
+      MemorySize: 145
+      Timeout: 5
       Description: For crontask and a web service.
       Environment:
         Variables:

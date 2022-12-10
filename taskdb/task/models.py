@@ -62,11 +62,12 @@ def get_app_db():
 
 class Task():
     tb = Tableclient(getenv('DDB_TABLE'))
+    # format_seq for the desplay key seqence in web
+    format_seq = ['id', 'status']
 
     def __init__(self):
         self.name = self.__class__.__name__
-        self.CONF = Task.tb.get({'id': f'conf_{self.name}'})
-        self.result = None
+        self.CONF = Task.tb.get({'id': self.name})
 
     def step(self):
         # overwrite me

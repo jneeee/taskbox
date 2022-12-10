@@ -15,6 +15,8 @@ from taskdb.task import models
 
 
 ROUTE = {
+    # '': root path
+    '': route_task.get_task,
     'task': route_task.get_task,
     'db': route_db.route,
     'cmd': route_index.cmdhandler,
@@ -47,12 +49,9 @@ class Request():
 
     def _get_path_list(self):
         # from event get http info
-        # path = ['path', 'to', 'smt']
-        try:
-            path = self.path.strip('/').split('/')
-        except KeyError:
-            path = []
-        return path if path[0] != '' else []
+        # path = [''] or ['path', 'to', 'smt']
+        path = self.path.strip('/').split('/')
+        return path
 
     def _get_body(self):
         res = None

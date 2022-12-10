@@ -4,7 +4,6 @@
 <h1>Tasks</h1>
 <p>task:  dict({'id':xx, 'result': xx, 'last_run_time': xx})</p>
 <p><b>Task list</b>:</p>
-<!-- tasks_list [{id=xx,},] -->
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
 <tr>
   {% for key in tasks_list[0].keys() %}
@@ -15,7 +14,7 @@
 <tr>
   {% for key, val in task.items() %}
     {% if key == 'id' %}
-    <td class="Item" align="center"><a href="./{{ val }}">{{ val }}</a></td>
+    <td class="Item" align="center"><a href="/task/{{ val }}">{{ val }}</a></td>
     {% else %}
     <td class="Item" align="center">{{ val }}</td>
     {% endif %}

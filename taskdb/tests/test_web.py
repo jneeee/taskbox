@@ -63,12 +63,6 @@ Fake_context = {}
 @mock_dynamodb
 class Test_web_tasks(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.env_patcher = mock.patch.dict(os.environ, {"DDB_TABLE": "table_name"})
-        cls.env_patcher.start()
-        super().setUpClass()
-
     def setUp(self):
         ddb = boto3.resource("dynamodb")
         self.table = ddb.create_table(**create_user_table())

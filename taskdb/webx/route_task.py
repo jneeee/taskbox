@@ -11,10 +11,10 @@ def get_single_task(task_id):
 
 
 def get_task(req):
-    LOG.info(f'path_list {req.path_list}')
+    # req.path_list = [task, Task_test]
     if len(req.path_list) > 1:
-        resp = get_single_task(req.path_list[1])
-        req.make_resp(task=resp, template_name='task_detail.html')
+        return req.make_resp(task=get_single_task(req.path_list[1]),
+                             template_name='task_detail.html')
     else:
-        resp = Task.get_all_tasks()
-        return req.make_resp(tasks_list=resp, template_name='tasks.html')
+        return req.make_resp(tasks_list=Task.get_all_tasks(),
+                             template_name='tasks.html')
