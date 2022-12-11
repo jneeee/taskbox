@@ -125,3 +125,30 @@ class Task():
 
     def registe_crontab(self, cron_str):
         pass
+
+
+class Eventscheduler():
+
+    def __init__(self, context) -> None:
+        self.func_arn = context.invoked_function_arn
+        self.client = boto3.client('scheduler')
+
+    def create(self, name=None, ScheduleExpression=None):
+        '''Create Eventbridge scheduler
+        
+        :param ScheduleExpression: string
+            at(yyyy-mm-ddThh:mm:ss)
+            rate(unit value)
+            cron(minutes hours day_of_month month day_of_week year)
+        :return: resp
+        '''
+        resp = self.client.create_schedule(
+            Name=name,
+            ScheduleExpression=ScheduleExpression,
+            FlexibleTimeWindow={
+                'Mode': 'OFF',
+            },
+            Target={'Arn': self.func_arn}
+            RoleArn='',
+            Input=''
+        )
