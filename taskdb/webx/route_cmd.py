@@ -16,8 +16,8 @@ def cmdhandler(req):
     elif key == 'shell':
         cmdres = run_cmd(val)
         if cmdres[0]:
-            res = f'🟢: {cmdres[0]}'
+            res = f'🟢$ {val}</p><p>{cmdres[0]}'
         else:
-            res = f'🔴: {cmdres[1]}'
+            res = f'🔴$ {val}</p><p>{cmdres[1]}'
     LOG.info(f'Run cmd: {val}, {res}')
     return req.make_resp(exc_res=res, template_name='cmd.html')

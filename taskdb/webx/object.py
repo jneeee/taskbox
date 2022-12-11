@@ -66,7 +66,7 @@ class Request():
         if self.method == 'POST':
             res = b64decode(self.event.get('body')).decode()
             # replace @ { } ...
-            res = urllib.parse.unquote(res).replace('+', '')
+            res = urllib.parse.unquote(res).replace('+', ' ')
         return res
 
     @staticmethod
