@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block menu %}
-<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><a href="/" class="MenuLink">首页</a><span>>任务详情</span></td></tr>
 <tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
 <tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>
 {% endblock %}
@@ -17,4 +17,12 @@
 <td class="Item" align="center">{{ val }}</td>
 {% endfor %}
 </tr></tbody></table>
+
+<p>定时任务周期设置</p>
+配置：<select name="province">
+    <option value="">--请选择--</option>
+    <option value="1">name</option>
+    <option value="2" selected>周期设置</option>
+</select><br>
+
 {% endblock %}

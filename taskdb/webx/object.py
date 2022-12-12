@@ -24,11 +24,16 @@ ROUTE = {
     'static': route_static.render_static_html,
     'auth': route_auth.auth,
 }
+# One app instance may call muti req, so we asign global var here for muti uses.
 HTML_ENV = Environment(loader=PackageLoader('taskdb.webx', 'templates'))
 
 
 class Request():
-    def __init__(self, event) -> None:
+    def __init__(self, event, context) -> None:
+        '''Request instance
+
+        Due to performace concern, better not connect db in here.
+        '''
         self.starttime = time.perf_counter()
         httpinfo = event.get('requestContext').get('http')
         self.httpinfo = httpinfo
@@ -36,16 +41,17 @@ class Request():
         self.path = httpinfo.get('path')
         self.useragent = httpinfo.get('userAgent')
         self.event = event
+        self.context = context
         self.body = self._get_body()
         self.path_list = self._get_path_list()
-        self.is_authed = _check_ip_is_authed(self.httpinfo['sourceIp'])
+        self.is_authed = _check_ip_is_authed(httpinfo['sourceIp'])
         # req.msg: {'type':success,info,warning,danger, 'info': any}
 
     def make_resp(self, http_code=200, template_name=None, **content_kw):
         '''response with html if the req is not from curl cmd
 
         content_kw: is a dict which is just what we return to curl cmd.
-        TODO: need a json key for aws server to read.
+        TODO: need a json key for aws server to read. (implement set-cookie)
         '''
         if 'curl' in self.useragent:
             return content_kw

@@ -5,6 +5,7 @@ import boto3
 from boto3.dynamodb.conditions import Attr
 
 from taskdb.utils.tools import LOG
+from taskdb.task.exception import TaskBaseException
 
 TASK_LIST_KEY = 'task_list'
 
@@ -63,22 +64,55 @@ def get_app_db():
 class Task():
     tb = Tableclient(getenv('DDB_TABLE'))
     # format_seq for the desplay key seqence in web
-    format_seq = ['id', 'status']
+    format_seq = ['名称', '状态', '结果', '上次执行时间', '消耗', '累计消耗', '累计执行次数']
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        '''Create a Task instance
+
+        the kwargs expected:{
+            id: str, status: normal|pedding|pause (with correspond color
+                green|yellow|red),
+            result: str,
+            conf:[{phone:xxx, passwd: xxx, }, ]} # can be multi config
+            last run time: '2022-12-12 16:57:11',
+            cforce_cost: int, # the compute force cost
+            run_count: int,
+            total_cf_cost: int,
+        }
+        '''
         self.name = self.__class__.__name__
-        self.CONF = Task.tb.get({'id': self.name})
+        for key, val in kwargs.items():
+            setattr(self, key, val)
 
-    def step(self):
-        # overwrite me
-        # update self.result in this func
+    def step(self, config):
+        '''Inplement with the task actually do
+
+        need update self.result in this func
+        :param config: dict, the config dict for task
+        :return: True if task success
+        :raise: raise a Exception that inherit from TaskBaseException
+        '''
         raise NotImplementedError
 
-    def run(self):
+    def run(self, config_list):
         # run task and save to db
-        self.step()
-        self.last_run_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
-        self._save()
+        for config in config_list:
+            self.total_count += 1
+            try:
+                self.step(config)
+            except TaskBaseException:
+                pass
+            self.last_run_time = time.strftime('%Y-%m-%d', 
+                                               time.localtime(time.time()))
+            self._save()
+
+    def get_conf(self):
+        '''Implement me
+
+        Remember to write the description. It will be desplaied at task detail web page.
+        :return: a config dict with description and value
+        '''
+        raise NotImplementedError
 
     def _save(self):
         item = {'id': self.name}
@@ -100,13 +134,13 @@ class Task():
 
     @classmethod
     def get_by_name(cls, task_id):
-        '''Get task by name
+        '''Get Task by name
 
-        task_id: str
-        return: dict()
+        :param task_id: str
+        :return: Task instance
         '''
-        res = cls.tb.get({'id': task_id})
-        return res or {}
+        task_info = cls.tb.get({'id': task_id})
+        return cls.from_dict(task_info)
 
     @classmethod
     def get_all_tasks(cls):

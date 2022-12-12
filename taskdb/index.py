@@ -6,7 +6,7 @@ from taskdb.utils.tools import LOG
 
 def lambda_handler(event, context):
     try:
-        req = object.Request(event)
+        req = object.Request(event, context)
         LOG.info(f'New {req}')
         return req.route()
     except Exception as e:
