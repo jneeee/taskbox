@@ -5,7 +5,7 @@
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Start from scratch starter project
+  Task Dashboard for yourself.
 
 # Transform section specifies one or more macros that AWS CloudFormation uses to process your template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
@@ -28,76 +28,62 @@ Parameters:
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  helloFromLambdaFunction:
+  Taskdashboard:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
       Handler: taskdb.index.lambda_handler
       Runtime: python3.9
-      MemorySize: 145
+      MemorySize: 140
       Timeout: 5
-      Description: For crontask and a web service.
+      Description: A crontask frame and HTTP service.
       Environment:
         Variables:
-          DDB_TABLE: !Ref taskdb
-          auth_passwd: 'authpass'
+          DDB_TABLE: !Ref taskdbdynamodb
+          auth_passwd: authpass
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref taskdb
+            TableName: !Ref taskdbdynamodb
         - AWSLambdaBasicExecutionRole
       Layers:
         - !Ref libs
       Events:
-        ExplicitApi: # warning: creates a public endpoint
+        ExplicitApi:
           Type: HttpApi
           Properties:
-            ApiId: !Ref HttpApi
-            TimeoutInMillis: 15000
+            ApiId: !Ref http
+            Path: /auth
             Method: POST
-            Path: /
-            # https://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 
-  HttpApi:
+  http:
     Type: AWS::Serverless::HttpApi
     Properties:
-      Tags:
-        Tag: Value
       AccessLogSettings:
         DestinationArn: !GetAtt AccessLogs.Arn
         Format: $context.requestId
       DefaultRouteSettings:
         ThrottlingBurstLimit: 50
-      # disable this for using custom domain
-      StageVariables:
-        StageVar: Value
       FailOnWarnings: true
+      # 设置自己的域名， 或者把 DisableExecuteApiEndpoint Domain 都删掉用aws的临时域名
       RouteSettings:
-        "POST /":
-          ThrottlingBurstLimit: 50 # overridden in HttpApi Event
+        "POST /auth":
+          ThrottlingBurstLimit: 10 # overridden in HttpApi Event
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
 
-  taskdb:
+  taskdbdynamodb:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
-  # pip install rsa -t python/
-  # zip layer.zip -r python/
-  # aws s3api put-object  --bucket aws-ap-southeast-1-044694559979-appname-pipe --key layer/flask.zip --body layer.zip
+      TableName: Taskdb
   libs:
     Type: AWS::Lambda::LayerVersion
     Properties:
-      LayerName: flask
-      Description: flask + jinja2 + rsa + requests
+      LayerName: taskdblayer
+      Description: jinja2 + rsa + requests
       Content:
-        S3Bucket: aws-ap-southeast-1-044694559979-appname-pipe
-        S3Key: layer/flask.zip
+        S3Bucket: !Sub 'aws-${AWS::Region}-${AWS::AccountId}-${AppId}-pipe'
+        S3Key: layer/taskdblayer.zip
       CompatibleRuntimes:
         - python3.9
 
@@ -107,8 +93,8 @@ Outputs:
   HttpApiUrl:
     Description: URL of your API endpoint
     Value:
-      Fn::Sub: 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
+      Fn::Sub: 'https://${http}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
   HttpApiId:
     Description: Api id of HttpApi
     Value:
-      Ref: HttpApi
+      Ref: http

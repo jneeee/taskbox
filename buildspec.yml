@@ -1,9 +1,12 @@
 version: 0.2
 phases:
-  # install:
-    # commands:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
       # Install all dependencies (including dependencies for running tests)
-      # - npm install
+      - find ./ -name requirements.txt -type f -exec pip install -t python/ -r "{}" \;
+      - zip taskdblayer.zip -q -r python/
   # pre_build:
     # commands:
       # Discover and run unit tests in the '__tests__' directory
@@ -12,7 +15,8 @@ phases:
       # - npm prune --production
   build:
     commands:
-      # Use AWS SAM to package the application by using AWS CloudFormation
+      - aws s3api put-object --bucket $S3_BUCKET --key layer/taskdblayer.zip --body taskdblayer.zip
+      - rm -rf taskdblayer.zip python/
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template-file template-export.yml
 artifacts:
   files:
