@@ -103,6 +103,14 @@ class Request():
         _check_ip_is_authed.cache_clear()
         models.get_app_db().update(app_context)
 
+    def __del__(self):
+        '''Del method
+
+        Excute some db write operate here after the wsgi response. So that
+        the response works faster.💪
+        '''
+        pass
+
 
 @lru_cache
 def _check_ip_is_authed(ip_str):

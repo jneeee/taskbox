@@ -64,72 +64,90 @@ def get_app_db():
 class Task():
     tb = Tableclient(getenv('DDB_TABLE'))
     # format_seq for the desplay key seqence in web
-    format_seq = ['名称', '状态', '结果', '上次执行时间', '消耗', '累计消耗', '累计执行次数']
+    format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
+                  '累计消耗', '累计执行']
 
     def __init__(self, **kwargs):
         '''Create a Task instance
 
         the kwargs expected:{
-            id: str, status: normal|pedding|pause (with correspond color
-                green|yellow|red),
+            id: str,
+            status: normal|pedding|pause (correspond color green|yellow|red),
             result: str,
             conf:[{phone:xxx, passwd: xxx, }, ]} # can be multi config
-            last run time: '2022-12-12 16:57:11',
-            cforce_cost: int, # the compute force cost
-            run_count: int,
-            total_cf_cost: int,
+            run_time: '2022-12-12 16:57:11',
+            exc_info = {
+                cforce_cost: int, # the compute force cost
+                run_count: int,
+                total_cf_cost: int,
+            }
         }
         '''
         self.name = self.__class__.__name__
-        for key, val in kwargs.items():
-            setattr(self, key, val)
+        self.result = kwargs.get('result')
+        self.conf = kwargs.get('conf', [])
+        if 'run_time' in kwargs:
+            self.run_time = kwargs.get('run_time')
+        self.status = kwargs.get('status', 'normal')
+        self.exc_info = kwargs.get('exc_info', {'cforce_cost': 0,
+                                                'run_count': 0,
+                                                'total_cf_cost': 0})
 
     def step(self, config):
         '''Inplement with the task actually do
 
         need update self.result in this func
         :param config: dict, the config dict for task
-        :return: True if task success
+        :return: str, will be write to result
         :raise: raise a Exception that inherit from TaskBaseException
         '''
         raise NotImplementedError
 
-    def run(self, config_list):
-        # run task and save to db
+    def run(self, context, config_list):
+        '''Run task and save to db
+
+        :param context: app context
+        :param config_list: Task.conf
+        :return: None
+        '''
         for config in config_list:
-            self.total_count += 1
+            if self.status != 'normal':
+                continue
+            self.result = []
+            self.exc_info['run_count'] += 1
             try:
-                self.step(config)
+                start = time.perf_counter()
+                self.result.append(self.step(config))
+                self.exc_info['cforce_cost'] = round(
+                    (time.perf_counter()-start)*context.memory_limit_in_mb, 6
+                )
+                self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
             except TaskBaseException:
-                pass
-            self.last_run_time = time.strftime('%Y-%m-%d', 
-                                               time.localtime(time.time()))
+                self.status = 'pedding' # or pause
+            self.run_time = \
+                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
             self._save()
 
-    def get_conf(self):
+    def get_conf_display(self):
         '''Implement me
 
-        Remember to write the description. It will be desplaied at task detail web page.
+        Remember to write the description. It will be desplaied at task detail
+        web page.
         :return: a config dict with description and value
         '''
         raise NotImplementedError
 
     def _save(self):
-        item = {'id': self.name}
-        item['date'] = self.last_run_time
-        item['result'] = self.result
-        item['data_type'] = 'latest_log'
-
-        self.tb.put(item)
-        LOG.info(f'Update task: {item}')
+        self.tb.put(self.__dict__)
+        LOG.info(f'Write to db: {self.__dict__}')
 
     @classmethod
     def from_dict(cls):
         pass
 
     def get_history(self):
-        item = {'id': self.name}
-        resp = self.tb.get(item)
+        resp = self.tb.get({'id': self.name})
         return resp
 
     @classmethod
@@ -137,10 +155,9 @@ class Task():
         '''Get Task by name
 
         :param task_id: str
-        :return: Task instance
+        :return: task dict
         '''
-        task_info = cls.tb.get({'id': task_id})
-        return cls.from_dict(task_info)
+        return cls.tb.get({'id': task_id})
 
     @classmethod
     def get_all_tasks(cls):
@@ -157,7 +174,54 @@ class Task():
             resp = [{},]
         return resp
 
+    @property
+    def info_format(self):
+        return self.repr_format(self.__dict__)
+
+    @classmethod
+    def repr_format(cls, task_d):
+        '''Format a task dict
+
+        :return: OrderedDict() with task info
+        '''
+        from collections import OrderedDict
+
+        trans_d = {
+            '名称': lambda d: d.get('id'),
+            '状态': lambda d: d.get('status'),
+            '结果': lambda d: d.get('result'),
+            '上次执行': lambda d: d.get('run_time'),
+            '消耗': lambda d: d.get('exc_info', {}).get('cforce_cost'),
+            '累计消耗': lambda d: d.get('exc_info', {}).get('total_cf_cost'),
+            '累计执行': lambda d: d.get('exc_info', {}).get('run_count'),
+        }
+        res = OrderedDict()
+        for name in cls.format_seq:
+            res[name] = trans_d[name](task_d)
+        return res
+
     def registe_crontab(self, cron_str):
+        pass
+
+
+class TaskManager():
+    '''TaskManager'''
+
+    def __init__(self, task_id=None) -> None:
+        self.task_id = task_id
+
+    def display(self):
+        '''display task info
+
+        if task have multi config, we should return multi task history
+        :return: [{},] task info
+        '''
+        self.taskd = Task.get_by_name(self.task_id)
+        return Task.repr_format(self.taskd)
+
+    def pause(self):
+        # TODO
+        Task.get_by_name(self.task_id)
         pass
 
 
