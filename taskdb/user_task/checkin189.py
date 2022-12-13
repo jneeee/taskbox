@@ -5,7 +5,7 @@ import time
 import requests
 import rsa
 
-from taskdb.task.models import Task
+from taskdb.taskbase.models import Task
 from taskdb.utils.tools import LOG
 
 

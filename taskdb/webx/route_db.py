@@ -1,6 +1,6 @@
 import json
 
-from taskdb.task import models
+from taskdb.taskbase import models
 from taskdb.utils.tools import LOG
 
 
@@ -17,7 +17,7 @@ def route(req):
         if key == 'quary_id':
             quary_res = models.get_app_db().get({'id': val})
             if not quary_res:
-                req.msg = ('warning', f'No such key: {val}!')
+                req.msg = ('warning', f'No such key!: {val}')
                 return req.make_resp(template_name='dynamodb.html')
             return req.make_resp(quary_res=[quary_res,], template_name='dynamodb.html')
 

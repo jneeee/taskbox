@@ -5,9 +5,8 @@ import boto3
 from boto3.dynamodb.conditions import Attr
 
 from taskdb.utils.tools import LOG
-from taskdb.task.exception import TaskBaseException
-
-TASK_LIST_KEY = 'task_list'
+from taskdb.taskbase.exception import TaskBaseException
+import taskdb.conf as CONF
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
 class Tableclient():
@@ -24,7 +23,7 @@ class Tableclient():
 
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
-        resp = None
+        resp = {}
 
         try:
             resp = self.table.get_item(Key=item).get("Item")
@@ -67,15 +66,15 @@ class Task():
     format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         '''Create a Task instance
 
-        the kwargs expected:{
+        The kwargs expected:{
             id: str,
             status: normal|pedding|pause (correspond color green|yellow|red),
             result: str,
             conf:[{phone:xxx, passwd: xxx, }, ]} # can be multi config
-            run_time: '2022-12-12 16:57:11',
+            run_time: int, 1670907645.49549,
             exc_info = {
                 cforce_cost: int, # the compute force cost
                 run_count: int,
@@ -122,10 +121,10 @@ class Task():
                     (time.perf_counter()-start)*context.memory_limit_in_mb, 6
                 )
                 self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
-            except TaskBaseException:
+            except TaskBaseException as e:
                 self.status = 'pedding' # or pause
-            self.run_time = \
-                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                self.result.append(str(e))
+            self.run_time = time.time()
 
             self._save()
 
@@ -143,8 +142,13 @@ class Task():
         LOG.info(f'Write to db: {self.__dict__}')
 
     @classmethod
-    def from_dict(cls):
-        pass
+    def from_dict(cls, task_info):
+        '''Create Task instance
+
+        :param task_info: dict
+        :return: Task_xxx instance
+        '''
+        return cls(**task_info)
 
     def get_history(self):
         resp = self.tb.get({'id': self.name})
@@ -176,10 +180,10 @@ class Task():
 
     @property
     def info_format(self):
-        return self.repr_format(self.__dict__)
+        return self.ordereddict_format(self.__dict__)
 
     @classmethod
-    def repr_format(cls, task_d):
+    def ordereddict_format(cls, task_d):
         '''Format a task dict
 
         :return: OrderedDict() with task info
@@ -190,7 +194,8 @@ class Task():
             '名称': lambda d: d.get('id'),
             '状态': lambda d: d.get('status'),
             '结果': lambda d: d.get('result'),
-            '上次执行': lambda d: d.get('run_time'),
+            '上次执行': lambda d: time.strftime('%Y-%m-%d %H:%M:%S',
+                time.localtime(d.get('run_time'))),
             '消耗': lambda d: d.get('exc_info', {}).get('cforce_cost'),
             '累计消耗': lambda d: d.get('exc_info', {}).get('total_cf_cost'),
             '累计执行': lambda d: d.get('exc_info', {}).get('run_count'),
@@ -207,17 +212,17 @@ class Task():
 class TaskManager():
     '''TaskManager'''
 
-    def __init__(self, task_id=None) -> None:
-        self.task_id = task_id
+    def __init__(self, task_id) -> None:
+        task_cls = CONF.get('task_id')
+        self.task = task_cls(**Task.get_by_name(task_id))
 
     def display(self):
         '''display task info
 
         if task have multi config, we should return multi task history
-        :return: [{},] task info
+        :return: OrderedDict() with task info
         '''
-        self.taskd = Task.get_by_name(self.task_id)
-        return Task.repr_format(self.taskd)
+        return self.task.info_format
 
     def pause(self):
         # TODO
@@ -233,7 +238,7 @@ class Eventscheduler():
 
     def create(self, name=None, ScheduleExpression=None):
         '''Create Eventbridge scheduler
-        
+
         :param ScheduleExpression: string
             at(yyyy-mm-ddThh:mm:ss)
             rate(unit value)

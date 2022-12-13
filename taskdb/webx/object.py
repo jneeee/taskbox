@@ -12,7 +12,7 @@ from taskdb.webx import (
     route_db,
     route_static,
 )
-from taskdb.task import models
+from taskdb.taskbase import models
 
 
 ROUTE = {
