@@ -42,11 +42,11 @@ Resources:
       Description: For crontask and a web service.
       Environment:
         Variables:
-          DDB_TABLE: !Ref ddbTable
+          DDB_TABLE: !Ref taskdb
           auth_passwd: 'authpass'
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref ddbTable
+            TableName: !Ref taskdb
         - AWSLambdaBasicExecutionRole
       Layers:
         - !Ref libs
@@ -56,7 +56,7 @@ Resources:
           Properties:
             ApiId: !Ref HttpApi
             TimeoutInMillis: 15000
-            Method: PUT
+            Method: POST
             Path: /
             # https://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 
@@ -75,22 +75,18 @@ Resources:
         StageVar: Value
       FailOnWarnings: true
       RouteSettings:
-        "PUT /":
-          ThrottlingBurstLimit: 500 # overridden in HttpApi Event
+        "POST /":
+          ThrottlingBurstLimit: 50 # overridden in HttpApi Event
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
 
-  ddbTable:
+  taskdb:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
         Name: id
         Type: String
-      # auto Scaling
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
   # pip install rsa -t python/
   # zip layer.zip -r python/
   # aws s3api put-object  --bucket aws-ap-southeast-1-044694559979-appname-pipe --key layer/flask.zip --body layer.zip
