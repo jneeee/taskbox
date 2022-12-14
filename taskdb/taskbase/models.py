@@ -2,11 +2,10 @@ from os import getenv
 import time
 
 import boto3
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Attr, Key
 
 from taskdb.utils.tools import LOG
 from taskdb.taskbase.exception import TaskBaseException
-import taskdb.conf as CONF
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
 class Tableclient():
@@ -60,21 +59,22 @@ def get_app_db():
     return Tableclient(getenv('DDB_TABLE'))
 
 
-class Task():
+class Task(object):
     tb = Tableclient(getenv('DDB_TABLE'))
     # format_seq for the desplay key seqence in web
     format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']
+    task_dict = {}
 
     def __init__(self, *args, **kwargs):
         '''Create a Task instance
 
-        The kwargs expected:{
+        :params kwargs: {
             id: str,
             status: normal|pedding|pause (correspond color green|yellow|red),
             result: str,
             conf:[{phone:xxx, passwd: xxx, }, ]} # can be multi config
-            run_time: int, 1670907645.49549,
+            last_run_time: int, 1670907645.49549,
             exc_info = {
                 cforce_cost: int, # the compute force cost
                 run_count: int,
@@ -82,21 +82,25 @@ class Task():
             }
         }
         '''
-        self.name = self.__class__.__name__
+        self.type = self.__class__.__name__
         self.result = kwargs.get('result')
         self.conf = kwargs.get('conf', [])
-        if 'run_time' in kwargs:
-            self.run_time = kwargs.get('run_time')
+        self.data_type = 'task_info'
+        if 'last_run_time' in kwargs:
+            self.run_time = kwargs.get('last_run_time')
         self.status = kwargs.get('status', 'normal')
         self.exc_info = kwargs.get('exc_info', {'cforce_cost': 0,
                                                 'run_count': 0,
                                                 'total_cf_cost': 0})
 
+    @classmethod
+    def register(cls):
+        Task.task_dict[cls.__name__] = cls
+
     def step(self, config):
         '''Inplement with the task actually do
 
-        need update self.result in this func
-        :param config: dict, the config dict for task
+        :param config: dict, the single config dict for task
         :return: str, will be write to result
         :raise: raise a Exception that inherit from TaskBaseException
         '''
@@ -124,7 +128,7 @@ class Task():
             except TaskBaseException as e:
                 self.status = 'pedding' # or pause
                 self.result.append(str(e))
-            self.run_time = time.time()
+            self.last_run_time = time.time()
 
             self._save()
 
@@ -138,8 +142,10 @@ class Task():
         raise NotImplementedError
 
     def _save(self):
-        self.tb.put(self.__dict__)
-        LOG.info(f'Write to db: {self.__dict__}')
+        item = self.__dict__
+        item['id'] = 'task_info'
+        self.tb.put(item=item)
+        LOG.info(f'Write to db: {item}')
 
     @classmethod
     def from_dict(cls, task_info):
@@ -151,17 +157,22 @@ class Task():
         return cls(**task_info)
 
     def get_history(self):
-        resp = self.tb.get({'id': self.name})
-        return resp
+        return self.tb.quary(
+            KeyConditionExpression=Key('id').eq('task_history'),
+            FilterExpression=Attr('type').eq(self.type),
+        ).get('Items')
 
     @classmethod
-    def get_by_name(cls, task_id):
+    def get_by_name(cls, task_name):
         '''Get Task by name
 
         :param task_id: str
         :return: task dict
         '''
-        return cls.tb.get({'id': task_id})
+        return cls.tb.quary(
+            KeyConditionExpression=Key('id').eq('task_info'),
+            FilterExpression=Attr('type').eq(task_name),
+        ).get('Items')
 
     @classmethod
     def get_all_tasks(cls):
@@ -169,10 +180,12 @@ class Task():
 
         return [{},]
         {"id":"Task_test", "data_type":"latest_log", "result":"OK!", "date":"2022-12-8"}
+        TODO(jneeee) pagination
         '''
         try:
-            resp = cls.tb.table.scan(
-            FilterExpression=Attr('id').begins_with('Task_') & Attr('data_type').eq('latest_log')
+            resp = cls.tb.table.quary(
+            FilterExpression=Key('id').eq('task_info'),
+            Limit=20,
         ).get('Items')
         except:
             resp = [{},]
@@ -195,7 +208,7 @@ class Task():
             '状态': lambda d: d.get('status'),
             '结果': lambda d: d.get('result'),
             '上次执行': lambda d: time.strftime('%Y-%m-%d %H:%M:%S',
-                time.localtime(d.get('run_time'))),
+                time.localtime(d.get('last_run_time'))),
             '消耗': lambda d: d.get('exc_info', {}).get('cforce_cost'),
             '累计消耗': lambda d: d.get('exc_info', {}).get('total_cf_cost'),
             '累计执行': lambda d: d.get('exc_info', {}).get('run_count'),
@@ -206,27 +219,6 @@ class Task():
         return res
 
     def registe_crontab(self, cron_str):
-        pass
-
-
-class TaskManager():
-    '''TaskManager'''
-
-    def __init__(self, task_id) -> None:
-        task_cls = CONF.get('task_id')
-        self.task = task_cls(**Task.get_by_name(task_id))
-
-    def display(self):
-        '''display task info
-
-        if task have multi config, we should return multi task history
-        :return: OrderedDict() with task info
-        '''
-        return self.task.info_format
-
-    def pause(self):
-        # TODO
-        Task.get_by_name(self.task_id)
         pass
 
 

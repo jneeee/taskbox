@@ -9,6 +9,8 @@ from taskdb.taskbase.models import Task
 from taskdb.utils.tools import LOG
 
 
+__all__ = ['Cloud189']
+
 class CheckIn(object):
     client = requests.Session()
     login_url = "https://cloud.189.cn/api/portal/loginUrl.action?" \
@@ -133,7 +135,7 @@ def _b64_to_hex(a):
     return d
 
 
-class cloud189(Task):
+class Cloud189(Task):
 
     def __init__(self):
         super().__init__()
