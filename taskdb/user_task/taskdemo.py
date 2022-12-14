@@ -1,4 +1,4 @@
-from taskdb.taskbase.models import Task
+from taskdb.taskbase.object import Task
 
 
 __all__ = ['Task_demo']
@@ -9,8 +9,8 @@ class Task_demo(Task):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def step(self):
-        conf1 = self.conf.get('configkey1')
+    def step(self, config):
+        conf1 = config.get('configkey1')
         return f'conf1: {conf1}, Run success!'
 
     def get_conf_list(self):

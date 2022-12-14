@@ -106,14 +106,13 @@ class Task(object):
         '''
         raise NotImplementedError
 
-    def run(self, context, config_list):
+    def run(self, context):
         '''Run task and save to db
 
         :param context: app context
-        :param config_list: Task.conf
         :return: None
         '''
-        for config in config_list:
+        for config in self.conf:
             if self.status != 'normal':
                 continue
             self.result = []
@@ -169,31 +168,33 @@ class Task(object):
         :param task_id: str
         :return: task dict
         '''
-        return cls.tb.quary(
-            KeyConditionExpression=Key('id').eq('task_info'),
-            FilterExpression=Attr('type').eq(task_name),
-        ).get('Items')
+        res = cls.tb.quary(KeyConditionExpression=Key('id').eq('task_info'),
+                           FilterExpression=Attr('type').eq(task_name)
+                           ).get('Items')
+        return res
 
     @classmethod
     def get_all_tasks(cls):
         '''Get all task list(latest)
 
-        return [{},]
         {"id":"Task_test", "data_type":"latest_log", "result":"OK!", "date":"2022-12-8"}
         TODO(jneeee) pagination
+        :return: [{},]
         '''
         try:
             resp = cls.tb.table.quary(
-            FilterExpression=Key('id').eq('task_info'),
-            Limit=20,
-        ).get('Items')
+                FilterExpression=Key('id').eq('task_info'),
+                Limit=20,
+            ).get('Items')
         except:
             resp = [{},]
         return resp
 
     @property
     def info_format(self):
-        return self.ordereddict_format(self.__dict__)
+        if not self._info_format:
+            self._info_format = self.ordereddict_format(self.__dict__)
+        return self._info_format
 
     @classmethod
     def ordereddict_format(cls, task_d):

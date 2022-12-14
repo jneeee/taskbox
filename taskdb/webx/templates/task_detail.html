@@ -5,18 +5,21 @@
 <tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>
 {% endblock %}
 {% block content %}
-<h1>任务详情</h1>
+<h4>任务详情</h4>:
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
 <tr>
-{% for key in task.keys() %}
+{% for key in task.info_format.keys() %}
 <th class="Title" align="center" width="60">{{ key }}</th>
 {% endfor %}
 </tr>
 <tr>
-{% for _, val in task.items() %}
+{% for _, val in task.info_format.items() %}
 <td class="Item" align="center">{{ val }}</td>
 {% endfor %}
 </tr></tbody></table>
+
+<h4>配置说明</h4>:
+<p>{{ task.get_conf_list.__doc__ }}</p>
 
 <p>定时任务周期设置</p>
 配置：<select name="province">

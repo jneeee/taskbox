@@ -12,7 +12,7 @@ from taskdb.webx import (
     route_db,
     route_static,
 )
-from taskdb.taskbase import models
+from taskdb.taskbase import object
 
 
 ROUTE = {
@@ -92,16 +92,16 @@ class Request():
         return f'Request: {self.method} {self.path}, body: {self.body}'
 
     def do_auth_login(self):
-        app_context = models.get_app_db().get({'id': 'app_context'})
+        app_context = object.get_app_db().get({'id': 'app_context'})
         app_context.get('cur_authed_srip').append(self.httpinfo['sourceIp'])
         _check_ip_is_authed.cache_clear()
-        models.get_app_db().update(app_context)
+        object.get_app_db().update(app_context)
 
     def do_auth_logout(self):
-        app_context = models.get_app_db().get({'id': 'app_context'})
+        app_context = object.get_app_db().get({'id': 'app_context'})
         app_context.get('cur_authed_srip').remove(self.httpinfo['sourceIp'])
         _check_ip_is_authed.cache_clear()
-        models.get_app_db().update(app_context)
+        object.get_app_db().update(app_context)
 
     def __del__(self):
         '''Del method
@@ -115,7 +115,7 @@ class Request():
 @lru_cache
 def _check_ip_is_authed(ip_str):
     # {"id": "cur_authed_srip", "value": set()}
-    app_context = models.get_app_db().get({'id': 'app_context'})
+    app_context = object.get_app_db().get({'id': 'app_context'})
     if not app_context:
         # Got Typeerror if cur_authed_srip = {None, } here, So just asign a list
         app_context = {'id': 'app_context', 'cur_authed_srip': []}

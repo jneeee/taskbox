@@ -5,11 +5,11 @@ import time
 import requests
 import rsa
 
-from taskdb.taskbase.models import Task
+from taskdb.taskbase.object import Task
 from taskdb.utils.tools import LOG
 
 
-__all__ = ['Cloud189']
+__all__ = []
 
 class CheckIn(object):
     client = requests.Session()
@@ -141,8 +141,9 @@ class Cloud189(Task):
         super().__init__()
 
     def step(self):
-
+        pass
         # 'checkin189' : {'time':x, 'checkin_space':x, 'lottery_space':x, 'total':x}
+        '''
         if not ret:
             LOG.error(f'process189ret get empty ret')
             return
@@ -155,3 +156,4 @@ class Cloud189(Task):
             cur['total'] += sum([v for k,v in ret.items() if k != 'time'])
             cur.update(ret)
         LOG.info(f'store in db: "checkin189": {cur}')
+        '''

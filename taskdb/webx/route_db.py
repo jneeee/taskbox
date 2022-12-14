@@ -1,6 +1,6 @@
 import json
 
-from taskdb.taskbase import models
+from taskdb.taskbase import object
 from taskdb.utils.tools import LOG
 
 
@@ -15,7 +15,7 @@ def route(req):
         # req.body = 'id=Task_xxx'
         key, val = req.body.split('=')
         if key == 'quary_id':
-            quary_res = models.get_app_db().get({'id': val})
+            quary_res = object.get_app_db().get({'id': val})
             if not quary_res:
                 req.msg = ('warning', f'No such key!: {val}')
                 return req.make_resp(template_name='dynamodb.html')
@@ -25,7 +25,7 @@ def route(req):
             # req.body = 'item={'id':xx}'
             try:
                 item = json.loads(val)
-                models.get_app_db().put(item)
+                object.get_app_db().put(item)
                 req.msg = ('success', f'Put item: {item}')
             except Exception as e:
                 LOG.exception(e)
@@ -34,7 +34,7 @@ def route(req):
 
         elif key == 'delete_id':
             try:
-                models.get_app_db().delete({'id': val})
+                object.get_app_db().delete({'id': val})
                 req.msg = ('success', f'Delete id: {val} success')
             except Exception as e:
                 LOG.exception(e)
