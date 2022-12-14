@@ -244,7 +244,7 @@ class Eventscheduler():
             FlexibleTimeWindow={
                 'Mode': 'OFF',
             },
-            Target={'Arn': self.func_arn}
+            Target={'Arn': self.func_arn},
             RoleArn='',
             Input=''
         )

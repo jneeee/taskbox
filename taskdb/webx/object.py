@@ -86,13 +86,18 @@ class Request():
         }
 
     def route(self):
-        return ROUTE[self.path_list[0]](self)
+        try:
+            return ROUTE[self.path_list[0]](self)
+        except KeyError:
+            return 'no such route'
 
     def __str__(self) -> str:
         return f'Request: {self.method} {self.path}, body: {self.body}'
 
     def do_auth_login(self):
         app_context = object.get_app_db().get({'id': 'app_context'})
+        if not app_context:
+            app_context = {'cur_authed_srip': []}
         app_context.get('cur_authed_srip').append(self.httpinfo['sourceIp'])
         _check_ip_is_authed.cache_clear()
         object.get_app_db().update(app_context)

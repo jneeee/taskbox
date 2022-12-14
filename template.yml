@@ -42,9 +42,8 @@ Resources:
           DDB_TABLE: !Ref taskdbdynamodb
           auth_passwd: authpass
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref taskdbdynamodb
         - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
       Layers:
         - !Ref libs
       Events:
