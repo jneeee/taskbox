@@ -1,5 +1,5 @@
 from taskbox.taskbase import task
-from taskbox import user_task
+from taskbox import user_task # noqa
 
 
 class TaskManager():

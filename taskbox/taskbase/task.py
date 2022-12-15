@@ -86,7 +86,7 @@ class Task(object):
         self.data_type = 'task_info'
         if 'last_run_time' in kwargs:
             self.run_time = kwargs.get('last_run_time')
-        self.status = kwargs.get('status', 'normal')
+        self.status = kwargs.get('status', 'pending')
         self.exc_info = kwargs.get('exc_info', {'cforce_cost': 0,
                                                 'run_count': 0,
                                                 'total_cf_cost': 0})
@@ -166,10 +166,11 @@ class Task(object):
         :param task_id: str
         :return: task dict
         '''
-        res = cls.get_tb().native_table.query(KeyConditionExpression=Key('id').eq('task_info'),
-                           FilterExpression=Attr('type').eq(task_name)
-                           ).get('Items')
-        return res
+        res = cls.get_tb().native_table.query(
+            KeyConditionExpression=Key('id').eq('task_info'),
+            FilterExpression=Attr('type').eq(task_name)).get('Items')
+
+        return res[0] if len(res) >= 1 else {}
 
     @classmethod
     def get_all_tasks(cls):
@@ -182,15 +183,14 @@ class Task(object):
         try:
             resp = cls.get_tb().native_table.query(
                 FilterExpression=Key('id').eq('task_info'),
-                Limit=20,
-            ).get('Items')
+                Limit=20).get('Items')
         except:
             resp = [{},]
         return resp
 
     @property
     def info_format(self):
-        if not self._info_format:
+        if not hasattr(self, '_info_format'):
             self._info_format = self.ordereddict_format(self.__dict__)
         return self._info_format
 
@@ -203,7 +203,7 @@ class Task(object):
         from collections import OrderedDict
 
         trans_d = {
-            '名称': lambda d: d.get('id'),
+            '名称': lambda d: d.get('type'),
             '状态': lambda d: d.get('status'),
             '结果': lambda d: d.get('result'),
             '上次执行': lambda d: time.strftime('%Y-%m-%d %H:%M:%S',

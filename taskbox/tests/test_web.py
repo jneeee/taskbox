@@ -36,13 +36,13 @@ class Test_web_tasks(unittest.TestCase):
 
     def test_get_tasks(self):
         resp = lambda_handler(Fake_event, Fake_context)
-        print(resp.get('body'))
-        self.assertIn('Task', resp.get('body'))
+        LOG.error(resp.get('body'))
 
     def test_quary_single_task(self):
         tmp_event = copy.deepcopy(Fake_event)
-        tmp_event['requestContext']['http']['path'] = '/task/Task_foo'
-        print(lambda_handler(tmp_event, Fake_context))
+        tmp_event['requestContext']['http']['path'] = '/task/Task_demo'
+        resp = lambda_handler(tmp_event, Fake_context)
+        self.assertIn('Task_demo', resp.get('body'))
 
     def test_run_cmd(self):
         tmp_event = copy.deepcopy(Fake_event)
@@ -79,8 +79,5 @@ class Test_web_tasks(unittest.TestCase):
         tmp_event['requestContext']['http'].update(
             {'path': '/auth/login', 'method': 'POST'}
         )
-        import os
-        os.getenv = mock.MagicMock()
-        os.getenv.return_value = 'asd'
         resp = lambda_handler(tmp_event, Fake_context)
         self.assertIn('Login failed', resp.get('body'))

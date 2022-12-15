@@ -3,6 +3,9 @@ from taskbox.utils.tools import LOG
 
 
 class Task_demo(Task):
+    '''任务说明
+    
+    '''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,5 +25,4 @@ class Task_demo(Task):
         return ['configkey1', 'configkey2']
 
 Task_demo.register()
-LOG.error('===========================subtask')
 
