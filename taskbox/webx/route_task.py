@@ -1,6 +1,6 @@
-from taskdb.taskbase.object import Task
-from taskdb.taskbase.manage import TaskManager
-from taskdb.utils.tools import LOG
+from taskbox.taskbase.task import Task
+from taskbox.taskbase.manage import TaskManager
+from taskbox.utils.tools import LOG
 
 
 def get_task(req):

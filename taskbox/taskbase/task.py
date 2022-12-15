@@ -4,8 +4,8 @@ import time
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
 
-from taskdb.utils.tools import LOG
-from taskdb.taskbase.exception import TaskBaseException
+from taskbox.utils.tools import LOG
+from taskbox.taskbase.exception import TaskBaseException
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
 class Tableclient():

@@ -5,8 +5,8 @@ import time
 import requests
 import rsa
 
-from taskdb.taskbase.object import Task
-from taskdb.utils.tools import LOG
+from taskbox.taskbase.task import Task
+from taskbox.utils.tools import LOG
 
 
 __all__ = []

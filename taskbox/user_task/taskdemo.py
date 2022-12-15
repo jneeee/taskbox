@@ -1,4 +1,4 @@
-from taskdb.taskbase.object import Task
+from taskbox.taskbase.task import Task
 
 
 __all__ = ['Task_demo']

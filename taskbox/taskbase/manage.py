@@ -1,5 +1,5 @@
-from taskdb.taskbase.object import Task
-from taskdb.user_task import *
+from taskbox.taskbase.task import Task
+from taskbox.user_task import *
 
 
 class TaskManager():
