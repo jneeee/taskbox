@@ -7,6 +7,7 @@ class TaskManager():
 
     def __init__(self, task_name) -> None:
         self.task_name = task_name
+        self._task_info = None
 
     @property
     def task_info(self):

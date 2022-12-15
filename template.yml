@@ -40,7 +40,9 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref taskdbdynamodb
+          # 用来登录web的强密码
           auth_passwd: authpass
+      # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
@@ -63,7 +65,6 @@ Resources:
       DefaultRouteSettings:
         ThrottlingBurstLimit: 50
       FailOnWarnings: true
-      # 设置自己的域名， 或者把 DisableExecuteApiEndpoint Domain 都删掉用aws的临时域名
       RouteSettings:
         "POST /auth":
           ThrottlingBurstLimit: 10 # overridden in HttpApi Event

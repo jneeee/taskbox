@@ -51,7 +51,10 @@ class Tableclient():
         return: None
         '''
         old = self.get({'id':item['id']})
-        old.update(item)
+        if isinstance(old, dict):
+            old.update(item)
+        else:
+            old = item
         self.table.put_item(Item=old)
 
 
@@ -156,7 +159,7 @@ class Task(object):
         return cls(**task_info)
 
     def get_history(self):
-        return self.tb.quary(
+        return self.tb.table.query(
             KeyConditionExpression=Key('id').eq('task_history'),
             FilterExpression=Attr('type').eq(self.type),
         ).get('Items')
@@ -168,7 +171,7 @@ class Task(object):
         :param task_id: str
         :return: task dict
         '''
-        res = cls.tb.quary(KeyConditionExpression=Key('id').eq('task_info'),
+        res = cls.tb.table.query(KeyConditionExpression=Key('id').eq('task_info'),
                            FilterExpression=Attr('type').eq(task_name)
                            ).get('Items')
         return res
@@ -182,7 +185,7 @@ class Task(object):
         :return: [{},]
         '''
         try:
-            resp = cls.tb.table.quary(
+            resp = cls.tb.table.query(
                 FilterExpression=Key('id').eq('task_info'),
                 Limit=20,
             ).get('Items')

@@ -97,7 +97,7 @@ class Request():
     def do_auth_login(self):
         app_context = object.get_app_db().get({'id': 'app_context'})
         if not app_context:
-            app_context = {'cur_authed_srip': []}
+            app_context = {'id': 'app_context', 'cur_authed_srip': []}
         app_context.get('cur_authed_srip').append(self.httpinfo['sourceIp'])
         _check_ip_is_authed.cache_clear()
         object.get_app_db().update(app_context)
