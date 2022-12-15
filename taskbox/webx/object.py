@@ -25,7 +25,7 @@ ROUTE = {
     'auth': route_auth.auth,
 }
 # One app instance may call muti req, so we asign global var here for muti uses.
-HTML_ENV = Environment(loader=PackageLoader('taskdb.webx', 'templates'))
+HTML_ENV = Environment(loader=PackageLoader('taskbox.webx', 'templates'))
 
 
 class Request():

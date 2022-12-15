@@ -32,14 +32,14 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: taskdb.index.lambda_handler
+      Handler: taskbox.index.lambda_handler
       Runtime: python3.9
       MemorySize: 140
       Timeout: 5
       Description: A crontask frame and HTTP service.
       Environment:
         Variables:
-          DDB_TABLE: !Ref taskdbdynamodb
+          DDB_TABLE: !Ref taskboxdynamodb
           # 用来登录web的强密码
           auth_passwd: authpass
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
@@ -72,18 +72,18 @@ Resources:
   AccessLogs:
     Type: AWS::Logs::LogGroup
 
-  taskdbdynamodb:
+  taskboxdynamodb:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      TableName: Taskdb
+      TableName: taskbox
   libs:
     Type: AWS::Lambda::LayerVersion
     Properties:
-      LayerName: taskdblayer
+      LayerName: taskboxlayer
       Description: jinja2 + rsa + requests
       Content:
         S3Bucket: !Sub 'aws-${AWS::Region}-${AWS::AccountId}-${AppId}-pipe'
-        S3Key: layer/taskdblayer.zip
+        S3Key: layer/taskboxlayer.zip
       CompatibleRuntimes:
         - python3.9
 

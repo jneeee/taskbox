@@ -2,7 +2,7 @@ import subprocess
 import logging
 
 
-LOG = logging.getLogger('taskdb')
+LOG = logging.getLogger('taskbox')
 LOG.setLevel(logging.INFO)
 
 def run_cmd(cmd_str):
