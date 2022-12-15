@@ -39,7 +39,7 @@ Resources:
       Description: A crontask frame and HTTP service.
       Environment:
         Variables:
-          DDB_TABLE: !Ref taskboxdynamodb
+          DDB_TABLE: !Ref taskboxddbtable
           # 用来登录web的强密码
           auth_passwd: authpass
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
@@ -67,15 +67,30 @@ Resources:
       FailOnWarnings: true
       RouteSettings:
         "POST /auth":
-          ThrottlingBurstLimit: 10 # overridden in HttpApi Event
+          ThrottlingBurstLimit: 5 # overridden in HttpApi Event
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
 
-  taskboxdynamodb:
-    Type: AWS::Serverless::SimpleTable
+  taskboxddbtable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      TableName: taskbox
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+        -
+          AttributeName: "name"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
+        -
+          AttributeName: "name"
+          KeyType: "RANGE"
+
   libs:
     Type: AWS::Lambda::LayerVersion
     Properties:
@@ -86,8 +101,6 @@ Resources:
         S3Key: layer/taskboxlayer.zip
       CompatibleRuntimes:
         - python3.9
-
-# 创建定时器 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedulev2.html
 
 Outputs:
   HttpApiUrl:
