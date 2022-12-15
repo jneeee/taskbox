@@ -1,47 +1,12 @@
-import os
 import unittest
 from unittest import mock
 import copy
 
-import boto3
 from moto import mock_dynamodb
 
 from taskbox.index import lambda_handler
 from taskbox.utils.tools import LOG
-
-os.environ['DDB_TABLE'] = 'table_name'
-
-
-def create_user_table() -> dict:
-    return dict(
-        TableName='table_name',
-        KeySchema=[
-            {
-                'AttributeName': 'id',
-                'KeyType': 'HASH'
-            },
-        ],
-        AttributeDefinitions=[
-            {
-                'AttributeName': 'id',
-                'AttributeType': 'S'
-            },
-        ],
-        BillingMode='PAY_PER_REQUEST'
-    )
-
-
-class TaskRepository:
-
-    def __init__(self, ddb_resource):
-        if not ddb_resource:
-            ddb_resource = boto3.resource('dynamodb')
-        self.table = ddb_resource.Table('table_name')
-
-    def do_db_init(self):
-        self.table.put_item(Item={'id': 'Task_foo', 'taskinfo': 'foo'})
-        item = {'id': 'app_context', 'cur_authed_srip': []}
-        self.table.put_item(Item=item)
+from taskbox.tests import fixture
 
 
 Fake_event = {
@@ -64,10 +29,7 @@ Fake_context = {}
 class Test_web_tasks(unittest.TestCase):
 
     def setUp(self):
-        ddb = boto3.resource("dynamodb")
-        self.table = ddb.create_table(**create_user_table())
-        self.test_repo = TaskRepository(ddb)
-        self.test_repo.do_db_init()
+        self.table = fixture.create_table()
 
     def tearDown(self):
         self.table.delete()

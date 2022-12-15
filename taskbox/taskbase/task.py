@@ -11,7 +11,7 @@ from taskbox.taskbase.exception import TaskBaseException
 class Tableclient():
     def __init__(self, tablename) -> None:
          _dynamo = boto3.resource('dynamodb')
-         self.table = _dynamo.Table(tablename)
+         self.native_table = _dynamo.Table(tablename)
 
     def get(self, item):
         '''Get item by key
@@ -25,7 +25,7 @@ class Tableclient():
         resp = {}
 
         try:
-            resp = self.table.get_item(Key=item).get("Item")
+            resp = self.native_table.get_item(Key=item).get("Item")
         except Exception as e:
             LOG.exception(e)
         return resp
@@ -34,14 +34,14 @@ class Tableclient():
         # item: dict{'id': key}
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
-        self.table.delete_item(Key=item)
+        self.native_table.delete_item(Key=item)
 
     def put(self, item):
         # item: dict{'id': id, 'value': value}
         # TODO threading
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
-        self.table.put_item(Item=item)
+        self.native_table.put_item(Item=item)
         LOG.info(f'Put_item: {item}')
 
     def update(self, item):
@@ -55,15 +55,10 @@ class Tableclient():
             old.update(item)
         else:
             old = item
-        self.table.put_item(Item=old)
-
-
-def get_app_db():
-    return Tableclient(getenv('DDB_TABLE'))
+        self.native_table.put_item(Item=old)
 
 
 class Task(object):
-    tb = Tableclient(getenv('DDB_TABLE'))
     # format_seq for the desplay key seqence in web
     format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']
@@ -146,7 +141,7 @@ class Task(object):
     def _save(self):
         item = self.__dict__
         item['id'] = 'task_info'
-        self.tb.put(item=item)
+        self.get_tb().put(item=item)
         LOG.info(f'Write to db: {item}')
 
     @classmethod
@@ -159,7 +154,7 @@ class Task(object):
         return cls(**task_info)
 
     def get_history(self):
-        return self.tb.table.query(
+        return self.get_tb().native_table.query(
             KeyConditionExpression=Key('id').eq('task_history'),
             FilterExpression=Attr('type').eq(self.type),
         ).get('Items')
@@ -171,7 +166,7 @@ class Task(object):
         :param task_id: str
         :return: task dict
         '''
-        res = cls.tb.table.query(KeyConditionExpression=Key('id').eq('task_info'),
+        res = cls.get_tb().native_table.query(KeyConditionExpression=Key('id').eq('task_info'),
                            FilterExpression=Attr('type').eq(task_name)
                            ).get('Items')
         return res
@@ -185,7 +180,7 @@ class Task(object):
         :return: [{},]
         '''
         try:
-            resp = cls.tb.table.query(
+            resp = cls.get_tb().native_table.query(
                 FilterExpression=Key('id').eq('task_info'),
                 Limit=20,
             ).get('Items')
@@ -221,6 +216,13 @@ class Task(object):
         for name in cls.format_seq:
             res[name] = trans_d[name](task_d)
         return res
+
+    @classmethod
+    def get_tb(cls):
+        '''Get Task table'''
+        if not hasattr(cls, 'tb'):
+            cls.tb = Tableclient(getenv('DDB_TABLE'))
+        return cls.tb
 
     def registe_crontab(self, cron_str):
         pass

@@ -1,7 +1,5 @@
 from taskbox.taskbase.task import Task
-
-
-__all__ = ['Task_demo']
+from taskbox.utils.tools import LOG
 
 
 class Task_demo(Task):
@@ -24,3 +22,5 @@ class Task_demo(Task):
         return ['configkey1', 'configkey2']
 
 Task_demo.register()
+LOG.error('===========================subtask')
+

@@ -95,18 +95,18 @@ class Request():
         return f'Request: {self.method} {self.path}, body: {self.body}'
 
     def do_auth_login(self):
-        app_context = task.get_app_db().get({'id': 'app_context'})
+        app_context = task.Task.get_tb().get({'id': 'app_context'})
         if not app_context:
             app_context = {'id': 'app_context', 'cur_authed_srip': []}
         app_context.get('cur_authed_srip').append(self.httpinfo['sourceIp'])
         _check_ip_is_authed.cache_clear()
-        task.get_app_db().update(app_context)
+        task.Task.get_tb().update(app_context)
 
     def do_auth_logout(self):
-        app_context = task.get_app_db().get({'id': 'app_context'})
+        app_context = task.Task.get_tb().get({'id': 'app_context'})
         app_context.get('cur_authed_srip').remove(self.httpinfo['sourceIp'])
         _check_ip_is_authed.cache_clear()
-        task.get_app_db().update(app_context)
+        task.Task.get_tb().update(app_context)
 
     def __del__(self):
         '''Del method
@@ -120,7 +120,7 @@ class Request():
 @lru_cache
 def _check_ip_is_authed(ip_str):
     # {"id": "cur_authed_srip", "value": set()}
-    app_context = task.get_app_db().get({'id': 'app_context'})
+    app_context = task.Task.get_tb().get({'id': 'app_context'})
     if not app_context:
         # Got Typeerror if cur_authed_srip = {None, } here, So just asign a list
         app_context = {'id': 'app_context', 'cur_authed_srip': []}
