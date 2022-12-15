@@ -84,7 +84,7 @@ class Task(object):
             }
         }
         '''
-        self.type = self.__class__.__name__
+        self.name = self.__class__.__name__
         self.result = kwargs.get('result')
         self.conf = kwargs.get('conf', [])
         self.data_type = 'task_info'
@@ -206,12 +206,24 @@ class Task(object):
         '''
         from collections import OrderedDict
 
+        def get_status(data):
+            statu_emoji = {
+                'normal': '🟢',
+                'pendding': '🟡',
+                'pause': '🔴',
+            }
+            return statu_emoji[data.get('status')]
+
+        def get_time(data):
+            if not data.get('last_run_time'):
+                return None
+            return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
         trans_d = {
-            '名称': lambda d: d.get('type'),
-            '状态': lambda d: d.get('status'),
+            '名称': lambda d: d.get('name'),
+            '状态': get_status,
             '结果': lambda d: d.get('result'),
-            '上次执行': lambda d: time.strftime('%Y-%m-%d %H:%M:%S',
-                time.localtime(d.get('last_run_time'))),
+            '上次执行': get_time,
             '消耗': lambda d: d.get('exc_info', {}).get('cforce_cost'),
             '累计消耗': lambda d: d.get('exc_info', {}).get('total_cf_cost'),
             '累计执行': lambda d: d.get('exc_info', {}).get('run_count'),
