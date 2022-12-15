@@ -8,34 +8,29 @@
 <h1>Dynamodb</h1>
 <div class="alert alert-info">本页的 api 属于底层接口，用于调试，<b>需要登录</b>。非必要别用。</div>
 <h4>1. 查询</h4>
-<p>任务以 Task_ 开头。</p>
 <form action="/db" method="post">
-id: <input  name="quary_id"> <input type="submit" value="查询">
+id: <input name="id"><br>
+name: <input name="name"><br>
+option: <select name="op_type">
+  <option value="">--请选择--</option>
+  <option value="1" selected>查询</option>
+  <option value="2">删除</option>
+</select><input type="submit" value="执行">
 </form>
-{% if quary_res is defined %}
-<p><b>查询结果</b>:</p>
+{% if quary_res is defined %}<p><b>查询结果</b>:</p>
   <table cellspacing="1" cellpadding="6" border="0"><tbody>
-  <tr>
-    {% for key in quary_res[0].keys() %}
+  <tr>{% for key in quary_res[0].keys() %}
     <th class="Title" align="center" width="60">{{ key }}</th>
-    {% endfor %}
-  </tr>
+  {% endfor %}</tr>
   {% for task in quary_res %}
-  <tr>
-    {% for _, v in task.items() %}
+  <tr>{% for _, v in task.items() %}
     <td class="Item" align="center">{{ v }}</td>
-    {% endfor %}
-  </tr>
-  {% endfor %}
-  </tbody></table>
+    {% endfor %}</tr>
+  {% endfor %}</tbody></table>
 {% endif %}
 <h4>2. 添加数据</h4>
-<p>item 数据格式: {"id": "xxx", "val":[], ...}</p>
-<form action="/db" method="post">
+<p>item 数据格式: {"id": "xxx", "name":, "val":[], ...}</p>
+<form action="/db?op_type=3" method="post">
 item: <input name="put_item"> <input type="submit" value="添加">
-</form>
-<h4>3. 删除</h4>
-<form action="/db" method="post">
-id: <input name="delete_id"> <input type="submit" value="删除">
 </form>
 {% endblock %}

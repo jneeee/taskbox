@@ -31,7 +31,7 @@ class Tableclient():
         return resp
 
     def delete(self, item):
-        # item: dict{'id': key}
+        # item: dict{'id': key, 'name':,}
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
         self.native_table.delete_item(Key=item)
@@ -47,10 +47,10 @@ class Tableclient():
     def update(self, item):
         '''update item as dict.update
 
-        item: {id:, val:,}
+        item: {id:, name:, val:,}
         return: None
         '''
-        old = self.get({'id':item['id']})
+        old = self.get({'id': item['id'], 'name': item['name']})
         if isinstance(old, dict):
             old.update(item)
         else:
@@ -59,6 +59,10 @@ class Tableclient():
 
 
 class Task(object):
+    '''The task obj to perform action.
+
+    store in db: {id:'task_info', 'name': <task class name>, ...}
+    '''
     # format_seq for the desplay key seqence in web
     format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']

@@ -34,7 +34,7 @@ Resources:
       CodeUri: ./
       Handler: taskbox.index.lambda_handler
       Runtime: python3.9
-      MemorySize: 140
+      MemorySize: 180
       Timeout: 5
       Description: A crontask frame and HTTP service.
       Environment:
