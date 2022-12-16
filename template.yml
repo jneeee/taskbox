@@ -31,6 +31,7 @@ Resources:
   Taskdashboard:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: mytaskbox
       CodeUri: ./
       Handler: taskbox.index.lambda_handler
       Runtime: python3.9
@@ -42,6 +43,7 @@ Resources:
           DDB_TABLE: !Ref taskboxddbtable
           # 用来登录web的强密码
           auth_passwd: authpass
+          FUNC_ARN: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:mytaskbox'
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
       Policies:
         - AWSLambdaBasicExecutionRole

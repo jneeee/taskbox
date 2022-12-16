@@ -1,7 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="https://www.7-zip.org/style.css" rel="stylesheet" type="text/css">
-<title>Task Dashboard</title>
+<title>任务盒子</title>
 <style type="text/css">
 .alert {position: relative;padding: .75rem 1.25rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: .25rem}
 .alert-success {color: #155724;background-color: #d4edda;border-color: #c3e6cb}
@@ -11,26 +10,19 @@
 </style></head><body>
 <table cellspacing="10" cellpadding="10" border="0" width="100%"><tbody><tr>
 <td class="MenuColumn" valign="top">
-<div class="MenuCurrent">📝Task Dashboard</div><hr>
+<div class="MenuCurrent">📦 任务盒子</div><hr>
 <table cellpadding="2" cellspacing="0" border="0"><tbody>
 {% block menu %}{% endblock %}
 </tbody></table><hr>
-{% if req.is_authed %}
-<a href="/auth/logout" class="MenuLink">退出登录</a>
-{% else %}
-<a href="/auth/login" class="MenuLink">登录</a>
-{% endif %}
+{% if req.is_authed %}<a href="/auth/logout" class="MenuLink">退出登录</a>{% else %}
+<a href="/auth/login" class="MenuLink">登录</a>{% endif %}
 </td>
 <td valign="top">
 <table cellspacing="4" cellpadding="4"><tbody><tr>
 <td>
-{% if req.msg %}
-<div class="alert alert-{{ req.msg[0] }}">
-📌 {{ req.msg[1] }}
-</div>
-{% endif %}
+{% if req.msg %}<div class="alert alert-{{ req.msg[0] }}">📌 {{ req.msg[1] }}</div>{% endif %}
 {% block content %}{% endblock %}
 </td></tr></tbody></table>
 <hr>
-<p><small>Powered by <a href="https://github.com/jneeee/taskbox">taskbox</a> v1.0 耗时: {{req.timecost}}ms.</small></p>
+<p><small>Powered by <a href="https://github.com/jneeee/taskbox">TaskBox</a> v1.3 耗时: {{req.timecost}}ms.</small></p>
 </td></tr></tbody></table></body></html>
