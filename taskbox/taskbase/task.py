@@ -1,11 +1,14 @@
+import copy
 from os import getenv
 import time
+import json
 
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
 
 from taskbox.utils.tools import LOG
 from taskbox.taskbase.exception import TaskBaseException
+from taskbox.taskbase.exception import TaskConfigInvalid
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
 class Tableclient():
@@ -88,7 +91,6 @@ class Task(object):
         self.name = self.__class__.__name__
         self.result = kwargs.get('result')
         self.conf = kwargs.get('conf', [])
-        self.data_type = 'task_info'
         if 'last_run_time' in kwargs:
             self.run_time = kwargs.get('last_run_time')
         self.status = kwargs.get('status', 'pending')
@@ -181,9 +183,9 @@ class Task(object):
     def get_all_tasks(cls):
         '''Get all task list(latest)
 
-        {"id":"Task_test", "data_type":"latest_log", "result":"OK!", "date":"2022-12-8"}
+        {"id":"Task_test", "result":"OK!", "date":"2022-12-8"}
         TODO(jneeee) pagination
-        :return: [{},]
+        :return: [] or [{},]
         '''
         resp = cls.get_tb().native_table.query(
             KeyConditionExpression=Key('id').eq('task_info')).get('Items')
@@ -192,7 +194,12 @@ class Task(object):
     @property
     def info_format(self):
         if not hasattr(self, '_info_format'):
-            self._info_format = self.ordereddict_format(self.__dict__)
+            if hasattr(self, 'name_zh'):
+                tempd = copy.copy(self.__dict__)
+                tempd['name'] = self.name_zh
+            else:
+                tempd = self.__dict__
+            self._info_format = self.ordereddict_format(tempd)
         return self._info_format
 
     @classmethod
@@ -216,6 +223,11 @@ class Task(object):
                 return None
             return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
+        def _get_name(data):
+            if hasattr(data, 'name_zh'):
+                return 
+            
+
         trans_d = {
             '名称': lambda d: d.get('name'),
             '状态': get_status,
@@ -237,8 +249,30 @@ class Task(object):
             cls.tb = Tableclient(getenv('DDB_TABLE'))
         return cls.tb
 
+    def get_conf_list(self):
+        '''实现我'''
+        return []
+
     def registe_crontab(self, cron_str):
         pass
+
+    def set_conf(self, conf_dict):
+        conf_list = self.get_conf_list()
+        if not conf_list:
+            raise TaskConfigInvalid('这个任务不需要配置')
+        elif len(conf_list) > conf_dict:
+            raise TaskConfigInvalid('本次请求缺少配置')
+
+        item = {}
+        for key, val in conf_dict.items():
+            if val.startswith('{'):
+                try:
+                    item[key] = json.loads(val)
+                except json.JSONDecodeError:
+                    raise TaskConfigInvalid(f'{val} 不是有效的json格式')
+            else:
+                item[key] = val
+        self.conf.append(item)
 
 
 class TaskList:

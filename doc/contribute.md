@@ -19,9 +19,9 @@ __all__ = ['Task_demo']
 
 
 class Task_demo(Task):
-    '''这里写这个任务的说明，会显示在任务详情页
+    '''任务介绍
 
-    它是干嘛的。类名就是
+    这里是任务介绍，会显示在任务详情页。
     '''
     name_zh = '任务的中文名，网页展示用'
 
@@ -30,25 +30,24 @@ class Task_demo(Task):
         super().__init__(*args, **kwargs)
 
     def step(self, config):
-        '''实现我
+        '''这里是任务具体做的事情
 
-        输入是一个配置字典，key是 get_conf_list 的返回中定义的。
-        这里是任务具体要做的事情
+        盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
+        注意不要回显敏感的配置信息！
         '''
         conf1 = config.get('configkey1')
-        return f'conf1: {conf1}, Run success!'
+        return f'conf1: 191******xxx signed, Run success!'
 
     def get_conf_list(self):
-        '''Config for task Demo_task
+        '''这是这个任务需要的配置说明。
 
-        这里是执行任务需要的配置的说明，会显示在web任务详情页
-        :configkey1: key1 的描述
-        :configkey2: key2 的描述
-        还可以提一下推荐的定时任务周期和理由。会被使用者看见
+        这个说明会显示在任务详情页。还可以写上推荐的定时周期语法等任何你想提醒使用者的话。
+        把需要配置的关键字作为列表返回。并在这里加以说明。推荐配置为简单字符串或者
+        configkey1 是账号，configkey2 是密码。
         '''
         return ['configkey1', 'configkey2']
 
-# 向盒子注册这个Task，必要的，不然找不到。别重写 register 函数
+# 向盒子注册这个Task，必要的，不然找不到任务。
 Task_demo.register()
 
 # requirements.txt

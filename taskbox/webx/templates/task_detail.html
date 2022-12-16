@@ -13,7 +13,14 @@
 <hr>
 <h4>任务说明</h4>
 <p>{{ task.__doc__ }}</p>
-<h4>配置说明</h4>
+<h4>配置修改</h4>
 <p>{{ task.get_conf_list.__doc__ }}</p>
-<p>定时任务周期设置</p>
+<p>推荐简单字符串或者**有效的json**</p>
+<form action="/task/{{ task.info_format['name'] }}" method="post">
+  <!-- 这套配置名称(用于多账号)，对你有意义的名称，会对外显示 -->
+  {% for name in task.get_conf_list() %}{{name}}: <input name="{{ name }}"><br>{% endfor %}
+  <input type="submit" value="执行">
+</form>
+<h4>定时任务周期设置</h4>
+
 <br>{% endblock %}

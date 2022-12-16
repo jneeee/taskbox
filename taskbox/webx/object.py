@@ -56,7 +56,7 @@ class Request():
         if 'curl' in self.useragent:
             return content_kw
         else:
-            self.timecost = round(time.perf_counter() - self.starttime, 6)
+            self.timecost = round(time.perf_counter() - self.starttime, 6) * 1000
             return Request._resp_html(http_code=http_code,
                                       template_name=template_name,
                                       req=self, **content_kw)
