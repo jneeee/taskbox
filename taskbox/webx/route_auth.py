@@ -18,17 +18,15 @@ def login(req):
     if req.method == 'GET':
         return req.make_resp(template_name='login.html')
     elif req.method == 'POST':
-        req_passwd = req.body.split('=')[1]
-
-        if os.getenv('auth_passwd') == req_passwd:
+        if os.getenv('auth_passwd') == req.body.get('passwd'):
             req.do_auth_login()
-            req.msg = ('success', 'Login success!')
+            req.msg = ('success', '登录成功!')
         else:
-            req.msg = ('danger', 'Login failed!')
+            req.msg = ('danger', '登录失败!')
         return req.make_resp(template_name='login.html')
 
 
 def logout(req):
     req.do_auth_logout()
-    req.msg = ('success', 'Logout success!')
+    req.msg = ('success', '登出成功!')
     return req.make_resp(template_name='login.html')

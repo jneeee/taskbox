@@ -48,7 +48,6 @@ class Test_web_tasks(unittest.TestCase):
         tmp_event = copy.deepcopy(Fake_event)
         tmp_event['headers'] = {'cmd': 'ls'}
         tmp_event['requestContext']['http']['path'] = '/cmd'
-        print(lambda_handler(tmp_event, Fake_context))
 
     def test_db_query(self):
         tmp_event = copy.deepcopy(Fake_event)
@@ -72,7 +71,7 @@ class Test_web_tasks(unittest.TestCase):
             {'path': '/auth/login', 'method': 'GET'}
         )
         resp = lambda_handler(tmp_event, Fake_context)
-        self.assertIn('Session will expire after one day.', resp.get('body'))
+        self.assertIn('会话会在一天后过期', resp.get('body'))
 
     def test_auth_login_post(self):
         tmp_event = copy.deepcopy(Fake_event)
@@ -80,4 +79,4 @@ class Test_web_tasks(unittest.TestCase):
             {'path': '/auth/login', 'method': 'POST'}
         )
         resp = lambda_handler(tmp_event, Fake_context)
-        self.assertIn('Login failed', resp.get('body'))
+        self.assertIn('登录失败', resp.get('body'))
