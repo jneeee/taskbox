@@ -17,7 +17,7 @@
 <p>{{ task.conf }}</p>{% endif %}
 <h4>配置修改</h4>
 <p>{{ task.get_conf_list.__doc__ }}</p>
-<p>推荐简单字符串或者**有效的json**</p>
+<p>推荐简单字符串或者<b>有效的json</b></p>
 <form action="/task/{{ task.info_format['name'] }}" method="post">
   <!-- 这套配置名称(用于多账号)，对你有意义的名称，会对外显示 -->
   {% for name in task.get_conf_list() %}{{name}}: <input name="{{ name }}"><br>{% endfor %}
