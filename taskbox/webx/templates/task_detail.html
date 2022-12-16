@@ -25,6 +25,11 @@
   <input type="submit" value="执行">
 </form>
 <h4>定时任务周期设置</h4>
+<form action="/task/{{ task.name }}" method="post">
+  表达式: <input name="scheduler"> <i>at(yyyy-mm-ddThh:mm:ss) rate(unit value)
+cron(minutes hours day_of_month month day_of_week year)</i><br>
+  <input type="submit" value="添加">
+</form>
 
 <h4>任务操作</h4>
 

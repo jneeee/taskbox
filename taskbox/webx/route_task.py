@@ -1,6 +1,6 @@
 from taskbox.taskbase import exception
 from taskbox.taskbase.task import Task, TaskList
-from taskbox.taskbase.manage import TaskManager
+from taskbox.taskbase.manage import TaskManager, Eventscheduler
 from taskbox.utils.tools import LOG
 
 
@@ -38,15 +38,32 @@ def get_task(req):
                 req.msg = ('danger', '该操作需要登录!')
             else:
                 try:
-                    acc = req.body.pop('account')
-                    if 'delete' in req.body:
-                        task.conf.pop(acc)
+                    if 'scheduler' in req.body:
+                        _create_scheduler(task, req)
                     else:
-                        task.set_conf(acc, req.body)
+                        _update_config(task, req)
                 except exception.TaskBaseException as e:
                     req.msg = ('warning', e.args)
                 else:
                     task._save()
-                    req.msg = ('warning', f'Set conf Success: {req.body}')
         return req.make_resp(task=task,
                              template_name='task_detail.html')
+
+
+def _create_scheduler(task, req):
+    # create a scheduler, the name is taskname,
+    expression = req.body.get('scheduler')
+    resp = Eventscheduler().create(name=task.name, ScheduleExpression=expression)
+    task.scheduler = {'expression': expression, 'id': 'todo read from resp'}
+    req.msg = ('success', f'Create scheduler success, resp: {resp}')
+
+
+def _update_config(task, req):
+    acc = req.body.pop('account')
+    if not acc:
+        raise exception.TaskConfigInvalid('配置名称是必须的！')
+    if 'delete' in req.body:
+        task.conf.pop(acc)
+    else:
+        task.set_conf(acc, req.body)
+    req.msg = ('success', f'Set conf Success: {req.body}')
