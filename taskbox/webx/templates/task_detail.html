@@ -13,6 +13,8 @@
 <hr>
 <h4>任务说明</h4>
 <p>{{ task.__doc__ }}</p>
+{% if req.is_authed %}<h4>当前配置</h4>
+<p>{{ task.conf }}</p>{% endif %}
 <h4>配置修改</h4>
 <p>{{ task.get_conf_list.__doc__ }}</p>
 <p>推荐简单字符串或者**有效的json**</p>

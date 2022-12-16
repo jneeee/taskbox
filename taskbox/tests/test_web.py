@@ -7,13 +7,14 @@ from moto import mock_dynamodb
 from taskbox.index import lambda_handler
 from taskbox.utils.tools import LOG
 from taskbox.tests import fixture
+from taskbox.webx.object import Request
 
 
 Fake_event = {
     "requestContext": {
         "http": {
             "method": "GET",
-            "path": "/task",
+            "path": "/",
             "protocol": "HTTP/1.1",
             "sourceIp": "112.64.93.19",
             "userAgent": "Mozilla/5.0"
@@ -28,15 +29,22 @@ Fake_context = {}
 @mock_dynamodb
 class Test_web_tasks(unittest.TestCase):
 
-    def setUp(self):
-        self.table = fixture.create_table()
+    @classmethod
+    def setUpClass(cls):
+        cls.table = fixture.create_table()
 
-    def tearDown(self):
-        self.table.delete()
+    @classmethod
+    def tearDownClass(cls):
+        # cls.table.delete()
+        pass
+
+    def setUp(self):
+        Request.make_resp = mock.MagicMock()
+        self.resp = Request.make_resp
 
     def test_get_tasks(self):
-        resp = lambda_handler(Fake_event, Fake_context)
-        LOG.error(resp)
+        lambda_handler(Fake_event, Fake_context)
+        self.resp.assert_called_with('asd')
 
     def test_quary_single_task(self):
         tmp_event = copy.deepcopy(Fake_event)
