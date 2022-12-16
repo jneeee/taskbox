@@ -7,21 +7,14 @@
 {% block content %}
 <p><b>任务列表</b>:</p>
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
-<tr>
-  {% for key in tasks_list[0].keys() %}
+<tr>{% for key in taskl_obj[0].format_seq %}
   <th class="Title" align="center" width="60">{{ key }}</th>
-  {% endfor %}
-</tr>
-{% for task in tasks_list %}
-<tr>
-  {% for key, val in task.items() %}
-    {% if key == 'id' %}
+{% endfor %}</tr>
+{% for task in taskl_obj %}
+<tr>{% for key, val in task.info_format.items() %}{% if key == 'name' %}
     <td class="Item" align="center"><a href="/task/{{ val }}">{{ val }}</a></td>
-    {% else %}
-    <td class="Item" align="center">{{ val }}</td>
-    {% endif %}
-  {% endfor %}
-</tr>
+    {% else %}<td class="Item" align="center">{{ val }}</td>
+{% endif %}{% endfor %}</tr>
 {% endfor %}
 </tbody></table>
 {% endblock %}

@@ -1,8 +1,12 @@
 import os
+import logging
 
 import boto3
-
 from moto import mock_dynamodb
+
+from taskbox.utils.tools import LOG
+
+LOG.setLevel(logging.DEBUG)
 
 @mock_dynamodb
 def create_table():

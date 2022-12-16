@@ -66,6 +66,7 @@ class Task(object):
     # format_seq for the desplay key seqence in web
     format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']
+    # task_dict: key is taskname, val is task object
     task_dict = {}
 
     def __init__(self, *args, **kwargs):
@@ -160,7 +161,7 @@ class Task(object):
     def get_history(self):
         return self.get_tb().native_table.query(
             KeyConditionExpression=Key('id').eq('task_history'),
-            FilterExpression=Attr('type').eq(self.type),
+            FilterExpression=Attr('name').eq(self.name),
         ).get('Items')
 
     @classmethod
@@ -184,12 +185,8 @@ class Task(object):
         TODO(jneeee) pagination
         :return: [{},]
         '''
-        try:
-            resp = cls.get_tb().native_table.query(
-                FilterExpression=Key('id').eq('task_info'),
-                Limit=20).get('Items')
-        except:
-            resp = [{},]
+        resp = cls.get_tb().native_table.query(
+            KeyConditionExpression=Key('id').eq('task_info')).get('Items')
         return resp
 
     @property
@@ -209,7 +206,7 @@ class Task(object):
         def get_status(data):
             statu_emoji = {
                 'normal': '🟢',
-                'pendding': '🟡',
+                'pending': '🟡',
                 'pause': '🔴',
             }
             return statu_emoji[data.get('status')]
@@ -242,6 +239,44 @@ class Task(object):
 
     def registe_crontab(self, cron_str):
         pass
+
+
+class TaskList:
+
+    def __init__(self, task_inst_list=None) -> None:
+        if task_inst_list and isinstance(task_inst_list, list):
+            self._tl = task_inst_list
+        else:
+            self._tl = []
+
+    @classmethod
+    def from_list(cls, tasklist):
+        '''Create a Tasklist
+
+        :param tasklist: [{'id':xxx, }, ]
+        '''
+        tmp = []
+        for task_d in tasklist:
+            tmp.append(Task.from_dict(task_d))
+        return tmp
+
+    def __len__(self):
+        return len(self._tl)
+    
+    def append(self, item):
+        if isinstance(item, Task):
+            self._tl.append(item)
+        elif isinstance(item, dict):
+            self._tl.append(Task.from_dict(item))
+        # A fluent api design
+        return self
+
+    def pop(self):
+        return self._tl.pop()
+
+    def __iter__(self):
+        for i in self._tl:
+            yield i
 
 
 class Eventscheduler():

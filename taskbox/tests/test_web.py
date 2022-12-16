@@ -36,7 +36,7 @@ class Test_web_tasks(unittest.TestCase):
 
     def test_get_tasks(self):
         resp = lambda_handler(Fake_event, Fake_context)
-        LOG.error(resp.get('body'))
+        LOG.error(resp)
 
     def test_quary_single_task(self):
         tmp_event = copy.deepcopy(Fake_event)

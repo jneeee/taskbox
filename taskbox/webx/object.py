@@ -90,8 +90,8 @@ class Request():
     def route(self):
         try:
             return ROUTE[self.path_list[0]](self)
-        except KeyError:
-            return 'no such route'
+        except KeyError as e:
+            return f'no such route: req: {self}, err: {e}'
 
     def __str__(self) -> str:
         return f'Request: {self.method} {self.path}, body: {self.body}'
