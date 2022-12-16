@@ -27,11 +27,12 @@ class Task_demo(Task):
         '''这是这个任务需要的配置说明。
 
         这个说明会显示在任务详情页。还可以写上推荐的定时周期语法等任何你想提醒使用者的话。
-        把需要配置的关键字作为列表返回。并在这里加以说明。推荐配置为简单字符串或者
-        configkey1 是账号，configkey2 是密码。
+        把需要配置的关键字作为列表返回。并在这里加以说明。推荐配置为简单字符串或者json。
         '''
-        return ['configkey1', 'configkey2']
-
+        return {
+            'configkey1': '这里是配置说明，会显示在网页',
+            'configkey2': '这里是配置说明，会显示在网页',
+        }
 
 
 Task_demo.register()

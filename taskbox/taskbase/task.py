@@ -79,7 +79,7 @@ class Task(object):
             id: str,
             status: normal|pedding|pause (correspond color green|yellow|red),
             result: str,
-            conf:[{phone:xxx, passwd: xxx, }, ]} # can be multi config
+            conf:{'account1': {phone:xxx, passwd: xxx, }, } # can be multi config
             last_run_time: int, 1670907645.49549,
             exc_info = {
                 cforce_cost: int, # the compute force cost
@@ -90,7 +90,7 @@ class Task(object):
         '''
         self.name = self.__class__.__name__
         self.result = kwargs.get('result')
-        self.conf = kwargs.get('conf', [])
+        self.conf = kwargs.get('conf', {})
         if 'last_run_time' in kwargs:
             self.run_time = kwargs.get('last_run_time')
         self.status = kwargs.get('status', 'pending')
@@ -117,7 +117,7 @@ class Task(object):
         :param context: app context
         :return: None
         '''
-        for config in self.conf:
+        for _, config in self.conf.items():
             if self.status != 'normal':
                 continue
             self.result = []
@@ -174,8 +174,7 @@ class Task(object):
         :return: task dict
         '''
         res = cls.get_tb().native_table.query(
-            KeyConditionExpression=Key('id').eq('task_info'),
-            FilterExpression=Attr('type').eq(task_name)).get('Items')
+            KeyConditionExpression=Key('id').eq('task_info') & Key('name').eq(task_name)).get('Items')
 
         return res[0] if len(res) >= 1 else {}
 
@@ -196,7 +195,7 @@ class Task(object):
         if not hasattr(self, '_info_format'):
             if hasattr(self, 'name_zh'):
                 tempd = copy.copy(self.__dict__)
-                tempd['name'] = self.name_zh
+                tempd['name_zh'] = self.name_zh
             else:
                 tempd = self.__dict__
             self._info_format = self.ordereddict_format(tempd)
@@ -223,13 +222,8 @@ class Task(object):
                 return None
             return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-        def _get_name(data):
-            if hasattr(data, 'name_zh'):
-                return 
-            
-
         trans_d = {
-            '名称': lambda d: d.get('name'),
+            '名称': lambda d: d.get('name_zh', d.get('name')),
             '状态': get_status,
             '结果': lambda d: d.get('result'),
             '上次执行': get_time,
@@ -251,17 +245,12 @@ class Task(object):
 
     def get_conf_list(self):
         '''实现我'''
-        return []
+        return {}
 
     def registe_crontab(self, cron_str):
         pass
 
-    def set_conf(self, conf_dict):
-        conf_list = self.get_conf_list()
-        if not conf_list:
-            raise TaskConfigInvalid('这个任务不需要配置')
-        elif len(conf_list) > conf_dict:
-            raise TaskConfigInvalid('本次请求缺少配置')
+    def set_conf(self, accout_id, conf_dict):
 
         item = {}
         for key, val in conf_dict.items():
@@ -272,7 +261,10 @@ class Task(object):
                     raise TaskConfigInvalid(f'{val} 不是有效的json格式')
             else:
                 item[key] = val
-        self.conf.append(item)
+        if accout_id in self.conf:
+            self.conf[accout_id].update(item)
+        else:
+            self.conf[accout_id] = item
 
 
 class TaskList:
@@ -291,7 +283,8 @@ class TaskList:
         '''
         tmp = []
         for task_d in tasklist:
-            tmp.append(Task.from_dict(task_d))
+            ins_cls = Task.task_dict.get(task_d.get('name'))
+            tmp.append(ins_cls.from_dict(task_d))
         return tmp
 
     def __len__(self):

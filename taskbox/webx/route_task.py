@@ -38,10 +38,15 @@ def get_task(req):
                 req.msg = ('danger', '该操作需要登录!')
             else:
                 try:
-                    task.set_conf(req.body)
+                    acc = req.body.pop('account')
+                    if 'delete' in req.body:
+                        task.conf.pop(acc)
+                    else:
+                        task.set_conf(acc, req.body)
                 except exception.TaskBaseException as e:
                     req.msg = ('warning', e.args)
                 else:
+                    task._save()
                     req.msg = ('warning', f'Set conf Success: {req.body}')
         return req.make_resp(task=task,
                              template_name='task_detail.html')

@@ -12,7 +12,7 @@
 {% endfor %}</tr>
 {% for task in taskl_obj %}
 <tr>{% for key, val in task.info_format.items() %}{% if key == '名称' %}
-    <td class="Item" align="center"><a href="/task/{{ val }}">{{ val }}</a></td>
+    <td class="Item" align="center"><a href="/task/{{ task.name }}">{{ val }}</a></td>
     {% else %}<td class="Item" align="center">{{ val }}</td>
 {% endif %}{% endfor %}</tr>
 {% endfor %}

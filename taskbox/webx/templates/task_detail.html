@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block menu %}<tr><td><a href="/" class="MenuLink">首页</a><span>>任务详情</span></td></tr>
+{% block menu %}<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
 <tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
 <tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>{% endblock %}
 {% block content %}<h4>任务详情</h4>
@@ -17,12 +17,15 @@
 <p>{{ task.conf }}</p>{% endif %}
 <h4>配置修改</h4>
 <p>{{ task.get_conf_list.__doc__ }}</p>
-<p>推荐简单字符串或者<b>有效的json</b></p>
-<form action="/task/{{ task.info_format['name'] }}" method="post">
-  <!-- 这套配置名称(用于多账号)，对你有意义的名称，会对外显示 -->
-  {% for name in task.get_conf_list() %}{{name}}: <input name="{{ name }}"><br>{% endfor %}
+<p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。</p>
+<form action="/task/{{ task.name }}" method="post">
+  配置名称: <input name="account"> <i>比如‘账号1’, 对你有意义的, 用来显示、标记</i><br>
+  {% for name, desc in task.get_conf_list() %}{{name}}: <input name="{{ name }}"> <i>{{ desc }}</i><br>{% endfor %}
+  删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除并输入已有的配置名称，就是删除配置</i> <br>
   <input type="submit" value="执行">
 </form>
 <h4>定时任务周期设置</h4>
+
+<h4>任务操作</h4>
 
 <br>{% endblock %}

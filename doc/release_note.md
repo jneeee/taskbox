@@ -5,16 +5,18 @@ description: 任务盒子的更新日志
 ---
 
 ## Todo
+* 创建 Eventbridge scheduler 绑定到任务
+* 任务日志对接 Cloudwatch（通过event id 等分组查询显示）
 * 插件（任务）市场
 * 完善文档
 * 同一任务多账号配置
-* 对 不在Task列表里的任务，从数据库里删除
-* 创建 Eventbridge scheduler 绑定到任务
-* 任务日志对接 Cloudwatch（通过event id 等分组查询显示）
+* 对不在Task列表里的任务，从数据库里删除
+* 任务的启停功能
 
-## v1.0 (2022.12)
 
-* 完善文档
+## v1.5 (2022.12)
+
+* 任务详情页可修改配置
 * 增加任务列表，任务详情页
 * 登录功能, web 回显操作结果消息。
 * 网页增删改查 Dynamodb
