@@ -97,7 +97,7 @@ Resources:
     Type: AWS::Lambda::LayerVersion
     Properties:
       LayerName: taskboxlayer
-      Description: jinja2 + rsa + requests
+      Description: jinja2 + rsa + requests + boto3 1.26
       Content:
         S3Bucket: !Sub 'aws-${AWS::Region}-${AWS::AccountId}-${AppId}-pipe'
         S3Key: layer/taskboxlayer.zip

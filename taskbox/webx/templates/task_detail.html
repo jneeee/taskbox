@@ -20,7 +20,7 @@
 <p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。</p>
 <form action="/task/{{ task.name }}" method="post">
   配置名称: <input name="account"> <i>比如‘账号1’, 对你有意义的, 用来显示、标记</i><br>
-  {% for name, desc in task.get_conf_list() %}{{name}}: <input name="{{ name }}"> <i>{{ desc }}</i><br>{% endfor %}
+  {% for name, desc in task.get_conf_list().items() %}{{name}}: <input name="{{ name }}"> <i>{{ desc }}</i><br>{% endfor %}
   删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除并输入已有的配置名称，就是删除配置</i> <br>
   <input type="submit" value="执行">
 </form>
