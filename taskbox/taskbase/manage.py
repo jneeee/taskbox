@@ -1,6 +1,8 @@
 from os import getenv
+import json
 
 import boto3
+from botocore.exceptions import ClientError
 
 from taskbox.taskbase import task
 from taskbox import user_task # noqa
@@ -63,16 +65,31 @@ class Eventscheduler():
             cron(minutes hours day_of_month month day_of_week year)
         :return: resp
         '''
-        resp = self.client.create_schedule(
-            Name=name,
-            ScheduleExpression=ScheduleExpression,
-            FlexibleTimeWindow={
-                'Mode': 'OFF',
-            },
-            Target={'Arn': self.func_arn},
-            # Cloudfoundtion will create exc role with func logical name
-            # RoleArn=getenv('ROLE_ARN'),
-            RoleArn='arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
-            Input='this is a input string ===========',
-        )
+        try:
+            resp = self.client.create_schedule(
+                Name=name,
+                ScheduleExpression=ScheduleExpression,
+                ScheduleExpressionTimezone='Asia/Shanghai',
+                FlexibleTimeWindow={
+                    'Mode': 'OFF',
+                },
+                Target={
+                    'Arn': self.func_arn,
+                    'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
+                    'Input': f'\{\"taskname\": \"{name}\"\}',
+                },
+                # Cloudfoundtion will create exc role with func logical name
+                # RoleArn=getenv('ROLE_ARN'),
+            )
+        except ClientError as e:
+            raise e
         return resp
+
+    def update_schedule(self):
+        pass
+
+    def list_schedules(self):
+        pass
+
+    def delete_scheduler(self):
+        pass

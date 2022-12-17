@@ -1,3 +1,5 @@
+from botocore.exceptions import ClientError
+
 from taskbox.taskbase import exception
 from taskbox.taskbase.task import Task, TaskList
 from taskbox.taskbase.manage import TaskManager, Eventscheduler
@@ -53,9 +55,15 @@ def get_task(req):
 def _create_scheduler(task, req):
     # create a scheduler, the name is taskname,
     expression = req.body.get('scheduler')
-    resp = Eventscheduler().create(name=task.name, ScheduleExpression=expression)
-    task.scheduler = {'expression': expression, 'id': 'todo read from resp'}
-    req.msg = ('success', f'Create scheduler success, resp: {resp}')
+    try:
+        resp = Eventscheduler().create(name=task.name,
+                                       ScheduleExpression=expression)
+    except ClientError as e:
+        req.msg = (f'warning', f'Create scheduler failed: {e}')
+    else:
+        task.scheduler = {'expression': expression,
+                          'id': 'todo read from resp'}
+        req.msg = ('success', f'Create scheduler success, resp: {resp}')
 
 
 def _update_config(task, req):

@@ -47,7 +47,9 @@ Resources:
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
       Policies:
         - AWSLambdaBasicExecutionRole
-        - AmazonDynamoDBFullAccess
+        - AWSLambda_FullAccess
+        - AmazonEventBridgeSchedulerFullAccess
+        - AmazonEventBridgeFullAccess
       Layers:
         - !Ref libs
       Events:
@@ -68,8 +70,8 @@ Resources:
         ThrottlingBurstLimit: 50
       FailOnWarnings: true
       RouteSettings:
-        "POST /auth":
-          ThrottlingBurstLimit: 5 # overridden in HttpApi Event
+        "POST /auth/login":
+          ThrottlingBurstLimit: 1 # overridden in HttpApi Event
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
