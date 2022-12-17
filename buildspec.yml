@@ -5,9 +5,9 @@ phases:
   install:
     runtime-versions:
       python: 3.9
-  pre_build:
-    commands:
-      - cd $CODEBUILD_SRC_DIR; git submodule update --init --recursive
+  # pre_build:
+    # commands:
+      # - cd $CODEBUILD_SRC_DIR/mytaskdb; git submodule update --init --recursive
   build:
     commands:
       - find ./ -name requirements.txt -type f -exec pip install -t python/ -r "{}" \;
