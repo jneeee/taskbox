@@ -17,6 +17,7 @@ phases:
     commands:
       - aws s3api put-object --bucket $S3_BUCKET --key layer/taskboxlayer.zip --body taskboxlayer.zip
       - rm -rf taskboxlayer.zip python/
+      - git submodule init; git submodule update
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template-file template-export.yml
 artifacts:
   files:
