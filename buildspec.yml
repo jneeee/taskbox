@@ -1,23 +1,19 @@
 version: 0.2
+env:
+  git-credential-helper: yes
 phases:
   install:
     runtime-versions:
       python: 3.9
+  pre_build:
     commands:
-      # Install all dependencies (including dependencies for running tests)
-      - find ./ -name requirements.txt -type f -exec pip install -t python/ -r "{}" \;
-      - zip taskboxlayer.zip -q -r python/
-  # pre_build:
-    # commands:
-      # Discover and run unit tests in the '__tests__' directory
-      # - npm run test
-      # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
-      # - npm prune --production
+      - cd $CODEBUILD_SRC_DIR; git submodule update --init --recursive
   build:
     commands:
+      - find ./ -name requirements.txt -type f -exec pip install -t python/ -r "{}" \;
+      - zip taskboxlayer.zip -q -r python/
       - aws s3api put-object --bucket $S3_BUCKET --key layer/taskboxlayer.zip --body taskboxlayer.zip
       - rm -rf taskboxlayer.zip python/
-      - git submodule init; git submodule update
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template-file template-export.yml
 artifacts:
   files:
