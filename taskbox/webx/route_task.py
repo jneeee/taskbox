@@ -32,7 +32,7 @@ def get_task(req):
     # req.path_list = [task, Task_test]
     elif len(req.path_list) > 1:
         task_id = req.path_list[1]
-        task = TaskManager(task_id).task_inst
+        task_mng = TaskManager(task_id)
 
         # Deal with conf create
         if req.method == 'POST':
@@ -41,45 +41,12 @@ def get_task(req):
             else:
                 try:
                     if 'scheduler' in req.body:
-                        _update_scheduler(task, req)
+                        task_mng.update_scheduler(req)
                     else:
-                        _update_config(task, req)
+                        task_mng.update_config(req)
                 except exception.TaskBaseException as e:
                     req.msg = ('warning', e.args)
                 else:
-                    task._save()
-        return req.make_resp(task=task,
+                    task_mng.task_inst._save()
+        return req.make_resp(task=task_mng.task_inst,
                              template_name='task_detail.html')
-
-
-def _update_scheduler(task, req):
-    # create/update/delete a scheduler, the name is taskname,
-    expression = req.body.get('scheduler')
-
-    try:
-        if 'delete' in req.body:
-            Eventscheduler().delete_scheduler(name=task.name)
-            task.status = 'pause'
-        elif 'expression' in task.scheduler:
-            Eventscheduler().update_schedule(name=task.name,
-                                             ScheduleExpression=expression)
-            req.msg = ('success', f'Update scheduler success: {expression}')
-        else:
-            Eventscheduler().create(name=task.name,
-                                        ScheduleExpression=expression)
-            req.msg = ('success', f'Create scheduler success: {expression}')
-    except ClientError as e:
-        req.msg = (f'warning', f'Create scheduler failed: {e}')
-    else:
-        task.scheduler = {'expression': expression}
-
-
-def _update_config(task, req):
-    acc = req.body.pop('account')
-    if not acc:
-        raise exception.TaskConfigInvalid('配置名称是必须的！')
-    if 'delete' in req.body:
-        task.conf.pop(acc)
-    else:
-        task.set_conf(acc, req.body)
-    req.msg = ('success', f'Set conf Success: {req.body}')

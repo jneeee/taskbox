@@ -2,6 +2,7 @@ import copy
 from os import getenv
 import time
 import json
+from decimal import Decimal
 
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
@@ -45,7 +46,7 @@ class Tableclient():
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
         self.native_table.put_item(Item=item)
-        LOG.info(f'Put_item: {item}')
+        LOG.debug(f'Put_item: {item}')
 
     def update(self, item):
         '''update item as dict.update
@@ -67,8 +68,8 @@ class Task(object):
     store in db: {id:'task_info', 'name': <task class name>, ...}
     '''
     # format_seq for the desplay key seqence in web
-    format_seq = ['名称', '状态', '定时', '结果', '上次执行', '消耗',
-                  '累计消耗', '累计执行']
+    format_seq = ['名称', '状态', '定时器', '结果', '上次执行', '算力消耗MBs',
+                  '累计消耗MBs', '累计执行(次)']
     # task_dict: key is taskname, val is task object
     task_dict = {}
 
@@ -92,7 +93,7 @@ class Task(object):
         self.result = kwargs.get('result')
         self.conf = kwargs.get('conf', {})
         if 'last_run_time' in kwargs:
-            self.run_time = kwargs.get('last_run_time')
+            self.last_run_time = kwargs.get('last_run_time')
         self.status = kwargs.get('status', 'pending')
         self.exc_info = kwargs.get('exc_info', {'cforce_cost': 0,
                                                 'run_count': 0,
@@ -112,7 +113,7 @@ class Task(object):
         '''
         raise NotImplementedError
 
-    def run(self, context):
+    def run(self):
         '''Run task and save to db
 
         :param context: app context
@@ -131,11 +132,12 @@ class Task(object):
                 self.status = 'pedding' # or pause
                 self.result.append(str(e))
                 break
-        self.exc_info['cforce_cost'] = round(
-            (time.perf_counter()-start)*context.memory_limit_in_mb, 6
+        self.exc_info['cforce_cost'] = Decimal(
+            (time.perf_counter()-start)*180
         )
-        self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
-        self.last_run_time = time.time()
+        self.exc_info['total_cf_cost'] = Decimal(
+            self.exc_info['total_cf_cost'] + self.exc_info['cforce_cost'])
+        self.last_run_time = int(time.time())
         self._save()
 
 
@@ -223,17 +225,18 @@ class Task(object):
         def get_time(data):
             if not data.get('last_run_time'):
                 return None
-            return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+            return time.strftime('%Y-%m-%d %H:%M:%S',
+                                 time.localtime(data.get('last_run_time')))
 
         trans_d = {
             '名称': lambda d: d.get('name_zh', d.get('name')),
             '状态': get_status,
-            '定时': lambda d: d.get('scheduler').get('expression', '未设置'),
+            '定时器': lambda d: d.get('scheduler').get('expression', '未设置'),
             '结果': lambda d: d.get('result'),
             '上次执行': get_time,
-            '消耗': lambda d: d.get('exc_info', {}).get('cforce_cost'),
-            '累计消耗': lambda d: d.get('exc_info', {}).get('total_cf_cost'),
-            '累计执行': lambda d: d.get('exc_info', {}).get('run_count'),
+            '算力消耗MBs': lambda d: round(d.get('exc_info', {}).get('cforce_cost'), 4),
+            '累计消耗MBs': lambda d: round(d.get('exc_info', {}).get('total_cf_cost'), 4),
+            '累计执行(次)': lambda d: d.get('exc_info', {}).get('run_count'),
         }
         res = OrderedDict()
         for name in cls.format_seq:
@@ -266,8 +269,6 @@ class Task(object):
             self.conf[accout_id].update(item)
         else:
             self.conf[accout_id] = item
-
-        self.status = 'normal'
 
 
 class TaskList:

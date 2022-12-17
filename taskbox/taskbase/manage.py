@@ -3,6 +3,7 @@ from os import getenv
 import boto3
 from botocore.exceptions import ClientError
 
+from taskbox.taskbase import exception
 from taskbox.taskbase import task
 from taskbox import user_task # noqa
 
@@ -15,6 +16,8 @@ class TaskManager():
             raise FileNotFoundError
         self.task_name = task_name
         self._task_info = None
+        self._task_inst = None
+
 
     @property
     def task_info(self):
@@ -24,10 +27,12 @@ class TaskManager():
 
     @property
     def task_inst(self):
-        task_cls = task.Task.task_dict.get(self.task_name)
-        if not task_cls:
-            raise ModuleNotFoundError
-        return task_cls(**self.task_info)
+        if not self._task_inst:
+            task_cls = task.Task.task_dict.get(self.task_name)
+            if not task_cls:
+                raise ModuleNotFoundError
+            self._task_inst = task_cls(**self.task_info)
+        return self._task_inst
 
     def get_dict_info(self):
         '''display task info
@@ -42,11 +47,46 @@ class TaskManager():
         task.Task.get_by_name(self.task_name)
         pass
 
-    def create_scheduler(self):
-        pass
+    def update_scheduler(self, req):
+        # create/update/delete a scheduler, the name is taskname,
+        task = self.task_inst
+        expression = req.body.get('scheduler')
 
-    def run(self, context):
-        self.task_inst.run(context)
+        try:
+            if 'delete' in req.body:
+                Eventscheduler().delete_scheduler(name=task.name)
+                task.status = 'pause'
+            elif 'expression' in task.scheduler:
+                Eventscheduler().update_schedule(name=task.name,
+                                                ScheduleExpression=expression)
+                req.msg = ('success', f'Update scheduler success: {expression}')
+            else:
+                Eventscheduler().create(name=task.name,
+                                            ScheduleExpression=expression)
+                if len(self.task_inst.conf) != 0:
+                    self.task_inst.status = 'normal'
+                req.msg = ('success', f'Create scheduler success: {expression}')
+        except ClientError as e:
+            req.msg = (f'warning', f'Create scheduler failed: {e}')
+        else:
+            task.scheduler = {'expression': expression}
+
+    def update_config(self, req):
+        acc = req.body.pop('account')
+        if not acc:
+            raise exception.TaskConfigInvalid('配置名称是必须的！')
+        if 'delete' in req.body:
+            self.task_inst.conf.pop(acc)
+            if len(self.task_inst.conf) == 0:
+                self.task_inst.status = 'pending'
+        else:
+            self.task_inst.set_conf(acc, req.body)
+            if self.task_inst.scheduler:
+                self.task_inst.status = 'normal'
+        req.msg = ('success', f'Success!')
+
+    def run(self):
+        self.task_inst.run()
 
 
 class Eventscheduler():
