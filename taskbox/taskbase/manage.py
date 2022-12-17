@@ -45,8 +45,8 @@ class TaskManager():
     def create_scheduler(self):
         pass
 
-    def run(self):
-        self.task_inst.run()
+    def run(self, context):
+        self.task_inst.run(context)
 
 
 class Eventscheduler():

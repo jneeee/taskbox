@@ -67,7 +67,7 @@ class Task(object):
     store in db: {id:'task_info', 'name': <task class name>, ...}
     '''
     # format_seq for the desplay key seqence in web
-    format_seq = ['名称', '状态', '定时','结果', '上次执行', '消耗',
+    format_seq = ['名称', '状态', '定时', '结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']
     # task_dict: key is taskname, val is task object
     task_dict = {}
@@ -118,24 +118,26 @@ class Task(object):
         :param context: app context
         :return: None
         '''
+        if self.status != 'normal':
+            LOG.warning(f'Task {self.__class__.__name__} status is abnormal. '
+                        'skip run.')
+        start = time.perf_counter()
+        self.result = []
         for _, config in self.conf.items():
-            if self.status != 'normal':
-                continue
-            self.result = []
             self.exc_info['run_count'] += 1
             try:
-                start = time.perf_counter()
                 self.result.append(self.step(config))
-                self.exc_info['cforce_cost'] = round(
-                    (time.perf_counter()-start)*context.memory_limit_in_mb, 6
-                )
-                self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
             except TaskBaseException as e:
                 self.status = 'pedding' # or pause
                 self.result.append(str(e))
-            self.last_run_time = time.time()
+                break
+        self.exc_info['cforce_cost'] = round(
+            (time.perf_counter()-start)*context.memory_limit_in_mb, 6
+        )
+        self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
+        self.last_run_time = time.time()
+        self._save()
 
-            self._save()
 
     def get_conf_display(self):
         '''Implement me
@@ -264,6 +266,8 @@ class Task(object):
             self.conf[accout_id].update(item)
         else:
             self.conf[accout_id] = item
+
+        self.status = 'normal'
 
 
 class TaskList:
