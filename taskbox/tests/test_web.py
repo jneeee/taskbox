@@ -39,12 +39,11 @@ class Test_web_tasks(unittest.TestCase):
         pass
 
     def setUp(self):
-        Request.make_resp = mock.MagicMock()
-        self.resp = Request.make_resp
+        pass
 
     def test_get_tasks(self):
-        lambda_handler(Fake_event, Fake_context)
-        self.resp.assert_called_with('asd')
+        resp = lambda_handler(Fake_event, Fake_context)
+        self.assertIn('测试任务', resp.get('body'))
 
     def test_quary_single_task(self):
         tmp_event = copy.deepcopy(Fake_event)

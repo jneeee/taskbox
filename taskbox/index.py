@@ -15,4 +15,4 @@ def lambda_handler(event, context):
         LOG.warning(f'event: {event}, context: {context}')
         LOG.exception(e)
         req.msg = ('danger', traceback.format_exc())
-        return req.make_resp(template_name='release_note.html')
+        return req.make_resp(template_name='404.html')

@@ -30,7 +30,7 @@ def get_task(req):
                              template_name='tasks.html')
 
     # req.path_list = [task, Task_test]
-    if len(req.path_list) > 1:
+    elif len(req.path_list) > 1:
         task_id = req.path_list[1]
         task = TaskManager(task_id).task_inst
 
@@ -62,7 +62,7 @@ def _create_scheduler(task, req):
                                              ScheduleExpression=expression)
             req.msg = ('success', f'Update scheduler success: {expression}')
         else:
-            resp = Eventscheduler().create(name=task.name,
+            Eventscheduler().create(name=task.name,
                                         ScheduleExpression=expression)
             req.msg = ('success', f'Create scheduler success: {expression}')
     except ClientError as e:

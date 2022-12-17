@@ -249,9 +249,6 @@ class Task(object):
         '''实现我'''
         return {}
 
-    def registe_crontab(self, cron_str):
-        pass
-
     def set_conf(self, accout_id, conf_dict):
 
         item = {}

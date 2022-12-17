@@ -17,7 +17,7 @@
 <p>{{ task.conf }}</p>{% endif %}
 <h4>配置修改</h4>
 <p>{{ task.get_conf_list.__doc__ }}</p>
-<p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。</p>
+<p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。配置以‘{’开头的有效json会被解析为字典。</p>
 <form action="/task/{{ task.name }}" method="post">
   配置名称: <input name="account"> <i>比如‘账号1’, 对你有意义的, 用来显示、标记</i><br>
   {% for name, desc in task.get_conf_list().items() %}{{name}}: <input name="{{ name }}"> <i>{{ desc }}</i><br>{% endfor %}
