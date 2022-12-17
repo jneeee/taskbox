@@ -75,7 +75,7 @@ class Eventscheduler():
                 Target={
                     'Arn': self.func_arn,
                     'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
-                    'Input': f'{"Excutetask": "{name}"}',
+                    'Input': '{"Excutetask": "%s"}' % name,
                 },
                 # Cloudfoundtion will create exc role with func logical name
                 # RoleArn=getenv('ROLE_ARN'),
@@ -95,7 +95,7 @@ class Eventscheduler():
             Target={
                 'Arn': self.func_arn,
                 'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
-                'Input': f'{"Excutetask": "{name}"}',
+                'Input': '{"Excutetask": "%s"}' % name,
             },
             # Cloudfoundtion will create exc role with func logical name
             # RoleArn=getenv('ROLE_ARN'),

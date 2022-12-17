@@ -73,7 +73,7 @@ class Request():
         if self.method == 'POST':
             res = b64decode(self.event.get('body')).decode()
             # replace @ { } ...
-            res = urllib.parse.unquote(res).replace(',+', ',')
+            res = urllib.parse.unquote(res).replace('+', ' ')
             res = {k: v for k,v in map(lambda kv: kv.split('='), res.split('&'))}
         return res
 
