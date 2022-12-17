@@ -77,7 +77,7 @@ Task_demo.register()
 
 **第三步 适配盒子**
 
-修改原来的执行内容，并继承 taskbox.taskbase.task.Task ，这一步类似第一种任务，就是把原来脚本的主进程挪到 step() 函数下面，在接受一个原来配在环境变量里的账户密码。这样盒子就能控制脚本的执行了。部分代码如下，具体的可以看看commit：xxxx
+修改原来的执行内容，并继承 taskbox.taskbase.task.Task ，这一步类似第一种任务，就是把原来脚本的主进程挪到 step() 函数下面，在接受一个原来配在环境变量里的账户密码。这样盒子就能控制脚本的执行了。部分代码如下，具体的可以看看 [Commit: adapt taskbox][1]
 
 ```python
 # 新文件 taskbox/user_task/hostloc_getpoint/__init__.py
@@ -177,3 +177,5 @@ origin  git@github.com:<Your id>/taskbox.git (push)
 ```
 
 （完）
+
+[1]: https://github.com/jneeee/hostloc_getPoints/commit/f8151984ab42ec275f8012008d4bbcc58d582b09 'adapt taskbox'
