@@ -5,7 +5,7 @@ from taskbox.utils.tools import LOG
 
 
 def lambda_handler(event, context):
-    if event.get('source') == 'aws.scheduler':
+    if event.get('Excutetask'):
         pass
     try:
         req = object.Request(event, context)

@@ -55,15 +55,20 @@ def get_task(req):
 def _create_scheduler(task, req):
     # create a scheduler, the name is taskname,
     expression = req.body.get('scheduler')
+
     try:
-        resp = Eventscheduler().create(name=task.name,
-                                       ScheduleExpression=expression)
+        if 'expression' in task.scheduler:
+            Eventscheduler().update_schedule(name=task.name,
+                                             ScheduleExpression=expression)
+            req.msg = ('success', f'Update scheduler success: {expression}')
+        else:
+            resp = Eventscheduler().create(name=task.name,
+                                        ScheduleExpression=expression)
+            req.msg = ('success', f'Create scheduler success: {expression}')
     except ClientError as e:
         req.msg = (f'warning', f'Create scheduler failed: {e}')
     else:
-        task.scheduler = {'expression': expression,
-                          'id': 'todo read from resp'}
-        req.msg = ('success', f'Create scheduler success, resp: {resp}')
+        task.scheduler = {'expression': expression}
 
 
 def _update_config(task, req):

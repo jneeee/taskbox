@@ -67,7 +67,7 @@ class Task(object):
     store in db: {id:'task_info', 'name': <task class name>, ...}
     '''
     # format_seq for the desplay key seqence in web
-    format_seq = ['名称', '状态', '结果', '上次执行', '消耗',
+    format_seq = ['名称', '状态', '定时','结果', '上次执行', '消耗',
                   '累计消耗', '累计执行']
     # task_dict: key is taskname, val is task object
     task_dict = {}
@@ -97,6 +97,7 @@ class Task(object):
         self.exc_info = kwargs.get('exc_info', {'cforce_cost': 0,
                                                 'run_count': 0,
                                                 'total_cf_cost': 0})
+        self.scheduler = kwargs.get('scheduler', {})
 
     @classmethod
     def register(cls):
@@ -225,6 +226,7 @@ class Task(object):
         trans_d = {
             '名称': lambda d: d.get('name_zh', d.get('name')),
             '状态': get_status,
+            '定时': lambda d: d.get('scheduler').get('expression', '未设置'),
             '结果': lambda d: d.get('result'),
             '上次执行': get_time,
             '消耗': lambda d: d.get('exc_info', {}).get('cforce_cost'),

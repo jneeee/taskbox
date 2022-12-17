@@ -1,5 +1,4 @@
 from os import getenv
-import json
 
 import boto3
 from botocore.exceptions import ClientError
@@ -76,7 +75,7 @@ class Eventscheduler():
                 Target={
                     'Arn': self.func_arn,
                     'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
-                    'Input': f'\{\"taskname\": \"{name}\"\}',
+                    'Input': f'{"Excutetask": "{name}"}',
                 },
                 # Cloudfoundtion will create exc role with func logical name
                 # RoleArn=getenv('ROLE_ARN'),
@@ -85,8 +84,22 @@ class Eventscheduler():
             raise e
         return resp
 
-    def update_schedule(self):
-        pass
+    def update_schedule(self, name=None, ScheduleExpression=None):
+        self.client.update_schedule(
+            Name=name,
+            ScheduleExpression=ScheduleExpression,
+            ScheduleExpressionTimezone='Asia/Shanghai',
+            FlexibleTimeWindow={
+                'Mode': 'OFF',
+            },
+            Target={
+                'Arn': self.func_arn,
+                'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
+                'Input': f'{"Excutetask": "{name}"}',
+            },
+            # Cloudfoundtion will create exc role with func logical name
+            # RoleArn=getenv('ROLE_ARN'),
+        )
 
     def list_schedules(self):
         pass
