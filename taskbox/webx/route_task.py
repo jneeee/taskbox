@@ -41,7 +41,7 @@ def get_task(req):
             else:
                 try:
                     if 'scheduler' in req.body:
-                        _create_scheduler(task, req)
+                        _update_scheduler(task, req)
                     else:
                         _update_config(task, req)
                 except exception.TaskBaseException as e:
@@ -52,12 +52,15 @@ def get_task(req):
                              template_name='task_detail.html')
 
 
-def _create_scheduler(task, req):
-    # create a scheduler, the name is taskname,
+def _update_scheduler(task, req):
+    # create/update/delete a scheduler, the name is taskname,
     expression = req.body.get('scheduler')
 
     try:
-        if 'expression' in task.scheduler:
+        if 'delete' in req.body:
+            Eventscheduler().delete_scheduler(name=task.name)
+            task.status = 'pause'
+        elif 'expression' in task.scheduler:
             Eventscheduler().update_schedule(name=task.name,
                                              ScheduleExpression=expression)
             req.msg = ('success', f'Update scheduler success: {expression}')

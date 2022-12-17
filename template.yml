@@ -70,7 +70,7 @@ Resources:
         ThrottlingBurstLimit: 50
       FailOnWarnings: true
       RouteSettings:
-        "POST /auth/login":
+        "POST /auth":
           ThrottlingBurstLimit: 1 # overridden in HttpApi Event
 
   AccessLogs:

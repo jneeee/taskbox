@@ -104,5 +104,5 @@ class Eventscheduler():
     def list_schedules(self):
         pass
 
-    def delete_scheduler(self):
-        pass
+    def delete_scheduler(self, name):
+        self.client.delete_schedule(Name=name)

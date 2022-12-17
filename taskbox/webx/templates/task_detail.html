@@ -33,7 +33,8 @@
 </ul>
 <form action="/task/{{ task.name }}" method="post">
   表达式: <input name="scheduler"><br>
-  <input type="submit" value="添加">
+  删除：<input type="checkbox" name="delete" value="1"> <li>勾选删除即删除定时器，后续加入多定时器支持。</li>
+  <input type="submit" value="执行">
 </form>
 
 <h4>任务操作</h4>
