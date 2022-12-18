@@ -1,48 +1,36 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
-
-# The AWSTemplateFormatVersion identifies the capabilities of the template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   Task Dashboard for yourself.
 
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform: AWS::Serverless-2016-10-31
-
-# Shared configuration for all resources, more in
-# https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-Globals:
-  Function:
-    # The PermissionsBoundary allows users to safely develop with their function's permissions constrained
-    # to their current application. All the functions and roles in this application have to include it and
-    # it has to be manually updated when you add resources to your application.
-    # More information in https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
-    PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/${AppId}-${AWS::Region}-PermissionsBoundary'
 
 Parameters:
   AppId:
     Type: String
+  Password:
+    Type: String
 
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Globals:
+  Function:
+    Timeout: 10
+    Layers:
+      - !Ref Taskboxlayer
+
 Resources:
-  Taskdashboard:
+  taskbox:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: mytaskbox
-      CodeUri: ./
+      FunctionName: taskbox
+      CodeUri: ./taskbox
       Handler: taskbox.index.lambda_handler
       Runtime: python3.9
       MemorySize: 180
-      Timeout: 5
       Description: A crontask frame and HTTP service.
       Environment:
         Variables:
           DDB_TABLE: !Ref taskboxddbtable
           # 用来登录web的强密码
-          auth_passwd: authpass
+          auth_passwd: !Sub '${Password}'
           FUNC_ARN: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:mytaskbox'
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
       Policies:
@@ -50,14 +38,12 @@ Resources:
         - AmazonDynamoDBFullAccess
         - AmazonEventBridgeSchedulerFullAccess
         - AmazonEventBridgeFullAccess
-      Layers:
-        - !Ref libs
       Events:
         ExplicitApi:
           Type: HttpApi
           Properties:
             ApiId: !Ref http
-            Path: /auth
+            Path: /auth/login
             Method: POST
 
   http:
@@ -70,8 +56,27 @@ Resources:
         ThrottlingBurstLimit: 50
       FailOnWarnings: true
       RouteSettings:
-        "POST /auth":
+        "POST /auth/login":
           ThrottlingBurstLimit: 1 # overridden in HttpApi Event
+
+  Taskboxlayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: Taskboxlayer
+      Description: "flask rsa requests"
+      ContentUri: dependencies/
+      CompatibleRuntimes:
+        - python3.9
+      RetentionPolicy: Delete
+
+  # libs:
+  #   Type: AWS::Lambda::LayerVersion
+  #   Properties:
+  #     LayerName: taskboxlayer
+  #     Description: jinja2 + rsa + requests + boto3 1.26
+  #     Content:
+  #       S3Bucket: !Sub 'aws-${AWS::Region}-${AWS::AccountId}-${AppId}-pipe'
+  #       S3Key: layer/taskboxlayer.zip
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
@@ -94,17 +99,6 @@ Resources:
         -
           AttributeName: "name"
           KeyType: "RANGE"
-
-  libs:
-    Type: AWS::Lambda::LayerVersion
-    Properties:
-      LayerName: taskboxlayer
-      Description: jinja2 + rsa + requests + boto3 1.26
-      Content:
-        S3Bucket: !Sub 'aws-${AWS::Region}-${AWS::AccountId}-${AppId}-pipe'
-        S3Key: layer/taskboxlayer.zip
-      CompatibleRuntimes:
-        - python3.9
 
 Outputs:
   HttpApiUrl:
