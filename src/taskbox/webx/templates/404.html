@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block menu %}
 <tr><td><a href="/" class="MenuLink">首页</a></td></tr>
-<tr><td><span class="MenuCurrent">数据库</span></td></tr>
+<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
 <tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>
 {% endblock %}
-{% block content %}<h2>Error!</h2>{% endblock %}
+{% block content %}<h2>出错了!</h2>
+<p>注意上面的报错提示，参考 issues 或者讨论寻求帮助。</p>
+{% endblock %}

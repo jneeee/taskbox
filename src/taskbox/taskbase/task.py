@@ -2,7 +2,6 @@ import copy
 from os import getenv
 import time
 import json
-from decimal import Decimal
 
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
@@ -45,7 +44,6 @@ class Tableclient():
         # TODO threading
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
-        item = json.loads(json.dumps(item), parse_float=Decimal)
         self.native_table.put_item(Item=item)
         LOG.debug(f'Put_item: {item}')
 
@@ -60,7 +58,6 @@ class Tableclient():
             old.update(item)
         else:
             old = item
-        old = json.loads(json.dumps(old), parse_float=Decimal)
         self.native_table.put_item(Item=old)
 
 
@@ -81,7 +78,7 @@ class Task(object):
         :params kwargs: {
             id: str,
             status: normal|pedding|pause (correspond color green|yellow|red),
-            result: str,
+            property: {result:[]} # the task write info to here
             conf:{'account1': {phone:xxx, passwd: xxx, }, } # can be multi config
             last_run_time: int, 1670907645.49549,
             exc_info = {
@@ -92,14 +89,17 @@ class Task(object):
         }
         '''
         self.name = self.__class__.__name__
-        self.result = kwargs.get('result')
+        self.property = json.loads(kwargs.get('property', {}))
         self.conf = kwargs.get('conf', {})
         if 'last_run_time' in kwargs:
             self.last_run_time = kwargs.get('last_run_time')
         self.status = kwargs.get('status', 'pending')
-        self.exc_info = kwargs.get('exc_info', {'cforce_cost': 0,
-                                                'run_count': 0,
-                                                'total_cf_cost': 0})
+        if 'exc_info' in kwargs:
+            self.exc_info = json.loads(kwargs.get('exc_info'))
+        else:
+            self.exc_info = {'cforce_cost': 0,
+                             'run_count': 0,
+                             'total_cf_cost': 0}
         self.scheduler = kwargs.get('scheduler', {})
 
     @classmethod
@@ -125,20 +125,18 @@ class Task(object):
             LOG.warning(f'Task {self.__class__.__name__} status is abnormal. '
                         'skip run.')
         start = time.perf_counter()
-        self.result = []
+        self.property['result'] = []
         for _, config in self.conf.items():
             self.exc_info['run_count'] += 1
             try:
-                self.result.append(self.step(config))
+                self.property['result'].append(self.step(config))
             except TaskBaseException as e:
                 self.status = 'pedding' # or pause
-                self.result.append(str(e))
+                self.property['result'].append(str(e))
                 break
-        self.exc_info['cforce_cost'] = Decimal(
-            (time.perf_counter()-start)*180
-        )
-        self.exc_info['total_cf_cost'] = Decimal(
-            self.exc_info['total_cf_cost'] + self.exc_info['cforce_cost'])
+        self.exc_info['cforce_cost'] = (time.perf_counter()-start)*180
+        self.exc_info['total_cf_cost'] = \
+            self.exc_info['total_cf_cost'] + self.exc_info['cforce_cost']
         self.last_run_time = int(time.time())
         self._save()
 
@@ -153,7 +151,9 @@ class Task(object):
         raise NotImplementedError
 
     def _save(self):
-        item = self.__dict__
+        item = copy.deepcopy(self.__dict__)
+        item['exc_info'] = json.dumps(item['exc_info'])
+        item['property'] = json.dumps(item['property'])
         item['id'] = 'task_info'
         self.get_tb().put(item=item)
         LOG.info(f'Write to db: {item}')
@@ -189,7 +189,6 @@ class Task(object):
     def get_all_tasks(cls):
         '''Get all task list(latest)
 
-        {"id":"Task_test", "result":"OK!", "date":"2022-12-8"}
         TODO(jneeee) pagination
         :return: [] or [{},]
         '''
@@ -234,7 +233,7 @@ class Task(object):
             '名称': lambda d: d.get('name_zh', d.get('name')),
             '状态': get_status,
             '定时器': lambda d: d.get('scheduler').get('expression', '未设置'),
-            '结果': lambda d: d.get('result'),
+            '结果': lambda d: d.get('property').get('result'),
             '上次执行': get_time,
             '算力消耗MBs': lambda d: round(d.get('exc_info', {}).get('cforce_cost'), 4),
             '累计消耗MBs': lambda d: round(d.get('exc_info', {}).get('total_cf_cost'), 4),
