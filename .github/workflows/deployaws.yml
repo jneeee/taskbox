@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - master
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,5 +20,7 @@ jobs:
       - run: zip taskboxlayer.zip -q -r python/
       - run: aws lambda publish-layer-version --layer-name taskboxlayer --zip-file fileb://taskboxlayer.zip  --compatible-runtimes python3.9 --compatible-architectures "arm64" "x86_64" --license-info "MIT"
       - run: rm -rf taskboxlayer.zip python/
+      - run: pwd
+      - run: ls -la
       - run: sam build
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
