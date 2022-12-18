@@ -134,7 +134,7 @@ class Eventscheduler():
             },
             Target={
                 'Arn': self.func_arn,
-                'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
+                'RoleArn': 'arn:aws:iam::044694559979:role/taskbox-taskboxRole-1AXE7K79INEAX',
                 'Input': '{"Excutetask": "%s"}' % name,
             },
             # Cloudfoundtion will create exc role with func logical name
