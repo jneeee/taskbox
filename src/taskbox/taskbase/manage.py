@@ -55,26 +55,26 @@ class TaskManager():
         try:
             # Delete
             if 'delete' in req.body:
+                task.scheduler.pop('expression')
                 Eventscheduler().delete_scheduler(name=task.name)
-                task.scheduler = {'expression': expression}
                 task.status = 'pause'
 
             # Update
             elif 'expression' in task.scheduler:
+                task.scheduler = {'expression': expression}
                 Eventscheduler().update_schedule(name=task.name,
                                                 ScheduleExpression=expression)
                 req.msg = ('success', f'Update scheduler success: {expression}')
-                task.scheduler = {'expression': expression}
             # Create
             else:
+                task.scheduler = {'expression': expression}
                 Eventscheduler().create(name=task.name,
                                             ScheduleExpression=expression)
                 if len(self.task_inst.conf) != 0:
                     self.task_inst.status = 'normal'
                 req.msg = ('success', f'Create scheduler success: {expression}')
-                task.scheduler = {'expression': expression}
         except ClientError as e:
-            req.msg = (f'warning', f'Create scheduler failed: {e}')
+            req.msg = (f'warning', f'Failed: {e}')
 
     def update_config(self, req):
         acc = req.body.pop('taskbox_conf_name')
@@ -88,7 +88,7 @@ class TaskManager():
             self.task_inst.set_conf(acc, req.body)
             if self.task_inst.scheduler:
                 self.task_inst.status = 'normal'
-        req.msg = ('success', f'Success!')
+        req.msg = ('success', 'Success!')
 
     def run(self):
         self.task_inst.run()
