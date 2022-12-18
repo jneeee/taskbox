@@ -1,3 +1,18 @@
+---
+layout: default
+title: 常见问题
+---
+
+### 无法创建定时器
+报错：
+```
+Create scheduler failed: An error occurred (ValidationException) when calling
+the CreateSchedule operation: The execution role you provide must allow AWS 
+EventBridge Scheduler to assume the role.
+```
+需要编辑 lambda 执行角色的信任策略，添加 `scheduler.amazonaws.com` , 如下图：
+![](img/add_trust.png)
+
 
 ### 如何删除创建的所有资源
 在 [CloudFormation][1] 先删除 taskbox 再删除 toolchain。一定要是这个顺序，因为删toolchain 会把创建的 IAM Cloudformation 角色也删掉。目前已知的会删除失败的原因有：apigw绑定了自定义域名（要去删掉映射），S3存储桶没清空导致删不掉（去S3界面清空存储桶）。然后删除日志组，[官方参考][2]。如果设置过定时器，到 [Eventbridge][3] 删除

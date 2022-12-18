@@ -20,4 +20,4 @@ jobs:
           aws-region: ap-southeast-1
       - run: find ./ -name requirements.txt -type f -exec pip install -t dependencies/python -r "{}" \;
       - run: sam build
-      - run: sam deploy --parameter-overrides 'Password=${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+      - run: sam deploy --parameter-overrides 'Password=${{ secrets.WEB_PASSWORD }}'
