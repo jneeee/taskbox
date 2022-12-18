@@ -8,16 +8,16 @@ def cmdhandler(req):
         req.msg = ('warning', '该操作需要登录!')
         return req.make_resp(template_name='cmd.html')
 
-    key, val = req.body.split('=')
-    if key == 'python':
+    if 'python' in req.body:
         # Add module if need.
         import requests, time
-        res = eval(val)
-    elif key == 'shell':
+        res = eval(req.body.get('python'))
+    elif 'shell' in req.body:
+        val  = req.body.get('shell')
         cmdres = run_cmd(val)
         if cmdres[0]:
             res = f'🟢$ {val}</p><p>{cmdres[0]}'
         else:
             res = f'🔴$ {val}</p><p>{cmdres[1]}'
-    LOG.info(f'Run cmd: {val}, {res}')
+        LOG.info(f'Run cmd: {val}, {res}')
     return req.make_resp(exc_res=res, template_name='cmd.html')
