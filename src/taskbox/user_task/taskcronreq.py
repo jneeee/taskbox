@@ -7,9 +7,9 @@ from taskbox.utils.tools import LOG
 __all__ = ['CornReq']
 
 class CornReq(Task):
-    '''定时访问一个网址
+    '''定时访问一个网址，万金油任务，后续加入自定义 data/param
     '''
-    name_zh = '测试任务'
+    name_zh = '定时访问'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -19,7 +19,7 @@ class CornReq(Task):
 
         盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
         '''
-        res = getattr(requests, config.get('method'))(config.get'url')
+        res = getattr(requests, config.get('method'))(config.get('url'))
         return f'执行 {config} 成功：{res}'
 
     def get_conf_list(self):

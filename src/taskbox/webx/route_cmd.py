@@ -10,8 +10,12 @@ def cmdhandler(req):
 
     if 'python' in req.body:
         # Add module if need.
-        import requests, time
-        res = eval(req.body.get('python'))
+        try:
+            import requests, time
+            res = eval(req.body.get('python'))
+        except NameError:
+            req.msg = ('warning', '错误的Python语法!')
+        return req.make_resp(template_name='cmd.html')
     elif 'shell' in req.body:
         val  = req.body.get('shell')
         cmdres = run_cmd(val)

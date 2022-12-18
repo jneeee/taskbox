@@ -45,6 +45,7 @@ class Tableclient():
         # TODO threading
         if not isinstance(item, dict):
             raise ValueError('Tableclient: item is not a dict')
+        item = json.loads(json.dumps(item), parse_float=Decimal)
         self.native_table.put_item(Item=item)
         LOG.debug(f'Put_item: {item}')
 
@@ -59,6 +60,7 @@ class Tableclient():
             old.update(item)
         else:
             old = item
+        old = json.loads(json.dumps(old), parse_float=Decimal)
         self.native_table.put_item(Item=old)
 
 
