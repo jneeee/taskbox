@@ -1,8 +1,9 @@
-## taskbox(Task Dashboard) 任务盒子
+## 任务盒子 TaskBox
 
 我是图
 
-taskbox(Task Dashboard) 是一个个人定时任务框架。它注重稳定和性能。基于 AWS Lambda + DynamoDB + S3 + APIGW + EventBridge scheduler 的高可用 Serverless 应用平台编写。主要特点如下：
+
+任务盒子(任务盒子) 是一个个人定时任务框架。它注重性能和易用性。基于 AWS Lambda + DynamoDB + S3 + APIGW + EventBridge scheduler 的高可用 Serverless 应用平台编写。主要特点如下：
 
 - 全免费，利用 AWS 给开发者的永久[免费额度](https://aws.amazon.com/cn/free/) 🎉
 - 定制的 web 网页，任务列表。支持任务增删改查，可绑定个人域名。
