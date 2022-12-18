@@ -9,7 +9,7 @@ from taskbox.taskbase.task import Task
 from taskbox.utils.tools import LOG
 
 
-__all__ = []
+__all__ = ['Cloud189']
 
 class CheckIn(object):
     client = requests.Session()
@@ -22,10 +22,9 @@ class CheckIn(object):
     def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.res = {}
+        self.res = []
 
     def check_in(self):
-        self.res['time'] = time.strftime("%Y-%m-%d %H:%M:%S")
         self.login()
         rand = str(round(time.time() * 1000))
         url = "https://m.cloud.189.cn/v2/drawPrizeMarketDetails.action?taskId=TASK_SIGNIN&activityId=ACT_SIGNIN"
@@ -43,26 +42,21 @@ class CheckIn(object):
         response = self.client.get(self.sign_url % rand, headers=headers)
         net_disk_bonus = response.json()["netdiskBonus"]
         if response.json()["isSign"] == "false":
-            LOG.info(f"未签到，签到获得 {net_disk_bonus}M 空间")
+            self.res.append(f"未签到，签到获得 {net_disk_bonus}M 空间")
         else:
-            LOG.info(f"已经签到过了，签到获得 {net_disk_bonus}M 空间")
-        self.res['checkin_space'] = int(net_disk_bonus)
-
-        self.res['lottery_space'] = 0
+            self.res.append(f"已经签到过了，签到获得 {net_disk_bonus}M 空间")
         response = self.client.get(url, headers=headers)
         if "errorCode" in response.text:
-            LOG.info(response.text)
+            self.res.append(response.text)
         else:
             prize_name = (response.json() or {}).get("prizeName")
-            LOG.info(f"抽奖获得 {prize_name}")
-            self.res['lottery_space'] += 50
+            self.res.append(f"抽奖获得 {prize_name}")
         response = self.client.get(url2, headers=headers)
         if "errorCode" in response.text:
-            LOG.info(response.text)
+            self.res.append(response.text)
         else:
             prize_name = (response.json() or {}).get("prizeName")
-            LOG.info(f"抽奖获得 {prize_name}")
-            self.res['lottery_space'] += 50
+            self.res.append(f"抽奖获得 {prize_name}")
         return self.res
 
     @staticmethod
@@ -137,23 +131,20 @@ def _b64_to_hex(a):
 
 class Cloud189(Task):
 
-    def __init__(self):
-        super().__init__()
+    name_zh = '天翼云盘签到'
 
-    def step(self):
-        pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def step(self, config_d):
+        res = CheckIn(config_d.get('phone'), config_d.get('pswd189')).check_in()
         # 'checkin189' : {'time':x, 'checkin_space':x, 'lottery_space':x, 'total':x}
-        '''
-        if not ret:
-            LOG.error(f'process189ret get empty ret')
-            return
-        before = dbclient.select('checkin189')
-        if not before:
-            ret['total'] = sum([v for k,v in ret.items() if k != 'time'])
-            cur = ret
-        else:
-            cur = before
-            cur['total'] += sum([v for k,v in ret.items() if k != 'time'])
-            cur.update(ret)
-        LOG.info(f'store in db: "checkin189": {cur}')
-        '''
+        return res
+
+    def get_conf_list(self):
+        return {
+            'phone': '电话号码',
+            'pswd189': '密码',
+        }
+
+Cloud189.register()
