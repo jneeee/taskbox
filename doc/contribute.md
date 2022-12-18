@@ -54,7 +54,7 @@ Task_demo.register()
 
 之后需要把它加到版本控制，推到你的 github 私有仓库触发CI。
 ```
-(py39) jn@honer:~/taskbox$ git add taskbox/user_task/taskdemo.py
+(py39) jn@honer:~/taskbox$ git add src/taskbox/user_task/taskdemo.py
 (py39) jn@honer:~/taskbox$ git commit -m 'add my own task'
 (py39) jn@honer:~/taskbox$ git push aws HEAD:master
 ```
@@ -72,7 +72,7 @@ Task_demo.register()
 **第二步 添加子模块**
 命令如下。Git 会把 hostloc_getPoints 仓库代码克隆到 `taskbox/user_task/hostloc_getpoint` 下面。
 ```shell
-(py39) jn@honer:~/taskbox$ git submodule add https://github.com/jneeee/hostloc_getPoints.git taskbox/user_task/hostloc_getpoint
+(py39) jn@honer:~/taskbox$ git submodule add https://github.com/jneeee/hostloc_getPoints.git src/taskbox/user_task/hostloc_getpoint
 ```
 
 **第三步 适配盒子**
@@ -80,7 +80,7 @@ Task_demo.register()
 修改原来的执行内容，并继承 taskbox.taskbase.task.Task ，这一步类似第一种任务，就是把原来脚本的主进程挪到 step() 函数下面，在接受一个原来配在环境变量里的账户密码。这样盒子就能控制脚本的执行了。部分代码如下，具体的可以看看 [Commit: adapt taskbox][1]
 
 ```python
-# 新文件 taskbox/user_task/hostloc_getpoint/__init__.py
+# 新文件 src/taskbox/user_task/hostloc_getpoint/__init__.py
 from taskbox.taskbase.task import Task
 from taskbox.utils.tools import LOG
 
@@ -118,7 +118,7 @@ class hostloc_getpoint(Task):
 
 hostloc_getpoint.register()
 
-# 原脚本中的主程序 taskbox/user_task/hostloc_getpoint/hostloc_auto_get_points.py
+# 原脚本中的主程序 src/taskbox/user_task/hostloc_getpoint/hostloc_auto_get_points.py
 def run_getpoint(username, password):
     user_list = username.split(",")
     passwd_list = password.split(",")
@@ -148,7 +148,7 @@ def run_getpoint(username, password):
 
 当前运行环境是 Python3.9，触发 AWS CI 之后，盒子会自动查找目录下所有的 requirements.txt 并安装依赖。由于原脚本依赖的 `pyaes` 还没加到依赖。需要添加一个新的依赖文件 taskbox/user_task/hostloc_getpoint/requirements.txt
 ```
-# taskbox/user_task/hostloc_getpoint/requirements.txt
+# src/taskbox/user_task/hostloc_getpoint/requirements.txt
 pyaes
 ```
 
@@ -159,16 +159,16 @@ pyaes
 这里要推送3个地方，第一个是你fork的仓库，这是其他人找到你修改的地方。第二个是 TaskBox 开源库，让别人看到你贡献的任务。第三个是 AWS 为你创建的私有仓库，部署到 AWS 用的。
 
 ```shell
-(py39) jn@honer:~/taskbox$ cd taskbox/user_task/hostloc_getpoint
-(py39) jn@honer:~/taskbox/taskbox/user_task/hostloc_getpoint$ git add .
-(py39) jn@honer:~/taskbox/taskbox/user_task/hostloc_getpoint$ git commit -m 'adapt TaskBox'
-(py39) jn@honer:~/taskbox/taskbox/user_task/hostloc_getpoint$ git push
-(py39) jn@honer:~/taskbox/taskbox/user_task/hostloc_getpoint$ cd -
-(py39) jn@honer:~/taskbox$ git add taskbox/user_task/hostloc_getpoint .gitmodules
+(py39) jn@honer:~/taskbox$ cd src/taskbox/user_task/hostloc_getpoint
+(py39) jn@honer:~/taskbox/src/taskbox/user_task/hostloc_getpoint$ git add .
+(py39) jn@honer:~/taskbox/src/taskbox/user_task/hostloc_getpoint$ git commit -m 'adapt TaskBox'
+(py39) jn@honer:~/taskbox/src/taskbox/user_task/hostloc_getpoint$ git push
+(py39) jn@honer:~/taskbox/src/taskbox/user_task/hostloc_getpoint$ cd -
+(py39) jn@honer:~/taskbox$ git add src/taskbox/user_task/hostloc_getpoint .gitmodules
 # 检查一下远端分支名称
 (py39) jn@honer:~/taskbox$ git remote -v
 aws     git@github.com:<Your id>/mytaskbox.git (fetch) <--- 私有仓库，部署到 AWS 用
-aws     git@github.com:<Your id>/mytaskdb.git (push)
+aws     git@github.com:<Your id>/mytaskbox.git (push)
 origin  git@github.com:<Your id>/taskbox.git (fetch) <--- 你fork的TaskBox开源库，提交 Pull requests 用
 origin  git@github.com:<Your id>/taskbox.git (push)
 (py39) jn@honer:~/taskbox$ git push aws HEAD:master
