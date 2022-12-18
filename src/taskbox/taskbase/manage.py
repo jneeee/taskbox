@@ -55,7 +55,8 @@ class TaskManager():
         try:
             # Delete
             if 'delete' in req.body:
-                task.scheduler.pop('expression')
+                if 'expression' in task.scheduler:
+                    task.scheduler.pop('expression')
                 Eventscheduler().delete_scheduler(name=task.name)
                 task.status = 'pause'
 

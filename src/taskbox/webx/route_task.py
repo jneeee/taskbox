@@ -1,8 +1,6 @@
-from botocore.exceptions import ClientError
-
 from taskbox.taskbase import exception
 from taskbox.taskbase.task import Task, TaskList
-from taskbox.taskbase.manage import TaskManager, Eventscheduler
+from taskbox.taskbase.manage import TaskManager
 from taskbox.utils.tools import LOG
 
 

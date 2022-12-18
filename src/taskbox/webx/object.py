@@ -1,5 +1,6 @@
 from base64 import b64decode
 from functools import lru_cache
+import traceback
 import time
 import urllib.parse
 
@@ -13,6 +14,7 @@ from taskbox.webx import (
     route_static,
 )
 from taskbox.taskbase import task
+from taskbox.utils.tools import LOG
 
 
 ROUTE = {
@@ -91,7 +93,9 @@ class Request():
         try:
             return ROUTE[self.path_list[0]](self)
         except KeyError as e:
-            return f'no such route: req: {self}, err: {e}'
+            LOG.exception(e)
+            self.msg = ('danger', traceback.format_exc())
+            return self.make_resp(template_name='404.html')
 
     def __str__(self) -> str:
         return f'Request: {self.method} {self.path}, body: {self.body}'
