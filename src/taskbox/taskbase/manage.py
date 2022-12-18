@@ -53,26 +53,31 @@ class TaskManager():
         expression = req.body.get('scheduler')
 
         try:
+            # Delete
             if 'delete' in req.body:
                 Eventscheduler().delete_scheduler(name=task.name)
+                task.scheduler = {'expression': expression}
                 task.status = 'pause'
+
+            # Update
             elif 'expression' in task.scheduler:
                 Eventscheduler().update_schedule(name=task.name,
                                                 ScheduleExpression=expression)
                 req.msg = ('success', f'Update scheduler success: {expression}')
+                task.scheduler = {'expression': expression}
+            # Create
             else:
                 Eventscheduler().create(name=task.name,
                                             ScheduleExpression=expression)
                 if len(self.task_inst.conf) != 0:
                     self.task_inst.status = 'normal'
                 req.msg = ('success', f'Create scheduler success: {expression}')
+                task.scheduler = {'expression': expression}
         except ClientError as e:
             req.msg = (f'warning', f'Create scheduler failed: {e}')
-        else:
-            task.scheduler = {'expression': expression}
 
     def update_config(self, req):
-        acc = req.body.pop('account')
+        acc = req.body.pop('taskbox_conf_name')
         if not acc:
             raise exception.TaskConfigInvalid('配置名称是必须的！')
         if 'delete' in req.body:
@@ -114,7 +119,7 @@ class Eventscheduler():
                 },
                 Target={
                     'Arn': self.func_arn,
-                    'RoleArn': 'arn:aws:iam::044694559979:role/mytaskdb-TaskdashboardRole-L505MACM0I2U',
+                    'RoleArn': 'arn:aws:iam::044694559979:role/taskbox-taskboxRole-1AXE7K79INEAX',
                     'Input': '{"Excutetask": "%s"}' % name,
                 },
                 # Cloudfoundtion will create exc role with func logical name

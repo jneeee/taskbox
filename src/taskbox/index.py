@@ -6,7 +6,7 @@ from taskbox.taskbase.manage import TaskManager
 
 def lambda_handler(event, context):
     if event.get('Excutetask'):
-        LOG.info(f'Deal with event from scheduler: {event}')
+        LOG.info(f'Event from scheduler: {event}')
         return TaskManager(event.get('Excutetask')).run()
     try:
         req = object.Request(event, context)
