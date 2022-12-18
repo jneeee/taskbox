@@ -21,7 +21,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: taskbox
-      CodeUri: ./taskbox
+      CodeUri: ./src
       Handler: taskbox.index.lambda_handler
       Runtime: python3.9
       MemorySize: 180

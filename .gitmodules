@@ -1,4 +1,4 @@
-[submodule "taskbox/user_task/hostloc_getpoint"]
-	path = taskbox/user_task/hostloc_getpoint
+[submodule "src/taskbox/user_task/hostloc_getpoint"]
+	path = src/taskbox/user_task/hostloc_getpoint
 	url = https://github.com/jneeee/hostloc_getPoints.git
 
