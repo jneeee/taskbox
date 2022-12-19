@@ -49,9 +49,8 @@ Resources:
       AccessLogSettings:
         DestinationArn: !GetAtt AccessLogs.Arn
         Format: >-
-          {"requestTime":"$context.requestTime", "requestId":"$context.requestId",
-          "ip": "$context.identity.sourceIp", "path": "$context.path"
-          "routeKey":"$context.routeKey", "status":"$context.status"}
+          {"requestTime":"$context.requestTime","srcip": "$context.identity.sourceIp",
+          "path": "$context.path", "status":"$context.status"}
       DefaultRouteSettings:
         ThrottlingBurstLimit: 50
       FailOnWarnings: true
