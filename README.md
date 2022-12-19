@@ -4,6 +4,9 @@
 
 任务盒子（TaskBox，以下简称盒子）是一个运行在 Serverless 平台的个人定时任务框架。它注重稳定、性能和扩展性。基于 AWS Lambda + [DynamoDB][2] + S3 + APIGW + EventBridge scheduler 编写。
 
+![deploytoaws](https://github.com/jneeee/taskbox/workflows/DeployToAWS/badge.svg)
+
+📦[主页](https://taskbox.cn)
 📦[演示地址](https://demo.taskbox.cn)
 
 ![index](doc/static/img/box_index.png)

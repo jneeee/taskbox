@@ -1,3 +1,5 @@
+name: DeployToAWS
+
 on:
   push:
     branches:
