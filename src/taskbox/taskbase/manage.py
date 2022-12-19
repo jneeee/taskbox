@@ -99,6 +99,7 @@ class Eventscheduler():
 
     def __init__(self) -> None:
         self.func_arn = getenv('FUNC_ARN')
+        self.role_arn = getenv('ROLE_ARN')
         self.client = boto3.client('scheduler')
 
     def create(self, name=None, ScheduleExpression=None):
@@ -120,7 +121,7 @@ class Eventscheduler():
                 },
                 Target={
                     'Arn': self.func_arn,
-                    'RoleArn': 'arn:aws:iam::044694559979:role/taskbox-taskboxRole-1AXE7K79INEAX',
+                    'RoleArn': self.role_arn,
                     'Input': '{"Excutetask": "%s"}' % name,
                 },
                 # Cloudfoundtion will create exc role with func logical name
@@ -140,7 +141,7 @@ class Eventscheduler():
             },
             Target={
                 'Arn': self.func_arn,
-                'RoleArn': 'arn:aws:iam::044694559979:role/taskbox-taskboxRole-1AXE7K79INEAX',
+                'RoleArn': self.role_arn,
                 'Input': '{"Excutetask": "%s"}' % name,
             },
             # Cloudfoundtion will create exc role with func logical name
