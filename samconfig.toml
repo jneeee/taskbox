@@ -6,6 +6,6 @@ stack_name = "taskbox"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-3xixg3eodpa9"
 s3_prefix = "taskbox"
 region = "ap-southeast-1"
-capabilities = "CAPABILITY_IAM"
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 parameter_overrides = "AppId=\"taskbox\" Password=\"authpass\""
 image_repositories = []

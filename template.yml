@@ -32,12 +32,8 @@ Resources:
           # 用来登录web的强密码
           auth_passwd: !Sub '${Password}'
           FUNC_ARN: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:taskbox'
+          ROLE_ARN: !GetAtt excrole.Arn
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
-      Policies:
-        - AWSLambda_FullAccess
-        - AmazonDynamoDBFullAccess
-        - AmazonEventBridgeSchedulerFullAccess
-        - AmazonEventBridgeFullAccess
       Events:
         ExplicitApi:
           Type: HttpApi
@@ -45,13 +41,18 @@ Resources:
             ApiId: !Ref http
             Path: /auth/login
             Method: POST
+      Role: !GetAtt excrole.Arn
 
   http:
     Type: AWS::Serverless::HttpApi
     Properties:
       AccessLogSettings:
         DestinationArn: !GetAtt AccessLogs.Arn
-        Format: $context.requestId
+        Format: >-
+          {"requestId":"$context.requestId", "ip": "$context.identity.sourceIp",
+          "caller":"$context.identity.caller", "requestTime":"$context.requestTime",
+          "eventType":"$context.eventType","routeKey":"$context.routeKey",
+          "status":"$context.status"}
       DefaultRouteSettings:
         ThrottlingBurstLimit: 50
       FailOnWarnings: true
@@ -80,6 +81,8 @@ Resources:
 
   AccessLogs:
     Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 90
 
   taskboxddbtable:
     Type: AWS::DynamoDB::Table
@@ -99,6 +102,27 @@ Resources:
         -
           AttributeName: "name"
           KeyType: "RANGE"
+
+  excrole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: taskboxexc
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - scheduler.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role for exc lambda
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AWSLambda_FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess'
 
 Outputs:
   HttpApiUrl:
