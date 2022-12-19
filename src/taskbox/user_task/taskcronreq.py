@@ -20,7 +20,7 @@ class CornReq(Task):
         盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
         '''
         res = getattr(requests, config.get('method'))(config.get('url'))
-        return f'执行 {config} 成功：{res}'
+        return f'执行 {config} 成功：{res.text}'
 
     def get_conf_list(self):
         '''method 是 requests支持的请求方法，暂不支持 data/param 字段'''

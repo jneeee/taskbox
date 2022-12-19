@@ -89,7 +89,7 @@ class Task(object):
         }
         '''
         self.name = self.__class__.__name__
-        self.property = json.loads(kwargs.get('property', {}))
+        self.property = json.loads(kwargs.get('property', '{}'))
         self.conf = kwargs.get('conf', {})
         if 'last_run_time' in kwargs:
             self.last_run_time = kwargs.get('last_run_time')

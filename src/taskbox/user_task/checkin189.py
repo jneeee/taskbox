@@ -46,15 +46,11 @@ class CheckIn(object):
         else:
             self.res.append(f"已经签到过了，签到获得 {net_disk_bonus}M 空间")
         response = self.client.get(url, headers=headers)
-        if "errorCode" in response.text:
-            self.res.append(response.text)
-        else:
+        if "errorCode"  not in response.text:
             prize_name = (response.json() or {}).get("prizeName")
             self.res.append(f"抽奖获得 {prize_name}")
         response = self.client.get(url2, headers=headers)
-        if "errorCode" in response.text:
-            self.res.append(response.text)
-        else:
+        if "errorCode" not in response.text:
             prize_name = (response.json() or {}).get("prizeName")
             self.res.append(f"抽奖获得 {prize_name}")
         return self.res
@@ -92,7 +88,7 @@ class CheckIn(object):
         r = self.client.post(self.submit_login_url, data=data, headers=headers, timeout=5)
         LOG.info(r.json()["msg"])
         if '图形验证码错误' in r.json()["msg"]:
-            raise Exception("账户风控中，请手动登录后重试")
+            raise Exception("图形验证码错误。(账户风控中，请手动登录后重试)")
         redirect_url = r.json()["toUrl"]
         self.client.get(redirect_url)
 
