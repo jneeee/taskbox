@@ -62,7 +62,7 @@ class CornReq(Task):
         盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
         '''
         res = getattr(requests, config.get('method'))(config.get('url'))
-        return f'执行 {config} 成功：{res.text}'
+        return f'执行 {config} 成功：{res.json}'
 
     def get_conf_list(self):
         '''method 是 requests支持的请求方法，暂不支持 data/param 字段'''
@@ -73,7 +73,7 @@ class CornReq(Task):
 
 CornReq.register()
 ```
-之后任务详情页会自动显示如下：
+之后**盒子解析代码的注释和配置要求**，任务详情页会自动显示如下：
 ![cronreq](doc/static/img/box_cronreq.png)
 
 还可以通过 git submodule 管理任务 TODO
@@ -81,3 +81,4 @@ CornReq.register()
 快速更新中，欢迎 PR
 
 [1]: https://us-east-1.console.aws.amazon.com/iam/home#/security_credentials$access_key
+[2]: https://docs.amazonaws.cn/amazondynamodb/latest/developerguide/Introduction.html 'DynamoDB介绍'
