@@ -1,3 +1,5 @@
+<img align="right" width=300 src="https://github.com/jneeee/taskbox/raw/master/doc/static/img/taskbox.png">
+
 ## 任务盒子 TaskBox
 
 任务盒子（TaskBox，以下简称盒子）是一个运行在 Serverless 平台的个人定时任务框架。它注重稳定、性能和扩展性。基于 AWS Lambda + [DynamoDB][2] + S3 + APIGW + EventBridge scheduler 编写。
@@ -19,7 +21,7 @@
 - 极具扩展性。**任务插件化(Submodule 管理)**，根据贡献指南一分钟创建属于你的任务。还可在任务市场寻找~~丰富扩展~~求PR
 
 
-### 如何使用
+### 1 如何使用
 
 1、Fork 本仓库，并在你仓库的 setting -> Actions secrets 设置如下三个变量
 ```
@@ -34,8 +36,48 @@ WEB_PASSWORD
 
 TODO 一些权限问题导致的失败处理方式。
 
+### 2 创建自己的任务
+
+盒子具有很强的扩展性，以创建一个定时访问网址的任务为例。添加文件 `src/taskbox/user_task/taskcronreq.py`，内容如下
+
+```
+import requests
+
+from taskbox.taskbase.task import Task
+from taskbox.utils.tools import LOG
+
+__all__ = ['CornReq']
+
+class CornReq(Task):
+    '''定时访问一个网址，万金油任务，后续加入自定义 data/param
+    '''
+    name_zh = '定时访问'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def step(self, config):
+        '''这里是任务具体做的事情
+
+        盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
+        '''
+        res = getattr(requests, config.get('method'))(config.get('url'))
+        return f'执行 {config} 成功：{res.text}'
+
+    def get_conf_list(self):
+        '''method 是 requests支持的请求方法，暂不支持 data/param 字段'''
+        return {
+            'url': '要访问的地址',
+            'method': 'get, option, post',
+        }
+
+CornReq.register()
+```
+之后任务详情页会自动显示如下：
+![cronreq](doc/static/img/box_cronreq.png)
+
+还可以通过 git submodule 管理任务 TODO
 
 快速更新中，欢迎 PR
 
 [1]: https://us-east-1.console.aws.amazon.com/iam/home#/security_credentials$access_key
-
