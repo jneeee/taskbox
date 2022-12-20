@@ -3,15 +3,7 @@ layout: default
 title: 常见问题
 ---
 
-### 无法创建定时器
-报错：
-```
-Create scheduler failed: An error occurred (ValidationException) when calling
-the CreateSchedule operation: The execution role you provide must allow AWS 
-EventBridge Scheduler to assume the role.
-```
-需要编辑 lambda 执行角色的信任策略，添加 `scheduler.amazonaws.com` , 如下图：
-![](img/add_trust.png)
+其他问题请移步 [TaskBox/issues](https://github.com/jneeee/taskbox/issues)
 
 
 ### 如何删除创建的所有资源

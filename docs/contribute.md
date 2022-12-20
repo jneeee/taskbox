@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 如何贡献 - 任务盒子
+title: 如何贡献
 ---
 
 任务盒子是个开源项目，目前暂时仅我在工作之余维护着。如果你发现项目的 Bug 或者想要**贡献一个任务**，欢迎提交 Pull request 到 [TaskBox](https://github.com/jneeee/taskbox)。
@@ -175,6 +175,8 @@ origin  git@github.com:<Your id>/taskbox.git (push)
 (py39) jn@honer:~/taskbox$ git push origin HEAD:master
 # 再去 TaskBox 网页提交 Pull 即可。
 ```
+
+一点呼吁：本着开源、共享、不滥用的精神，希望大家贡献有意义的、不浪费算力（免费额度40wGBs/月）的任务，让这件事情、这个项目可持续发展。
 
 （完）
 
