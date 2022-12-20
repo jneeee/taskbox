@@ -122,3 +122,4 @@ Resources:
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess'
+        - 'arn:aws:iam::aws:policy/AWSLambdaExecute'
