@@ -41,7 +41,7 @@ TODO 一些权限问题导致的失败处理方式。
 
 ### 2 创建自己的任务
 
-盒子具有很强的扩展性，以创建一个定时访问网址的任务为例。添加文件 `src/taskbox/user_task/taskcronreq.py`，内容如下
+盒子具有很强的扩展性，以创建一个定时访问网址的任务为例。添加文件 `src/taskbox/user_task/taskcronreq.py`，继承`taskbox.taskbase.task.Task`类，内容如下
 
 ```
 import requests
