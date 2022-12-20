@@ -24,7 +24,8 @@
 - 极具扩展性。**任务插件化(Submodule 管理)**，根据贡献指南一分钟创建属于你的任务。还可在任务市场寻找~~丰富扩展~~求PR
 
 
-### 1 如何使用
+## 2 如何使用
+盒子通过 github action 实现向 AWS Lambda 的部署。你可以创建一个用户组，并添加[必要的权限](https://jneeee.github.io/taskbox/qa)
 
 1、Fork 本仓库，并在你仓库的 setting -> Actions secrets 设置如下三个变量
 ```
@@ -37,9 +38,8 @@ WEB_PASSWORD
 2、推送一个 commit 到 master 分支触发自动部署到 AWS  
 之后从 AWS api-gateway控制台或者 github action 任务回显能够找到访问的api。
 
-TODO 一些权限问题导致的失败处理方式。
 
-### 2 创建自己的任务
+### 3 创建自己的任务
 
 盒子具有很强的扩展性，以创建一个定时访问网址的任务为例。添加文件 `src/taskbox/user_task/taskcronreq.py`，继承`taskbox.taskbase.task.Task`类，内容如下
 

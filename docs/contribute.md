@@ -143,13 +143,12 @@ def run_getpoint(username, password):
     return res
 ```
 
-当前运行环境是 Python3.9，触发 AWS CI 之后，盒子会自动查找目录下所有的 requirements.txt 并安装依赖。由于原脚本依赖的 `pyaes` 还没加到依赖。需要添加一个新的依赖文件 taskbox/user_task/hostloc_getpoint/requirements.txt
+脚本的运行环境是 Python3.9，触发 AWS CI 之后，盒子会自动查找目录下所有的 requirements.txt 并安装依赖。由于原脚本新加了依赖 `pyaes` ，需要添加一个新的依赖文件 taskbox/user_task/hostloc_getpoint/requirements.txt：
 ```
 # src/taskbox/user_task/hostloc_getpoint/requirements.txt
 pyaes
 ```
 
-> 提醒：如果是第一次部署，新加的依赖文件会自动添加成功。如果是后面推新的版本/任务，还要修改 template.yml 里面的 libs -> Properties -> Description 来触发层的更新。
 
 **第四步 推送修改**
 

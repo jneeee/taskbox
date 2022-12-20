@@ -13,6 +13,7 @@ title: 常见问题
 
 #### 2 用来部署的IAM ACCESS 需要具有哪些权限？
 建议的权限配置：
+
 ![](/static/img/qa_access_id_policy.png)
 
 
