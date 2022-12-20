@@ -2,14 +2,14 @@
 layout: default
 ---
 
-[问题和求助](./qa) | [更新日志](./release_note) | [如何贡献](./contribute) 
+[常见问题](./qa) | [更新日志](./release_note) | [如何贡献](./contribute) | [任务市场](./taskmarket)
+
+<img align="right" src="/static/img/taskbox.png">
 
 任务盒子（TaskBox，以下简称盒子）是一个运行在 Serverless 平台的个人定时任务框架。它注重稳定、性能和扩展性。基于 AWS Lambda + [DynamoDB][2] + S3 + APIGW + EventBridge scheduler 编写。
 
-![index](/static/img/box_index.png)
-![exc page](/static/img/box_exc.png)
 
-## 1 特性
+## 1 主要特性
 
 - 全免费，利用 AWS 给开发者的[永久免费额度](https://aws.amazon.com/cn/free/) 🎉
 - 简单部署。基于 AWS SAM 应用模板，能自动的绝不手动。
@@ -20,6 +20,9 @@ layout: default
 - 提供了网页版的 Shell 和 Python 命令接口，临时使用不在话下。
 - 极具扩展性。任务插件化，根据[贡献指南](./contribute)一分钟创建属于你的任务。还可在[任务市场]寻找~~丰富扩展~~求PR
 - ...
+
+![index](/static/img/box_index.png)
+![exc page](/static/img/box_exc.png)
 
 ## 2 开始使用
 

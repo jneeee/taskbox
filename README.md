@@ -6,7 +6,7 @@
 
 ![deploytoaws](https://github.com/jneeee/taskbox/workflows/DeployToAWS/badge.svg)
 
-📦[主页](https://jneeee.github.io/taskbox)
+📦[项目主页](https://jneeee.github.io/taskbox)
 📦[演示地址](https://demo.taskbox.cn)
 
 ![index](docs/static/img/box_index.png)
