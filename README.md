@@ -6,11 +6,11 @@
 
 ![deploytoaws](https://github.com/jneeee/taskbox/workflows/DeployToAWS/badge.svg)
 
-📦[主页](https://jneeee.github.io/TaskBox)
+📦[主页](https://jneeee.github.io/taskbox)
 📦[演示地址](https://demo.taskbox.cn)
 
-![index](/static/img/box_index.png)
-![exc page](/static/img/box_exc.png)
+![index](docs/static/img/box_index.png)
+![exc page](docs/static/img/box_exc.png)
 
 它有如下特点：
 
