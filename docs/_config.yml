@@ -2,7 +2,7 @@ remote_theme: pages-themes/cayman@v0.2.0
 plugins:
 - jekyll-remote-theme
 
-title: [任务盒子 TaskBox]
-description: [Another personal task solution]
+title: 任务盒子 TaskBox
+description: Another personal task solution
 
 

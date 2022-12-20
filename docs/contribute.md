@@ -12,19 +12,18 @@ title: 如何贡献
 只要简单继承 taskbox.taskbase.task.Task 类，实现一个 step 方法，就创建了一个属于你自己的定时任务。
 
 ```python
-# taskbox/user_task/taskdemo.py
+# src/taskbox/user_task/taskcronreq.py
+import requests
+
 from taskbox.taskbase.task import Task
 from taskbox.utils.tools import LOG
 
+__all__ = ['CornReq']
 
-__all__ = ['Task_demo']
-
-class Task_demo(Task):
-    '''任务介绍
-
-    这里是任务介绍，会显示在任务详情页。
+class CornReq(Task):
+    '''定时访问一个网址，万金油任务，后续加入自定义 data/param
     '''
-    name_zh = '测试任务'
+    name_zh = '定时访问'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,30 +33,28 @@ class Task_demo(Task):
 
         盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
         '''
-        conf1 = config.get('configkey1')
-        return 'conf1: 191******xxx signed, Run success!'
+        res = getattr(requests, config.get('method'))(config.get('url'))
+        return f'执行 {config} 成功：{res.json}'
 
     def get_conf_list(self):
-        '''这是这个任务需要的配置说明。
-
-        这个说明会显示在任务详情页。还可以写上推荐的定时周期语法等任何你想提醒使用者的话。
-        把需要配置的关键字作为列表返回。并在这里加以说明。推荐配置为简单字符串或者json。
-        '''
+        '''method 是 requests支持的请求方法，暂不支持 data/param 字段'''
         return {
-            'configkey1': '这里是配置说明，会显示在网页',
-            'configkey2': '这里是配置说明，会显示在网页',
+            'url': '要访问的地址',
+            'method': 'get, option, post',
         }
 
-
-Task_demo.register()
+CornReq.register()
 ```
 
 之后需要把它加到版本控制，推到你的 github 私有仓库触发CI。
 ```
-(py39) jn@honer:~/taskbox$ git add src/taskbox/user_task/taskdemo.py
+(py39) jn@honer:~/taskbox$ git add src/taskbox/user_task/taskcronreq.py
 (py39) jn@honer:~/taskbox$ git commit -m 'add my own task'
 (py39) jn@honer:~/taskbox$ git push aws HEAD:master
 ```
+之后**盒子解析代码的注释和配置要求**，任务详情页会自动显示如下：
+![cronreq](/static/img/box_cronreq.png)
+
 
 <hr>
 
@@ -165,6 +162,7 @@ pyaes
 (py39) jn@honer:~/taskbox/src/taskbox/user_task/hostloc_getpoint$ git push
 (py39) jn@honer:~/taskbox/src/taskbox/user_task/hostloc_getpoint$ cd -
 (py39) jn@honer:~/taskbox$ git add src/taskbox/user_task/hostloc_getpoint .gitmodules
+(py39) jn@honer:~/taskbox$ git commit -m 'update submodule'
 # 检查一下远端分支名称
 (py39) jn@honer:~/taskbox$ git remote -v
 aws     git@github.com:<Your id>/mytaskbox.git (fetch) <--- 私有仓库，部署到 AWS 用

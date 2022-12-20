@@ -6,6 +6,9 @@ layout: default
 
 任务盒子（TaskBox，以下简称盒子）是一个运行在 Serverless 平台的个人定时任务框架。它注重稳定、性能和扩展性。基于 AWS Lambda + [DynamoDB][2] + S3 + APIGW + EventBridge scheduler 编写。
 
+![index](docs/static/img/box_index.png)
+![exc page](docs/static/img/box_exc.png)
+
 ## 1 特性
 
 - 全免费，利用 AWS 给开发者的[永久免费额度](https://aws.amazon.com/cn/free/) 🎉
@@ -32,8 +35,6 @@ WEB_PASSWORD
 从 AWS api-gateway控制台能够找到访问的api。并且可以自定义域名。
 
 TODO 一些权限问题导致的失败处理方式。
-
-
 
 
 [2]: https://docs.amazonaws.cn/amazondynamodb/latest/developerguide/Introduction.html 'DynamoDB介绍'
