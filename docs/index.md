@@ -1,9 +1,8 @@
 ---
 layout: default
 ---
-<img align="right" width=300 src="static/img/taskbox.png">
 
-[常见问题](./qa) | [更新日志](./release_note) | [如何贡献](./contribute) | [任务市场](./taskmarket)
+[常见问题](./qa)💡 | [更新日志](./release_note)✨ | [如何贡献](./contribute)💪 | [任务市场](./taskmarket)🍻
 
 任务盒子（TaskBox，以下简称盒子）是一个运行在 Serverless 平台的个人定时任务框架。它注重稳定、性能和扩展性。基于 AWS Lambda + [DynamoDB][2] + S3 + APIGW + EventBridge scheduler 编写。
 
