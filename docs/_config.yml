@@ -5,4 +5,4 @@ plugins:
 title: 任务盒子 TaskBox
 description: Another personal task solution
 
-
+show_downloads: true

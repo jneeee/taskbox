@@ -10,9 +10,14 @@ todo 变量控制导入的module
 
 ### 添加方式
 
+hostloc_getpoint 已默认添加，此处仅做演示。
 ```
-todo
+git submodule add https://github.com/jneeee/hostloc_getPoints.git src/taskbox/user_task/hostloc_getpoint
+
 ```
+
+不配置定时器不会触发任务。如果你想删掉不需要的任务，用git submodule deinit <path> (TODO)
+
 
 ## 任务列表
 

@@ -134,9 +134,11 @@ class Task(object):
                 self.status = 'pedding' # or pause
                 self.property['result'].append(str(e))
                 break
+            except Exception as e:
+                self.status = 'pedding'
+                self.property['result'].append('发生错误，请在CloudWatch查看详细日志')
         self.exc_info['cforce_cost'] = (time.perf_counter()-start)*180
-        self.exc_info['total_cf_cost'] = \
-            self.exc_info['total_cf_cost'] + self.exc_info['cforce_cost']
+        self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
         self.last_run_time = int(time.time())
         self._save()
 
