@@ -38,7 +38,7 @@ class Request():
         Due to performace concern, better not connect db in here.
         '''
         self.starttime = time.perf_counter()
-        httpinfo = event.get('requestContext').get('http')
+        httpinfo = event.get('requestContext', {}).get('http', {})
         self.httpinfo = httpinfo
         self.method = httpinfo.get('method') # 'POST' ...
         self.path = httpinfo.get('path')
@@ -53,13 +53,12 @@ class Request():
         self.is_authed = \
             _check_authid_is_valid(self.uuid)
         self.resp_headers = {"Content-Type": "text/html"}
-        LOG.info(f'req: {self.__dict__}')
+        LOG.info(f'Request: {self.__dict__}')
 
-    def make_resp(self, http_code=200, template_name=None, **content_kw):
+    def make_resp(self, http_code=200, template_name='404.html', **content_kw):
         '''response with html if the req is not from curl cmd
 
         content_kw: is a dict which is just what we return to curl cmd.
-        TODO: need a json key for aws server to read. (implement set-cookie)
         '''
         self.timecost = round((time.perf_counter()-self.starttime)*1000, 2)
         content_kw['req'] = self
@@ -72,6 +71,11 @@ class Request():
         }
 
     def _get_cookies_uuid(self):
+        '''Get cookie uuid from req
+
+        uuid is for session manage
+        :return: None or uuid str
+        '''
         cookies = self.event.get('cookies')
         if not isinstance(cookies, list):
             return None
@@ -105,7 +109,7 @@ class Request():
         except KeyError as e:
             LOG.exception(e)
             self.msg = ('danger', traceback.format_exc())
-            return self.make_resp(template_name='404.html')
+            return self.make_resp(http_code=404)
 
     def __str__(self) -> str:
         return f'Request: {self.method} {self.path}, body: {self.body}'

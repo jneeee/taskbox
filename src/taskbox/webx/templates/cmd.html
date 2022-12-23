@@ -5,12 +5,12 @@
 <tr><td><span class="MenuCurrent">执行</span></td></tr>
 {% endblock %}
 {% block content %}
-<div class="alert alert-warning">提醒：本页操作需要登录。</div>
+<div class="alert alert-info">提醒：本页操作需要登录。</div>
 <h4>1. 执行 Python</h4>
 <p>利用 Python eval 关键字执行简单Python语句，不能执行 import 等。目前已导入的包: requests time</p>
-<p>示例: requests.get("https://www.google.com/search?q=oracle").text</p>
+<p>示例: requests.get("https://www.baidu.com/search?q=oracle").text</p>
 <form action="/cmd" method="post">
-Python line: <input  name="python"> <input type="submit" value="执行">
+Python: <input  name="python"> <input type="submit" value="执行">
 </form>
 
 <h4>2. 执行 Shell</h4>

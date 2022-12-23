@@ -1,5 +1,3 @@
-import traceback
-
 from taskbox.webx import object
 from taskbox.utils.tools import LOG
 from taskbox.taskbase.manage import TaskManager
@@ -15,3 +13,4 @@ def lambda_handler(event, context):
     except Exception as e:
         LOG.warning(f'event: {event}, context: {context}')
         LOG.exception(e)
+        req.make_resp(http_code=404)
