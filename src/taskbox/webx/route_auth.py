@@ -21,6 +21,7 @@ def login(req):
         if os.getenv('auth_passwd') == req.body.get('passwd'):
             req.do_auth_login()
             req.msg = ('success', '登录成功!')
+            req.is_authed = True
         else:
             req.msg = ('danger', '登录失败!')
         return req.make_resp(template_name='login.html')
@@ -29,4 +30,5 @@ def login(req):
 def logout(req):
     req.do_auth_logout()
     req.msg = ('success', '登出成功!')
+    req.is_authed = False
     return req.make_resp(template_name='login.html')
