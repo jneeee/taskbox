@@ -69,7 +69,8 @@ CornReq.register()
 **第二步 添加子模块**
 命令如下。Git 会把 hostloc_getPoints 仓库代码克隆到 `taskbox/user_task/hostloc_getpoint` 下面。
 ```shell
-(py39) jn@honer:~/taskbox$ git submodule add https://github.com/jneeee/hostloc_getPoints.git src/taskbox/user_task/hostloc_getpoint
+(py39) jn@honer:~/taskbox$ git submodule add https://github.com/jneeee/hostloc_getPoints.git \
+    src/taskbox/user_task/hostloc_getpoint
 ```
 
 **第三步 适配盒子**

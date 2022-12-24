@@ -7,7 +7,6 @@ from moto import mock_dynamodb
 from taskbox.index import lambda_handler
 from taskbox.utils.tools import LOG
 from taskbox.tests import fixture
-from taskbox.webx.object import Request
 
 
 Fake_event = {

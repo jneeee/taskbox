@@ -237,8 +237,8 @@ class Task(object):
             '定时器': lambda d: d.get('scheduler').get('expression', '未设置'),
             '结果': lambda d: d.get('property').get('result'),
             '上次执行': get_time,
-            '算力消耗MBs': lambda d: round(d.get('exc_info', {}).get('cforce_cost'), 4),
-            '累计消耗MBs': lambda d: round(d.get('exc_info', {}).get('total_cf_cost'), 4),
+            '算力消耗MBs': lambda d: int(d.get('exc_info', {}).get('cforce_cost')),
+            '累计消耗MBs': lambda d: int(d.get('exc_info', {}).get('total_cf_cost')),
             '累计执行(次)': lambda d: d.get('exc_info', {}).get('run_count'),
         }
         res = OrderedDict()

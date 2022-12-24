@@ -100,7 +100,7 @@ class Request():
             res = b64decode(self.event.get('body')).decode()
             # replace @ { } ...
             res = urllib.parse.unquote(res).replace('+', ' ')
-            res = {k: v for k,v in map(lambda kv: kv.split('='), res.split('&'))}
+            res = {k: v for k,v in map(lambda kv: kv.split('=', 1), res.split('&'))}
         return res
 
     def route(self):
