@@ -1,11 +1,10 @@
 from taskbox.utils.tools import LOG, run_cmd
+from taskbox.utils.tools import auth_protect
 
 
+@auth_protect
 def cmdhandler(req):
     if req.method == 'GET':
-        return req.make_resp(template_name='cmd.html')
-    if not req.is_authed:
-        req.msg = ('warning', '该操作需要登录!')
         return req.make_resp(template_name='cmd.html')
 
     if 'python' in req.body:

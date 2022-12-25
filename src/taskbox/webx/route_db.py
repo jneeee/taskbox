@@ -1,17 +1,15 @@
 import json
 
 from taskbox.taskbase import task
+from taskbox.utils.tools import auth_protect
 from taskbox.utils.tools import LOG
 
 
+@auth_protect
 def route(req):
     if req.method == 'GET':
         return req.make_resp(template_name='dynamodb.html')
     elif req.method == 'POST':
-        if not req.is_authed:
-            req.msg = ('warning', '该操作需要登录!')
-            return req.make_resp(template_name='dynamodb.html')
-
         # op_type = 1 means query
         if req.body.get('op_type') == '1':
             query_item = {'id': req.body.get('id'), 'name': req.body.get('name')}

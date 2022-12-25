@@ -145,7 +145,7 @@ class Request():
         Excute some db write operate here after the wsgi response. So that
         the response works faster.💪
         '''
-        pass
+        LOG.info(_check_authid_is_valid.cache_info())
 
 
 @lru_cache
