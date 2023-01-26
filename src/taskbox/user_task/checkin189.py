@@ -42,17 +42,19 @@ class CheckIn(object):
         response = self.client.get(self.sign_url % rand, headers=headers)
         net_disk_bonus = response.json()["netdiskBonus"]
         if response.json()["isSign"] == "false":
-            self.res.append(f"未签到，签到获得 {net_disk_bonus}M 空间")
+            self.res.append(f"未签到，签到获得{net_disk_bonus}M空间")
         else:
-            self.res.append(f"已经签到过了，签到获得 {net_disk_bonus}M 空间")
+            self.res.append(f"签到成功，获得{net_disk_bonus}M空间")
+        success_count = 0
         response = self.client.get(url, headers=headers)
         if "errorCode"  not in response.text:
             prize_name = (response.json() or {}).get("prizeName")
-            self.res.append(f"抽奖获得 {prize_name}")
+            success_count += 1
         response = self.client.get(url2, headers=headers)
         if "errorCode" not in response.text:
             prize_name = (response.json() or {}).get("prizeName")
-            self.res.append(f"抽奖获得 {prize_name}")
+            success_count += 1
+        self.res.append(f'抽奖获得{50 * success_count}MB空间')
         return self.res
 
     @staticmethod
