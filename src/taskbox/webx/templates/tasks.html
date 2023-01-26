@@ -8,7 +8,8 @@
 <p><b>任务列表</b>:</p>
 <table cellspacing="1" cellpadding="6" border="0"><tbody>
 <tr>{% for key in taskl_obj[0].format_seq %}
-  <th class="Title" align="center" width="60">{{ key }}</th>
+  {% if key == '结果' %}<th class="Title" align="center" width="120">{{ key }}</th>{% else %}
+  <th class="Title" align="center" width="60">{{ key }}</th>{% endif %}
 {% endfor %}</tr>
 {% for task in taskl_obj %}
 <tr>{% for key, val in task.info_format.items() %}{% if key == '名称' %}
