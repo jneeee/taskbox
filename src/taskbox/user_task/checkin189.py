@@ -137,7 +137,7 @@ class Cloud189(Task):
     def step(self, config_d):
         res = CheckIn(config_d.get('phone'), config_d.get('pswd189')).check_in()
         # 'checkin189' : {'time':x, 'checkin_space':x, 'lottery_space':x, 'total':x}
-        return res
+        return ','.join(res)
 
     def get_conf_list(self):
         return {

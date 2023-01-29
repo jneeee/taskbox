@@ -200,6 +200,10 @@ class Task(object):
 
     @property
     def info_format(self):
+        '''Return format task info
+
+        This func will be called when web desplay tasks info
+        '''
         if not hasattr(self, '_info_format'):
             if hasattr(self, 'name_zh'):
                 tempd = copy.copy(self.__dict__)
@@ -235,7 +239,7 @@ class Task(object):
             '名称': lambda d: d.get('name_zh', d.get('name')),
             '状态': get_status,
             '定时器': lambda d: d.get('scheduler').get('expression', '未设置'),
-            '结果': lambda d: d.get('property').get('result'),
+            '结果': lambda d: ';'.join((str(i) for i in d.get('property').get('result', []))),
             '上次执行': get_time,
             '算力消耗MBs': lambda d: int(d.get('exc_info', {}).get('cforce_cost')),
             '累计消耗MBs': lambda d: int(d.get('exc_info', {}).get('total_cf_cost')),
@@ -248,13 +252,13 @@ class Task(object):
 
     @classmethod
     def get_tb(cls):
-        '''Get Task table'''
+        '''Get Task DB table name from ENV'''
         if not hasattr(cls, 'tb'):
             cls.tb = Tableclient(getenv('DDB_TABLE'))
         return cls.tb
 
     def get_conf_list(self):
-        '''实现我'''
+        '''实现我 implement me'''
         return {}
 
     def set_conf(self, accout_id, conf_dict):
