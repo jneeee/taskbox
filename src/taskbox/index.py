@@ -11,6 +11,5 @@ def lambda_handler(event, context):
         LOG.info(f'New {req}')
         return req.route()
     except Exception as e:
-        LOG.warning(f'event: {event}, context: {context}')
         LOG.exception(e)
         req.make_resp(http_code=404)

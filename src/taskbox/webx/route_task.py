@@ -7,8 +7,8 @@ from taskbox.utils.tools import LOG
 
 @auth_protect
 def get_task(req):
+    # Display all task
     if len(req.path_list) == 1:
-        # Display all task
         if req.method == 'GET':
             tasks_list = Task.get_all_tasks()
             taskl_obj = TaskList.from_list(tasks_list)
@@ -25,7 +25,8 @@ def get_task(req):
             return req.make_resp(taskl_obj=taskl_obj,
                                 template_name='tasks.html')
 
-    # req.path_list = [task, Task_test]
+    # req.path_list = [task, Task_name]
+    # Single task
     elif len(req.path_list) > 1:
         task_id = req.path_list[1]
         task_mng = TaskManager(task_id)

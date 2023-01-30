@@ -252,7 +252,10 @@ class Task(object):
 
     @classmethod
     def get_tb(cls):
-        '''Get Task DB table name from ENV'''
+        '''Get Task DB table name from ENV
+
+        :return: dbclient
+        '''
         if not hasattr(cls, 'tb'):
             cls.tb = Tableclient(getenv('DDB_TABLE'))
         return cls.tb
@@ -262,7 +265,14 @@ class Task(object):
         return {}
 
     def set_conf(self, accout_id, conf_dict):
+        '''Create or update a config
 
+        if config name (accout_id) exsit, the func will update config;
+        if not, new config will be created.
+        :accout_id: config name from web
+        :conf_dict: config info
+        :return: None
+        '''
         item = {}
         for key, val in conf_dict.items():
             if val.startswith('{'):

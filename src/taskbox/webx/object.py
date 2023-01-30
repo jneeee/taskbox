@@ -53,7 +53,8 @@ class Request():
         self.is_authed = \
             _check_authid_is_valid(self.uuid)
         self.resp_headers = {"Content-Type": "text/html"}
-        LOG.info(f'Request: {self.__dict__}')
+        temp_d = {k:v for k,v in self.__dict__.items() if k != 'event'}
+        LOG.debug(f'Request: {temp_d}')
 
     def make_resp(self, http_code=200, template_name='404.html', **content_kw):
         '''response with html if the req is not from curl cmd
@@ -145,11 +146,16 @@ class Request():
         Excute some db write operate here after the wsgi response. So that
         the response works faster.💪
         '''
-        LOG.info(_check_authid_is_valid.cache_info())
+        LOG.debug(_check_authid_is_valid.cache_info())
 
 
 @lru_cache
 def _check_authid_is_valid(uuid):
+    '''Check if the uuid from cookie is legal
+
+    If there are no app_context in db(The app just do init) return False
+    :return: True or False
+    '''
     # app_context = {'id': 'app_context', 'name':'app', 'cur_authids':
     # {<uuid>: {expire_at: <int>},}}
     if not uuid:
@@ -159,6 +165,7 @@ def _check_authid_is_valid(uuid):
     if not app_context:
         return False
 
+    # Deal with uuid from db: drop expired uuid.
     cur_time = int(time.time())
     new_authids = {}
     for uuid, prop in app_context.get('cur_authids', {}).items():
@@ -169,5 +176,4 @@ def _check_authid_is_valid(uuid):
 
     app_context['cur_authids'] = new_authids
     tb.put(app_context)
-    LOG.info(f'new_authids: {new_authids}')
     return uuid in new_authids
