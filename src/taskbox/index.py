@@ -1,15 +1,23 @@
 from taskbox.webx import object
 from taskbox.utils.tools import LOG
 from taskbox.taskbase.manage import TaskManager
+from taskbox.taskbase import exception as box_exception
+
 
 def lambda_handler(event, context):
+    # Deal with scheduler task
     if event.get('Excutetask'):
         LOG.info(f'Event from scheduler: {event}')
-        return TaskManager(event.get('Excutetask')).run()
+        TaskManager(event.get('Excutetask')).run(context)
+
+    # Web req
     try:
         req = object.Request(event, context)
         LOG.info(f'New {req}')
         return req.route()
+    except box_exception as e:
+        rep.msg = ('danger', e)
+        req.make_resp(http_code=403)
     except Exception as e:
         LOG.exception(e)
         req.make_resp(http_code=404)

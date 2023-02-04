@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block menu %}<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
+<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
+<tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>{% endblock %}
+{% block content %}<h4>任务日志</h4>
+<div>{% if log_content %}
+{{ log_content }}{% else %} 当前没有可展示日志
+{% endif %}</div>
+<br>{% endblock %}

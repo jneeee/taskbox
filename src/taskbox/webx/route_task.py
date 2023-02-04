@@ -23,11 +23,11 @@ def get_task(req):
                         taskl_obj.append(task_obj)
                         LOG.info(f'init task {name}')
             return req.make_resp(taskl_obj=taskl_obj,
-                                template_name='tasks.html')
+                                 template_name='tasks.html')
 
     # req.path_list = [task, Task_name]
     # Single task
-    elif len(req.path_list) > 1:
+    elif len(req.path_list) == 2:
         task_id = req.path_list[1]
         task_mng = TaskManager(task_id)
 
@@ -44,3 +44,14 @@ def get_task(req):
                 task_mng.task_inst._save()
         return req.make_resp(task=task_mng.task_inst,
                              template_name='task_detail.html')
+
+    elif len(req.path_list) == 3 and req.path_list[2] == 'log':
+        if not req.is_authed:
+            raise exception.NeedAuth('需要登录')
+        task_id = req.path_list[1]
+        task_mng = TaskManager(task_id)
+
+        task_log_inst = task_mng.task_inst.get_log_inst()
+        return req.make_resp(log_content=task_log_inst.get_latest_log_event(),
+                             template_name='tasklog.html')
+

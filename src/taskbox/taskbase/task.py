@@ -9,6 +9,8 @@ from boto3.dynamodb.conditions import Attr, Key
 from taskbox.utils.tools import LOG
 from taskbox.taskbase.exception import TaskBaseException
 from taskbox.taskbase.exception import TaskConfigInvalid
+from taskbox.taskbase.cloudlogs import TaskLog
+
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html
 class Tableclient():
@@ -78,7 +80,7 @@ class Task(object):
         :params kwargs: {
             id: str,
             status: normal|pedding|pause (correspond color green|yellow|red),
-            property: {result:[]} # the task write info to here
+            property: {result:[], log_streams: []} # the task write info to here
             conf:{'account1': {phone:xxx, passwd: xxx, }, } # can be multi config
             last_run_time: int, 1670907645.49549,
             exc_info = {
@@ -101,6 +103,7 @@ class Task(object):
                              'run_count': 0,
                              'total_cf_cost': 0}
         self.scheduler = kwargs.get('scheduler', {})
+        self.log_inst = TaskLog(self.property)
 
     @classmethod
     def register(cls):
@@ -141,7 +144,6 @@ class Task(object):
         self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
         self.last_run_time = int(time.time())
         self._save()
-
 
     def get_conf_display(self):
         '''Implement me

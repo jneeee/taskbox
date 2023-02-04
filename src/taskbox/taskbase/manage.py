@@ -91,7 +91,8 @@ class TaskManager():
                 self.task_inst.status = 'normal'
         req.msg = ('success', 'Success!')
 
-    def run(self):
+    def run(self, context):
+        self.task_inst.log_inst.append(context.log_stream_name)
         self.task_inst.run()
 
 

@@ -9,3 +9,6 @@ class TaskConfigInvalid(TaskBaseException):
 
 class TaskExcuteError(TaskBaseException):
     pass
+
+class NeedAuth(TaskBaseException):
+    pass
