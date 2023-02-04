@@ -3,6 +3,8 @@ layout: default
 title: 如何贡献
 ---
 
+本页分为贡献任务和贡献项目两个部分。
+
 任务盒子是个开源项目，目前暂时仅我在工作之余维护着。如果你发现项目的 Bug 或者想要**贡献一个任务**，欢迎提交 Pull request 到 [TaskBox](https://github.com/jneeee/taskbox)。
 
 下面介绍两种贡献任务的方法。第一种是最简单的创建自己的 Task 方法，适合比较个人的，不公开的任务，在你的私有仓库里管理就行。第二种是将现有脚本适配到盒子，通过创建/fork一个现有的脚本库，集成到盒子里。
@@ -174,8 +176,27 @@ origin  git@github.com:<Your id>/taskbox.git (push)
 # 再去 TaskBox 网页提交 Pull 即可。
 ```
 
-一点呼吁：本着开源、共享、不滥用的精神，希望大家贡献有意义的、不浪费算力（免费额度40wGBs/月）的任务，让这件事情、这个项目可持续发展。
+## 贡献项目代码
+
+文件夹介绍：
+
+| 名称 | 作用 |
+| ---- | ---- |
+| docs | 生成文档，显示在 jneeee.github.io/taskbox |
+| src | 项目源码，其中`taskbox/taskbase`定义任务的基础类，`taskbox/webx`为web界面服务，`taskbox/utils` 是工具目录，`taskbox/user_task` 是具体任务代码（git submodule也应在这里） |
+| samconfig.toml | Action deplowtoaws 运行时需要的参数 |
+| template.yml | AWS SAM 模板（serverless app's config） |
+
+
+部署采用 AWS SAM 模板，它提供了一些[基本 Serverless 资源类型][2]。修改 /template.yml 即可。另外 SAM 还支持 [AWS CloudFormation 模板][3]，比如 template.yml 中的 `AWS::Logs::LogGroup`。
+
+
+<small>一点呼吁：本着开源、共享、不滥用的精神，希望贡献有意义的、不浪费算力（免费额度40wGBs/月）的任务，让这件事情、这个项目可持续发展。</small>
 
 （完）
 
 [1]: https://github.com/jneeee/hostloc_getPoints/commit/f8151984ab42ec275f8012008d4bbcc58d582b09 'adapt taskbox'
+[2]: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+[3]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+
+
