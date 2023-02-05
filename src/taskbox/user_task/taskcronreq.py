@@ -19,7 +19,12 @@ class CornReq(Task):
 
         盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
         '''
-        res = getattr(requests, config.get('method'))(config.get('url'))
+        requests.get
+        attr_get = getattr(requests, config.get('method'))
+        res = attr_get(
+            (config.get('url')),
+            headers={'User-Agent': config.get('User-Agent', 'Mozilla')}
+        )
         return f'执行 {config} 成功：{res.text}'
 
     def get_conf_list(self):
@@ -27,6 +32,7 @@ class CornReq(Task):
         return {
             'url': '要访问的地址',
             'method': 'get, option, post',
+            'User-Agent': '可选。访问时的客户端类型，默认为 Mozilla',
         }
 
 
