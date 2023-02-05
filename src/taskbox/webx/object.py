@@ -108,8 +108,8 @@ class Request():
         try:
             return ROUTE[self.path_list[0]](self)
         except KeyError as e:
-            LOG.exception(e)
-            self.msg = ('danger', traceback.format_exc())
+            LOG.info(f'访问失败，没有此路径: {self.path_list}')
+            self.msg = ('danger', '没有此页面! ')
             return self.make_resp(http_code=404)
 
     def __str__(self) -> str:

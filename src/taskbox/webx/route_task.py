@@ -51,7 +51,7 @@ def get_task(req):
         task_id = req.path_list[1]
         task_mng = TaskManager(task_id)
 
-        task_log_inst = task_mng.task_inst.get_log_inst()
+        task_log_inst = task_mng.task_inst.log_inst
         return req.make_resp(log_content=task_log_inst.get_latest_log_event(),
                              template_name='tasklog.html')
 

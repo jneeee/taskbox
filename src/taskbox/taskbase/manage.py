@@ -89,7 +89,7 @@ class TaskManager():
             self.task_inst.set_conf(acc, req.body)
             if self.task_inst.scheduler:
                 self.task_inst.status = 'normal'
-        req.msg = ('success', 'Success!')
+        req.msg = ('success', '更新配置成功!')
 
     def run(self, context):
         self.task_inst.log_inst.append(context.log_stream_name)

@@ -9,6 +9,7 @@ def lambda_handler(event, context):
     if event.get('Excutetask'):
         LOG.info(f'Event from scheduler: {event}')
         TaskManager(event.get('Excutetask')).run(context)
+        return
 
     # Web req
     try:

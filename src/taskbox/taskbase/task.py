@@ -139,7 +139,8 @@ class Task(object):
                 break
             except Exception as e:
                 self.status = 'pedding'
-                self.property['result'].append('发生错误，请在CloudWatch查看详细日志')
+                self.property['result'].append('执行任务出现错误，请在CloudWatch查看详细日志')
+        # compute force = time * Memerysize(MB)
         self.exc_info['cforce_cost'] = (time.perf_counter()-start)*180
         self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
         self.last_run_time = int(time.time())
@@ -161,7 +162,7 @@ class Task(object):
         '''
         item = copy.deepcopy(self.__dict__)
         item['exc_info'] = json.dumps(item['exc_info'])
-        item['property']['log_streams'] = self.log_inst.stream_q
+        item['property']['log_streams'] = list(self.log_inst.stream_q)
         item['property'] = json.dumps(item['property'])
         item['id'] = 'task_info'
         item.pop('log_inst')
