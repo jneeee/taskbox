@@ -13,7 +13,7 @@ class TaskLog:
     def __init__(self, task_propety) -> None:
         '''task_propety: {result:xxx, exec_log: queue[stream_id ...],}'''
         tmp = task_propety.get('log_streams')
-        self.stream_q = deque(tmp, maxlen=30) if tmp else deque(tmp, maxlen=30)
+        self.stream_q = deque(tmp, maxlen=30) if tmp else deque(maxlen=30)
 
     def get_latest_log_event(self):
         if not self.stream_q:

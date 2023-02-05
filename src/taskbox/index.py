@@ -1,7 +1,7 @@
 from taskbox.webx import object
 from taskbox.utils.tools import LOG
 from taskbox.taskbase.manage import TaskManager
-from taskbox.taskbase import exception as box_exception
+from taskbox.taskbase.exception import TaskBaseException
 
 
 def lambda_handler(event, context):
@@ -15,8 +15,8 @@ def lambda_handler(event, context):
         req = object.Request(event, context)
         LOG.info(f'New {req}')
         return req.route()
-    except box_exception as e:
-        rep.msg = ('danger', e)
+    except TaskBaseException as e:
+        req.msg = ('danger', e)
         req.make_resp(http_code=403)
     except Exception as e:
         LOG.exception(e)

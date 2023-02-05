@@ -29,7 +29,7 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE: !Ref taskboxddbtable
-          LOG_GROUP: !Ref AccessLogs
+          LOG_GROUP: 'aws/lambda/taskbox'
           # 用来登录web的强密码
           auth_passwd: !Sub '${Password}'
           FUNC_ARN: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:taskbox'
@@ -82,7 +82,7 @@ Resources:
   AccessLogs:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: 'lambda_taskbox_log'
+      LogGroupName: 'lambda_taskbox_apigw_log'
       RetentionInDays: 90
 
   taskboxddbtable:

@@ -1,14 +1,17 @@
-class TaskBoxBaseException(Exception):
-    pass
-
 class TaskBaseException(Exception):
-    pass
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
 
 class TaskConfigInvalid(TaskBaseException):
-    pass
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
 
 class TaskExcuteError(TaskBaseException):
-    pass
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
 
 class NeedAuth(TaskBaseException):
-    pass
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)

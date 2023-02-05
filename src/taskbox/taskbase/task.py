@@ -155,10 +155,16 @@ class Task(object):
         raise NotImplementedError
 
     def _save(self):
+        '''Save instance to db.
+
+        The log_inst will save to property:{}, so we pop it.
+        '''
         item = copy.deepcopy(self.__dict__)
         item['exc_info'] = json.dumps(item['exc_info'])
+        item['property']['log_streams'] = self.log_inst.stream_q
         item['property'] = json.dumps(item['property'])
         item['id'] = 'task_info'
+        item.pop('log_inst')
         self.get_tb().put(item=item)
         LOG.info(f'Write to db: {item}')
 
