@@ -167,7 +167,7 @@ class Task(object):
         item['id'] = 'task_info'
         item.pop('log_inst')
         self.get_tb().put(item=item)
-        LOG.info(f'Write to db: {item}')
+        LOG.debug(f'Write to db: {item}')
 
     @classmethod
     def from_dict(cls, task_info):
@@ -177,12 +177,6 @@ class Task(object):
         :return: Task_xxx instance
         '''
         return cls(**task_info)
-
-    def get_history(self):
-        return self.get_tb().native_table.query(
-            KeyConditionExpression=Key('id').eq('task_history'),
-            FilterExpression=Attr('name').eq(self.name),
-        ).get('Items')
 
     @classmethod
     def get_by_name(cls, task_name):

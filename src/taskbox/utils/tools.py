@@ -1,9 +1,22 @@
+import datetime
 import subprocess
 import logging
 
 
+def _beijing_time(sec, what):
+    beijing_time = datetime.datetime.now() + datetime.timedelta(hours=8)
+    return beijing_time.timetuple()
+
+logging.Formatter.converter = _beijing_time
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s: %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
 LOG = logging.getLogger('taskbox')
-LOG.setLevel(logging.INFO)
+
 
 def run_cmd(cmd_str):
     '''Run cmdline with shell'''

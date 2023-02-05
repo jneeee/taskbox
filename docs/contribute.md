@@ -11,7 +11,7 @@ title: 如何贡献
 
 ## 1分钟创建你自己的任务
 
-只要简单继承 taskbox.taskbase.task.Task 类，实现一个 step 方法，就创建了一个属于你自己的定时任务。
+只要简单继承 taskbox.taskbase.task.Task 类，实现一个 step 方法，就创建了一个属于你自己的定时任务。详细：[taskcronreq.py][4]
 
 ```python
 # src/taskbox/user_task/taskcronreq.py
@@ -198,5 +198,4 @@ origin  git@github.com:<Your id>/taskbox.git (push)
 [1]: https://github.com/jneeee/hostloc_getPoints/commit/f8151984ab42ec275f8012008d4bbcc58d582b09 'adapt taskbox'
 [2]: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
 [3]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
-
-
+[4]: https://github.com/jneeee/taskbox/blob/master/src/taskbox/user_task/taskcronreq.py
