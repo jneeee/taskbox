@@ -1,6 +1,8 @@
 <img align="right" width=300 src="https://github.com/jneeee/taskbox/raw/master/docs/static/img/taskbox.png">
 
-## 任务盒子 TaskBox
+## 任务盒子 TaskBox 
+
+[English](https://github.com/jneeee/taskbox/blob/master/docs/README_en.md)
 
 任务盒子（TaskBox，以下简称盒子）是一个运行在 Serverless 平台的个人定时任务框架。它注重稳定、性能和扩展性。基于 AWS Lambda + [DynamoDB][2] + S3 + APIGW + EventBridge scheduler 编写。
 
@@ -8,6 +10,7 @@
 
 📦[项目主页](https://jneeee.github.io/taskbox)
 📦[演示地址](https://demo.taskbox.cn)
+
 
 ![index](docs/static/img/box_index.png)
 ![exc page](docs/static/img/box_exc.png)
@@ -25,7 +28,7 @@
 
 
 ## 2 如何使用
-盒子通过 github action 实现向 AWS Lambda 的部署。你可以创建一个用户组，并添加[必要的权限](https://jneeee.github.io/taskbox/qa)
+盒子通过 github action 实现向 AWS Lambda 的部署。为此需要在github action 配置你的 AWS 账户信息。按 AWS 的推荐，你可以创建一个用户组，并添加[必要的权限 问题2](https://jneeee.github.io/taskbox/qa)
 
 1、Fork 本仓库，并在你仓库的 setting -> Actions secrets 设置如下三个变量
 ```
