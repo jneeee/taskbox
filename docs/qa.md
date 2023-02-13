@@ -16,6 +16,9 @@ title: 常见问题
 
 ![](/static/img/qa_access_id_policy.png)
 
+#### 3 和青龙比有什么区别？
+~~功能和任务没有青龙多~~
+任务盒子是基于 PaaS 的解决方案（Lambda DynamoDB CloudWatch等），定时器、日志、邮件等的实现都是基于云的解决方案，不用担心宕机迁移。
 
 
 [1]: https://ap-southeast-1.console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks?filteringStatus=active&filteringText=&viewNested=true 'CloudFormation'

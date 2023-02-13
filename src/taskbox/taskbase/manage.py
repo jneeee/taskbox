@@ -49,28 +49,30 @@ class TaskManager():
 
     def update_scheduler(self, req):
         # create/update/delete a scheduler, the name is taskname,
+        # The task instance will be saved outside this func.
         task = self.task_inst
         expression = req.body.get('scheduler')
 
+        sche_client = Eventscheduler()
         try:
             # Delete
             if 'delete' in req.body:
                 if 'expression' in task.scheduler:
                     task.scheduler.pop('expression')
-                Eventscheduler().delete_scheduler(name=task.name)
                 task.status = 'pause'
-
-            # Update
+                sche_client.delete_scheduler(name=task.name)
+                req.msg = ('success', 'Delete scheduler success.')
+            # If task already have a scheduler, do update
             elif 'expression' in task.scheduler:
+                sche_client.update_schedule(name=task.name,
+                                                 ScheduleExpression=expression)
                 task.scheduler = {'expression': expression}
-                Eventscheduler().update_schedule(name=task.name,
-                                                ScheduleExpression=expression)
                 req.msg = ('success', f'Update scheduler success: {expression}')
             # Create
             else:
+                sche_client.create(name=task.name,
+                                        ScheduleExpression=expression)
                 task.scheduler = {'expression': expression}
-                Eventscheduler().create(name=task.name,
-                                            ScheduleExpression=expression)
                 if len(self.task_inst.conf) != 0:
                     self.task_inst.status = 'normal'
                 req.msg = ('success', f'Create scheduler success: {expression}')
@@ -85,11 +87,12 @@ class TaskManager():
             self.task_inst.conf.pop(acc)
             if len(self.task_inst.conf) == 0:
                 self.task_inst.status = 'pending'
+            req.msg = ('success', '删除配置成功!')
         else:
             self.task_inst.set_conf(acc, req.body)
             if self.task_inst.scheduler:
                 self.task_inst.status = 'normal'
-        req.msg = ('success', '更新配置成功!')
+            req.msg = ('success', '更新配置成功!')
 
     def run(self, context):
         self.task_inst.log_inst.append(context.log_stream_name)

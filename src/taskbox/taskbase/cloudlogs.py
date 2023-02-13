@@ -1,7 +1,6 @@
-from collections import deque, OrderedDict
+from collections import deque
 from os import getenv
 import time
-import json
 
 import boto3
 
@@ -43,7 +42,9 @@ class TaskLog:
         return response.get('events')
 
     def append(self, stream_id):
-        if self.stream_q and self.stream_q[-1] != stream_id:
+        if not self.stream_q:
+            self.stream_q.append(stream_id)
+        elif self.stream_q[-1] != stream_id:
             self.stream_q.append(stream_id)
 
     @staticmethod
@@ -61,3 +62,10 @@ class TaskLog:
             res.append(tmp)
 
         return res
+
+    def __iter__(self):
+        for i in self.stream_q:
+            yield i
+
+    def __getitem__(self, index):
+        return self.stream_q[index]
