@@ -71,7 +71,7 @@ class TaskManager():
             # Create
             else:
                 sche_client.create(name=task.name,
-                                        ScheduleExpression=expression)
+                                   ScheduleExpression=expression)
                 task.scheduler = {'expression': expression}
                 if len(self.task_inst.conf) != 0:
                     self.task_inst.status = 'normal'

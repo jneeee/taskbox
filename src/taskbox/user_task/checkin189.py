@@ -40,22 +40,24 @@ class CheckIn(object):
             "Accept-Encoding": "gzip, deflate",
         }
         response = self.client.get(self.sign_url % rand, headers=headers)
+
+        space_size = 0
         net_disk_bonus = response.json()["netdiskBonus"]
         if response.json()["isSign"] == "false":
             self.res.append(f"未签到，签到获得{net_disk_bonus}M空间")
         else:
             self.res.append(f"签到成功，获得{net_disk_bonus}M空间")
+        space_size += int(net_disk_bonus)
         success_count = 0
         response = self.client.get(url, headers=headers)
         if "errorCode"  not in response.text:
-            prize_name = (response.json() or {}).get("prizeName")
             success_count += 1
         response = self.client.get(url2, headers=headers)
         if "errorCode" not in response.text:
-            prize_name = (response.json() or {}).get("prizeName")
             success_count += 1
         self.res.append(f'抽奖获得{50 * success_count}MB空间')
-        return self.res
+        space_size += 50 * success_count
+        return self.res, space_size
 
     @staticmethod
     def rsa_encode(rsa_key, string):
@@ -135,9 +137,13 @@ class Cloud189(Task):
         super().__init__(*args, **kwargs)
 
     def step(self, config_d):
-        res = CheckIn(config_d.get('phone'), config_d.get('pswd189')).check_in()
+        res, space_size = CheckIn(config_d.get('phone'), config_d.get('pswd189')).check_in()
         # 'checkin189' : {'time':x, 'checkin_space':x, 'lottery_space':x, 'total':x}
-        return ','.join(res)
+        if 'space_size_total' not in self.property:
+            self.property['space_size_total'] = 0
+        self.property['space_size_total'] += space_size
+
+        return f"{','.join(res)} 累计{self.property['space_size_total']}MB"
 
     def get_conf_list(self):
         return {

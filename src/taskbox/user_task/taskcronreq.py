@@ -19,7 +19,6 @@ class CornReq(Task):
 
         盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
         '''
-        requests.get
         attr_get = getattr(requests, config.get('method'))
         res = attr_get(
             (config.get('url')),
