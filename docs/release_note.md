@@ -9,9 +9,10 @@ description: 任务盒子的更新日志
 * 完善文档
 * 对不在Task列表里的任务，从数据库里删除
 * email 订阅功能
-* 数据在响应后再写到db
+* 数据在响应后再写到 db
 
-### v2.2 onging
+### v2.2
+* 前端换用[Picocss](https://github.com/picocss/pico) 更好看一点了
 * task 日志查询，单次执行的所有日志，最多30天。
 
 ### v2.1

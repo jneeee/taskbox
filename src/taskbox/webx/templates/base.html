@@ -1,21 +1,27 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="/static/style.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+<link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.classless.min.css">
+<link rel="stylesheet" href="/static/style.css">
 <title>任务盒子</title>
-<table cellspacing="10" cellpadding="10" border="0" width="100%"><tbody><tr>
-<td class="MenuColumn" valign="top">
-<div class="MenuCurrent">📦 任务盒子</div><hr>
-<table cellpadding="2" cellspacing="0" border="0"><tbody>
-{% block menu %}{% endblock %}
-</tbody></table><hr>
-{% if req.is_authed %}<a href="/auth/logout" class="MenuLink">退出登录</a>{% else %}
-<a href="/auth/login" class="MenuLink">登录</a>{% endif %}
-</td>
-<td valign="top">
-<table cellspacing="4" cellpadding="4"><tbody><tr>
-<td>
+</head>
+<body><header><nav>
+<ul>
+  <li><strong><a href="/">任务盒子</a></strong></li>
+</ul>
+<ul>
+  <li><a href="/">首页</a></li>
+  <li><a href="/cmd">执行</a></li>
+  <li><a href="/db">数据库</a></li>
+{% if req.is_authed %}
+  <a href="/auth/logout" class="MenuLink">登出</a>{% else %}
+  <a href="/auth/login" class="MenuLink">登录</a>
+{% endif %}
+</ul></nav></header>
+<main>
 {% if req.msg %}<div class="alert alert-{{ req.msg[0] }}">📌 {{ req.msg[1] }}</div>{% endif %}
 {% block content %}{% endblock %}
-</td></tr></tbody></table>
-<hr>
-<p><small>Powered by <a href="https://github.com/jneeee/taskbox">TaskBox</a> v2.1Beta 耗时: {{req.timecost}}ms.</small></p>
-</td></tr></tbody></table></body></html>
+</main>
+<footer>
+<p><small>Powered by <a href="https://github.com/jneeee/taskbox">TaskBox</a> v2.2 耗时: {{req.timecost}}ms.</small></p>
+</footer>
+</body></html>

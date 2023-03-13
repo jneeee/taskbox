@@ -4,12 +4,12 @@ import time
 import json
 
 import boto3
-from boto3.dynamodb.conditions import Attr, Key
+from boto3.dynamodb.conditions import Key
 
-from taskbox.utils.tools import LOG
+from taskbox.taskbase.cloudlogs import TaskLog
 from taskbox.taskbase.exception import TaskBaseException
 from taskbox.taskbase.exception import TaskConfigInvalid
-from taskbox.taskbase.cloudlogs import TaskLog
+from taskbox.utils.tools import LOG
 
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html

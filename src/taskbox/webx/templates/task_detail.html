@@ -1,23 +1,20 @@
 {% extends "base.html" %}
-{% block menu %}<tr><td><a href="/" class="MenuLink">首页</a></td></tr>
-<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
-<tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>{% endblock %}
-{% block content %}<h4>任务详情</h4>
-<table cellspacing="1" cellpadding="6" border="0"><tbody>
-<tr>{% for key in task.info_format.keys() %}
-<th class="Title" align="center" width="60">{{ key }}</th>
-{% endfor %}</tr>
-<tr>{% for _, val in task.info_format.items() %}
-<td class="Item" align="center">{{ val }}</td>
-{% endfor %}</tr></tbody></table>
+{% block content %}
+<h4>任务详情</h4>
+<table cellspacing="1" cellpadding="6" border="0"><tbody><tr>
+  {% for key in task.info_format.keys() %}
+    <th class="Title" align="center" width="60">{{ key }}</th>
+  {% endfor %}</tr><tr>
+  {% for _, val in task.info_format.items() %}
+    <td class="Item" align="center">{{ val }}</td>
+  {% endfor %}</tr></tbody></table>
 <hr>
 <h4>任务说明</h4>
 <p>{{ task.__doc__ }}</p>
-{% if req.is_authed %}<h4>当前配置</h4>
-<p>{{ task.conf }}</p>{% endif %}
+{% if req.is_authed %}<h4>当前配置</h4><p>{{ task.conf }}</p>{% endif %}
 <h4>配置修改</h4>
 <p>{{ task.get_conf_list.__doc__ }}</p>
-<p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。配置以‘{’开头的有效json会被解析为字典。</p>
+<p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。配置以 <code>{</code> 开头的有效json会被解析为字典。</p>
 <form action="/task/{{ task.name }}" method="post">
   配置名称: <input name="taskbox_conf_name"> <i>比如‘账号1’, 对你有意义的, 用来显示、标记</i><br>
   {% for name, desc in task.get_conf_list().items() %}{{name}}: <input name="{{ name }}"> <i>{{ desc }}</i><br>{% endfor %}
@@ -27,7 +24,7 @@
 <h4>定时任务周期设置</h4>
 <p>时区 Asia/Shanghai，表达式的写法有三种：</p>
 <ul>
-  <li>rate(5 minutes) 每五分钟执行一次，同理 rate(1 hours), rate(3 days)</li>
+  <li>rate(5minutes) 每五分钟执行一次，同理 rate(1 hours), rate(3 days)</li>
   <li>at(yyyy-mm-ddThh:mm:ss) 固定时间点执行一次</li>
   <li>cron(minutes hours day_of_month month day_of_week year) crontab 表达式</li>
 </ul>
@@ -36,7 +33,5 @@
   删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除即删除定时器，后续加入多定时器支持。</i>
   <input type="submit" value="执行">
 </form>
-
 <h4>任务操作</h4>
-
-<br>{% endblock %}
+{% endblock %}

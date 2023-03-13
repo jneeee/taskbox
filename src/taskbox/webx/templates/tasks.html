@@ -1,22 +1,17 @@
 {% extends "base.html" %}
-{% block menu %}
-<tr><td><span class="MenuCurrent">首页</span></td></tr>
-<tr><td><a href="/db" class="MenuLink">数据库</a></td></tr>
-<tr><td><a href="/cmd" class="MenuLink">执行</a></td></tr>
-{% endblock %}
 {% block content %}
 <p><b>任务列表</b>:</p>
-<table cellspacing="1" cellpadding="6" border="0"><tbody>
-<tr>{% for key in taskl_obj[0].format_seq %}
-  {% if key == '结果' %}<th class="Title" align="center" width="120">{{ key }}</th>{% else %}
-  <th class="Title" align="center" width="60">{{ key }}</th>{% endif %}
-{% endfor %}</tr>
-{% for task in taskl_obj %}
-<tr>{% for key, val in task.info_format.items() %}{% if key == '名称' %}
-    <td class="Item" align="center"><a href="/task/{{ task.name }}">{{ val }}</a></td>
-    {% else %}<td class="Item" align="center">{{ val }}</td>
-{% endif %}{% endfor %}</tr>
-{% endfor %}
-</tbody></table>
+<figure><table role="grid"><tbody><tr>
+  {% for key in taskl_obj[0].format_seq %}
+    {% if key == '结果' %}<th class="Title" align="center" width="120">{{ key }}</th>{% else %}
+    <th class="Title" align="center" width="60">{{ key }}</th>{% endif %}
+  {% endfor %}</tr>
+  {% for task in taskl_obj %}
+    <tr>{% for key, val in task.info_format.items() %}{% if key == '名称' %}
+        <td class="Item" align="center"><a href="/task/{{ task.name }}">{{ val }}</a></td>
+        {% else %}<td class="Item" align="center">{{ val }}</td>
+    {% endif %}{% endfor %}</tr>
+  {% endfor %}
+</tbody></table></figure>
 <p>图示说明：🟢正常，🟡缺少配置等，🔴暂停。<a href="https://jneeee.github.io/taskbox/taskmarket">任务市场</a></p>
 {% endblock %}
