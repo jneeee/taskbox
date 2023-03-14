@@ -2,13 +2,13 @@
 {% block content %}
 <figure><table role="grid"><tbody><tr>
   {% for key in taskl_obj[0].format_seq %}
-    {% if key == '结果' %}<th class="Title" align="center" width="120">{{ key }}</th>{% else %}
-    <th class="Title" align="center" width="60">{{ key }}</th>{% endif %}
+    {% if key == '结果' %}<th width="120">{{ key }}</th>{% else %}
+    <th width="60">{{ key }}</th>{% endif %}
   {% endfor %}</tr>
   {% for task in taskl_obj %}
     <tr>{% for key, val in task.info_format.items() %}{% if key == '名称' %}
-        <td class="Item" align="center"><a href="/task/{{ task.name }}">{{ val }}</a></td>
-        {% else %}<td class="Item" align="center">{{ val }}</td>
+        <td><a href="/task/{{ task.name }}">{{ val }}</a></td>
+        {% else %}<td>{{ val }}</td>
     {% endif %}{% endfor %}</tr>
   {% endfor %}
 </tbody></table></figure>

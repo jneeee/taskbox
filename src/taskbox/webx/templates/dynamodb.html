@@ -14,13 +14,16 @@
 <input type="submit" value="执行">
 </form>
 {% if quary_res is defined %}<p><b>查询结果</b>:</p>
-  <table cellspacing="1" cellpadding="6" border="0"><tbody><tr>
+  <table cellspacing="1" cellpadding="6" border="0">
+<thead><tr>
   {% for key in quary_res[0].keys() %}
-    <th class="Title" align="center" width="60">{{ key }}</th>
+    <th width="60">{{ key }}</th>
   {% endfor %}</tr>
+</thead>
+  <tbody>
   {% for task in quary_res %}
     <tr>
-      {% for _, v in task.items() %}<td class="Item" align="center">{{ v }}</td>{% endfor %}
+      {% for _, v in task.items() %}<td>{{ v }}</td>{% endfor %}
     </tr>
   {% endfor %}</tbody></table>
 {% endif %}

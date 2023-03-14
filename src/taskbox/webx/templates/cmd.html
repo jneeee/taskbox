@@ -1,18 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="alert alert-info">提醒：本页操作需要登录。</div>
-<h4>1. 执行 Python</h4>
-<p>利用 Python eval 关键字执行简单Python语句，不能执行 import 等。目前已导入的包: requests time</p>
-<p>示例: requests.get("https://www.baidu.com/search?q=oracle").text</p>
-<form action="/cmd" method="post">
-<label>Python: <input  name="python"></label> <input type="submit" value="执行">
-</form>
-
-<h4>2. 执行 Shell</h4>
-<p>示例: ls /bin; whoami; pwd; ... 注意执行高耗时命令会占用 aws 的免费额度: 40wGBs/月</p>
-<form action="/cmd" method="post">
-<label>Shell: <input  name="shell"></label> <input type="submit" value="执行">
-</form>
+<div class="grid">
+  <div>
+    <h4>1. 执行 Python</h4>
+    <p>利用 Python eval 关键字执行简单Python语句，不能执行 import 等。目前已导入的包: requests time</p>
+    <p>示例: requests.get("https://www.baidu.com/search?q=oracle").text</p>
+    <form action="/cmd" method="post">
+    <label>Python: <input  name="python"></label> <input type="submit" value="执行">
+    </form>
+  </div>
+  <div>
+    <h4>2. 执行 Shell</h4>
+    <p>示例: ls /bin; whoami; pwd; ... 注意执行高耗时命令会占用 aws 的免费额度: 40wGBs/月</p>
+    <form action="/cmd" method="post">
+    <label>Shell: <input  name="shell"></label> <input type="submit" value="执行">
+    </form>
+  </div>
+</div>
 
 {% if exc_res is defined %}
 <p><b>执行结果</b>:</p>
