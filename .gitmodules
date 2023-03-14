@@ -2,3 +2,6 @@
 	path = src/taskbox/user_task/hostloc_getpoint
 	url = https://github.com/jneeee/hostloc_getPoints.git
 
+[submodule "src/taskbox/user_task/aliyundrive_sign"]
+	path = src/taskbox/user_task/aliyundrive_sign
+	url = git@github.com:jneeee/aliyun-auto-signin.git

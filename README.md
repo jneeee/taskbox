@@ -11,10 +11,6 @@
 📦[项目主页](https://jneeee.github.io/taskbox)
 📦[演示地址](https://demo.taskbox.cn)
 
-
-![index](docs/static/img/box_index.png)
-![exc page](docs/static/img/box_exc.png)
-
 它有如下特点：
 
 - 全免费，利用 AWS 给开发者的[永久免费额度](https://aws.amazon.com/cn/free/) 🎉
@@ -44,45 +40,7 @@ WEB_PASSWORD
 
 ### 3 创建自己的任务
 
-盒子具有很强的扩展性，以创建一个定时访问网址的任务为例。添加文件 `src/taskbox/user_task/taskcronreq.py`，继承`taskbox.taskbase.task.Task`类，内容如下
-
-```
-import requests
-
-from taskbox.taskbase.task import Task
-from taskbox.utils.tools import LOG
-
-__all__ = ['CornReq']
-
-class CornReq(Task):
-    '''定时访问一个网址，万金油任务，后续加入自定义 data/param
-    '''
-    name_zh = '定时访问'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def step(self, config):
-        '''这里是任务具体做的事情
-
-        盒子会根据设置的周期，调用这个方法。返回的结果会显示在web的‘结果’一栏。
-        '''
-        res = getattr(requests, config.get('method'))(config.get('url'))
-        return f'执行 {config} 成功：{res.json}'
-
-    def get_conf_list(self):
-        '''method 是 requests支持的请求方法，暂不支持 data/param 字段'''
-        return {
-            'url': '要访问的地址',
-            'method': 'get, option, post',
-        }
-
-CornReq.register()
-```
-之后**盒子解析代码的注释和配置要求**，任务详情页会自动显示如下：
-![cronreq](docs/static/img/box_cronreq.png)
-
-还可以通过 git submodule 管理任务 TODO
+[文档](https://jneeee.github.io/taskbox/contribute)
 
 快速更新中，欢迎 PR
 
