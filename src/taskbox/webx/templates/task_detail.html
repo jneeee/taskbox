@@ -9,21 +9,10 @@
   {% for _, val in task.info_format.items() %}
     <td>{{ val }}</td>
   {% endfor %}</tr></tbody></table>
-<h4>任务说明</h4>
-<p>{{ task.__doc__ }}</p>
-{% if req.is_authed %}<h4>当前配置</h4><p>{{ task.conf }}</p>{% endif %}
+<p><b>任务说明</b>：{{ task.__doc__ }}</p>
 <div class="grid">
-  <article>
-    <h4>配置修改</h4>
-    <p>{{ task.get_conf_list.__doc__ }}</p>
-    <p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。配置以 <code>{</code> 开头的有效json会被解析为字典。</p>
-    <form action="/task/{{ task.name }}" method="post">
-      配置名称: <input name="taskbox_conf_name"> <i>比如‘账号1’, 对你有意义的, 用来显示、标记</i><br>
-      {% for name, desc in task.get_conf_list().items() %}{{name}}: <input name="{{ name }}"> <i>{{ desc }}</i><br>{% endfor %}
-      删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除并输入已有的配置名称，就是删除配置</i> <br>
-      <input type="submit" value="执行">
-    </form>
-  </article>
+  <div>
+  {% if req.is_authed %}<article><h4>当前配置</h4><p>{{ task.conf }}</p></article>{% endif %}
   <article>
     <h4>周期设置</h4>
     <form action="/task/{{ task.name }}" method="post">
@@ -41,6 +30,22 @@
         </ul>
       </p>
     </details>
+  </article></div>
+  <article>
+    <h4>配置添加/修改</h4>
+    <p>{{ task.get_conf_list.__doc__ }}</p>
+    <p>支持多账号设置。默认增加新配置，选择已有的名称就是修改配置。配置以 <code>{</code> 开头的有效json会被解析为字典。</p>
+    <form action="/task/{{ task.name }}" method="post">
+      <label for="taskbox_conf_name">
+        配置名称: <input name="taskbox_conf_name" placeholder="账号1">
+      </label>
+      {% for name, desc in task.get_conf_list().items() %}<label for="{{name}}">
+        {{name}}
+        <input name="{{ name }}" placeholder="{{ desc }}">
+      </label>{% endfor %}
+      删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除并输入已有的配置名称，就是删除配置</i> <br>
+      <input type="submit" value="执行">
+    </form>
   </article>
 </div>
 <!-- <h4>任务操作</h4> -->
