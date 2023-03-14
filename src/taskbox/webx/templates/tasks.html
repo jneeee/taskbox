@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<p><b>任务列表</b>:</p>
 <figure><table role="grid"><tbody><tr>
   {% for key in taskl_obj[0].format_seq %}
     {% if key == '结果' %}<th class="Title" align="center" width="120">{{ key }}</th>{% else %}
