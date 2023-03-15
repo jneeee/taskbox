@@ -17,7 +17,7 @@ def run_cmd(cmd_str):
     return res
 
 
-def auth_protect(func):
+def auth_protect_if_not_get(func):
     '''Protect a route that need auth
 
     if the method is not GET, the auth is needed

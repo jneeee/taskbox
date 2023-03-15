@@ -1,8 +1,8 @@
 from taskbox.utils.tools import LOG, run_cmd
-from taskbox.utils.tools import auth_protect
+from taskbox.utils.tools import auth_protect_if_not_get
 
 
-@auth_protect
+@auth_protect_if_not_get
 def cmdhandler(req):
     if req.method == 'GET':
         return req.make_resp(template_name='cmd.html')

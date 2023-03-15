@@ -1,11 +1,11 @@
 import json
 
 from taskbox.taskbase import task
-from taskbox.utils.tools import auth_protect
+from taskbox.utils.tools import auth_protect_if_not_get
 from taskbox.utils.tools import LOG
 
 
-@auth_protect
+@auth_protect_if_not_get
 def route(req):
     if req.method == 'GET':
         return req.make_resp(template_name='dynamodb.html')

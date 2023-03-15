@@ -1,6 +1,5 @@
 from base64 import b64decode
 from functools import lru_cache
-import traceback
 import time
 import urllib.parse
 from uuid import uuid4
@@ -108,7 +107,7 @@ class Request():
         try:
             return ROUTE[self.path_list[0]](self)
         except KeyError as e:
-            LOG.info(f'访问失败，没有此路径: {self.path_list}')
+            LOG.exception(e)
             self.msg = ('danger', '没有此页面! ')
             return self.make_resp(http_code=404)
 

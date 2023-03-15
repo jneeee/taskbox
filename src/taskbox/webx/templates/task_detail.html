@@ -12,16 +12,24 @@
 <p><b>任务说明</b>：{{ task.__doc__ }}</p>
 <div class="grid">
   <div>
-  {% if req.is_authed %}<article><h4>当前配置</h4><p>{{ task.conf }}</p></article>{% endif %}
+  <article>
+    {% if req.is_authed %}<b>当前配置</b><p>{{ task.conf }}</p>{% endif %}
+    <details>
+      <summary role="button">日志</summary>
+      <p>{% for i in task.log_inst %}
+          <a href="./log/{{ i }}">{{ i }}</a>
+        {% endfor %}</p>
+    </details>
+  </article>
   <article>
     <h4>周期设置</h4>
     <form action="/task/{{ task.name }}" method="post">
-      表达式: <input name="scheduler"><br>
-      删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除即删除定时器，后续加入多定时器支持。</i>
+      <input name="scheduler" placeholder="定时器表达式">
+      <label for="delete">删除：<input type="checkbox" name="delete" value="1"> <i>勾选删除即删除定时器，后续加入多定时器支持。</i></label>
       <input type="submit" value="提交">
     </form>
     <details>
-      <summary>规则说明</summary>
+      <summary role="button">规则说明</summary>
       <p>表达式的写法有三种：
         <ul>
           <li>rate(5minutes) 每五分钟执行一次，同理 rate(1 hours), rate(3 days)</li>

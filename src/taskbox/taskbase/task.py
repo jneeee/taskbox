@@ -1,4 +1,5 @@
 import copy
+from collections import OrderedDict
 from os import getenv
 import time
 import json
@@ -79,7 +80,7 @@ class Task(object):
 
         :params kwargs: {
             id: str,
-            status: normal|pedding|pause (correspond color green|yellow|red),
+            status: normal|pending|pause (correspond color green|yellow|red),
             property: {result:[], log_streams: []} # the task write info to here
             conf:{'account1': {phone:xxx, passwd: xxx, }, } # can be multi config
             last_run_time: int, 1670907645.49549,
@@ -134,11 +135,12 @@ class Task(object):
             try:
                 self.property['result'].append(self.step(config))
             except TaskBaseException as e:
-                self.status = 'pedding' # or pause
+                self.status = 'pending' # or pause
                 self.property['result'].append(str(e))
                 break
             except Exception as e:
-                self.status = 'pedding'
+                LOG.exception(e)
+                self.status = 'pending'
                 self.property['result'].append('执行任务出现错误，请在CloudWatch查看详细日志')
         # compute force = time * Memerysize(MB)
         self.exc_info['cforce_cost'] = (time.perf_counter()-start)*180
@@ -222,13 +224,13 @@ class Task(object):
 
         :return: OrderedDict() with task info
         '''
-        from collections import OrderedDict
 
         def get_status(data):
             statu_emoji = {
                 'normal': '🟢',
                 'pending': '🟡',
                 'pause': '🔴',
+                'pedding': '🟡', # fix legacy typo
             }
             return statu_emoji[data.get('status')]
 
@@ -308,6 +310,7 @@ class TaskList:
         tmp = []
         for task_d in tasklist:
             ins_cls = Task.task_dict.get(task_d.get('name'))
+            assert(ins_cls is not None)
             tmp.append(ins_cls.from_dict(task_d))
         return tmp
 

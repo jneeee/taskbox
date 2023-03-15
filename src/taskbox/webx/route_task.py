@@ -1,29 +1,33 @@
 from taskbox.taskbase import exception
 from taskbox.taskbase.task import Task, TaskList
 from taskbox.taskbase.manage import TaskManager
-from taskbox.utils.tools import auth_protect
+from taskbox.utils.tools import auth_protect_if_not_get
 from taskbox.utils.tools import LOG
 
 
-@auth_protect
+def _get_task_detail(req):
+    tasks_list = Task.get_all_tasks()
+    taskl_obj = TaskList.from_list(tasks_list)
+
+    # write new Task to db
+    if len(tasks_list) != len(Task.task_dict):
+        tasks_from_db = set(map(lambda i: i['name'], tasks_list))
+        for name, obj in Task.task_dict.items():
+            if name not in tasks_from_db:
+                task_obj = obj()
+                task_obj._save()
+                taskl_obj.append(task_obj)
+                LOG.info(f'init task {name}')
+    return req.make_resp(taskl_obj=taskl_obj,
+                            template_name='tasks.html')
+
+
+@auth_protect_if_not_get
 def get_task(req):
     # Display all task
     if len(req.path_list) == 1:
         if req.method == 'GET':
-            tasks_list = Task.get_all_tasks()
-            taskl_obj = TaskList.from_list(tasks_list)
-
-            # write new Task to db
-            if len(tasks_list) != len(Task.task_dict):
-                tasks_from_db = set(map(lambda i: i['name'], tasks_list))
-                for name, obj in Task.task_dict.items():
-                    if name not in tasks_from_db:
-                        task_obj = obj()
-                        task_obj._save()
-                        taskl_obj.append(task_obj)
-                        LOG.info(f'init task {name}')
-            return req.make_resp(taskl_obj=taskl_obj,
-                                 template_name='tasks.html')
+            return _get_task_detail(req)
 
     # req.path_list = [task, Task_name]
     # Single task
