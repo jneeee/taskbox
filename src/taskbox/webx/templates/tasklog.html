@@ -1,8 +1,0 @@
-{% extends "base.html" %}{% block content %}
-<h4>任务日志</h4>
-<p>{% if log_content %}
-{% for d in log_content %}{{ d.get('message') }}<br>{% endfor %}
-{{ log_content }}
-{% else %} 当前没有可展示日志
-{% endif %}</p>
-{% endblock %}

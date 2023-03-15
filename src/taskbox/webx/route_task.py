@@ -49,13 +49,16 @@ def get_task(req):
         return req.make_resp(task=task_mng.task_inst,
                              template_name='task_detail.html')
 
-    elif len(req.path_list) == 3 and req.path_list[2] == 'log':
+    elif len(req.path_list) >= 3 and req.path_list[2] == 'log':
         if not req.is_authed:
             raise exception.NeedAuth('需要登录')
+
         task_id = req.path_list[1]
         task_mng = TaskManager(task_id)
 
         task_log_inst = task_mng.task_inst.log_inst
+
+        log_detail = task_log_inst.get_log_event_by_stream(req.path_list[3])
         return req.make_resp(
-            log_content=task_log_inst.get_latest_log_event_format(),
-            template_name='tasklog.html')
+            content=f'<h4>任务日志</h4><p>{log_detail}</p>',
+            template_name='escape.html')
