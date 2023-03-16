@@ -104,7 +104,7 @@ class Task(object):
                              'run_count': 0,
                              'total_cf_cost': 0}
         self.scheduler = kwargs.get('scheduler', {})
-        self.log_inst = TaskLog(self.property)
+        self.log_inst = TaskLog(self.property.get('log_inst', {}))
 
     @classmethod
     def register(cls):
@@ -125,9 +125,10 @@ class Task(object):
         :param context: app context
         :return: None
         '''
-        if self.status != 'normal':
-            LOG.warning(f'Task {self.__class__.__name__} status is abnormal. '
+        if self.status == 'pause':
+            LOG.warning(f'Task {self.__class__.__name__} status is pause. '
                         'skip run.')
+            return
         start = time.perf_counter()
         self.property['result'] = []
         for _, config in self.conf.items():
@@ -164,7 +165,12 @@ class Task(object):
         '''
         item = copy.deepcopy(self.__dict__)
         item['exc_info'] = json.dumps(item['exc_info'])
-        item['property']['log_streams'] = list(self.log_inst.stream_q)
+        item['property']['log_inst'] = self.log_inst
+
+        # Delete the legacy version log info, can be removed in the future.
+        if 'log_streams' in item['property']:
+            del(item['property']['log_streams'])
+
         item['property'] = json.dumps(item['property'])
         item['id'] = 'task_info'
         item.pop('log_inst')

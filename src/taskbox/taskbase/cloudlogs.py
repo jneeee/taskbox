@@ -1,6 +1,5 @@
-from collections import deque
+from collections import OrderedDict
 from os import getenv
-import time
 
 import boto3
 
@@ -8,64 +7,44 @@ from taskbox.utils.tools import LOG
 
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/logs.html
-class TaskLog:
+class TaskLog(OrderedDict):
     '''The log of a single task'''
 
     client = boto3.client('logs')
 
-    def __init__(self, task_propety) -> None:
-        '''task_propety: {result:xxx, exec_log: queue[stream_id ...],}'''
-        tmp = task_propety.get('log_streams')
-        self.stream_q = deque(tmp, maxlen=30) if tmp else deque(maxlen=30)
+    def __init__(self, *args, **kwargs) -> None:
+        '''
+        :params log_inst: Dict({
+                          <req_id>:{'logStreamName': <logStreamName>.
+                                    'startTime':<>,
+                                    'endTime':<>}
+                      }),
+                      TODO 这里不确定 loads dumps 是否会改变顺序
+        }
+        '''
+        super().__init__(*args, **kwargs)
 
-    def get_latest_log_event_format(self):
-        if not self.stream_q:
-            return None
-        event = self.client.get_log_events(
-            logGroupName=getenv('LOG_GROUP'),
-            logStreamName=self.stream_q[-1],
-        ).get('events', [])
+    def get_log_event_by_reqid(self, req_id):
+        '''Get log events(details) by req_id
 
-        return self.adapter_log_events_for_display(event)
-
-    def get_log_event_by_stream(self, stream_id):
-        '''Get log events(details) by stream_id
-
-        :params stream_id: str,
-            2023/02/05/[$LATEST]ec5960da2dce42ed8cc8f85dd7c7eb27
+        :params req_id: str, the aws_request_id in context
+            237f0819-4b3b-4973-9585-af2e884fe1a9
         :return events: [{'timestamp': 1675586561742, 'message':''},]
         '''
+        if req_id not in self:
+            raise ValueError(f'Can\'t find logs by req_id: {req_id}')
+
+        log_info = self.get(req_id)
+        assert(isinstance(log_info, dict))
+
+        LOG.debug(f'Try get log info of: {log_info}')
         response = self.client.get_log_events(
             logGroupName=getenv('LOG_GROUP'),
-            logStreamName=stream_id,
+            logStreamName=log_info.get('logStreamName'),
+            startTime=log_info.get('startTime'),
+            endTime=log_info.get('endTime'),
         )
         return response.get('events')
 
-    def append(self, stream_id):
-        if not self.stream_q:
-            self.stream_q.append(stream_id)
-        elif self.stream_q[-1] != stream_id:
-            self.stream_q.append(stream_id)
-
-    @staticmethod
-    def adapter_log_events_for_display(log_events: list):
-        def format_time(time_str):
-            return time.strftime('%Y-%m-%d %H:%M:%S',
-                                 time.localtime(time_str))
-
-        res = []
-        for d in log_events:
-            tmp = {}
-            tmp['timestamp'] = format_time(d['timestamp'])
-            tmp['message'] = \
-                d['message'].replace('\t', ' ').strip('\n')
-            res.append(tmp)
-
-        return res
-
-    def __iter__(self):
-        for i in self.stream_q:
-            yield i
-
-    def __getitem__(self, index):
-        return self.stream_q[index]
+    def append(self, item: dict):
+        pass

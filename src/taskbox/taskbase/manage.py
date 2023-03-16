@@ -1,3 +1,4 @@
+import time
 from os import getenv
 
 import boto3
@@ -6,6 +7,7 @@ from botocore.exceptions import ClientError
 from taskbox.taskbase import exception
 from taskbox.taskbase import task
 from taskbox import user_task # noqa
+from taskbox.utils.tools import LOG
 
 
 class TaskManager():
@@ -95,8 +97,30 @@ class TaskManager():
             req.msg = ('success', '更新配置成功!')
 
     def run(self, context):
-        self.task_inst.log_inst.append(context.log_stream_name)
+        '''save log info and call task.run
+
+        :params context: LambdaContext([
+            aws_request_id=237f0819-4b3b-4973-9585-af2e884fe1a9,
+            log_group_name=/aws/lambda/appname,
+            log_stream_name=2022/11/19/[$LATEST]4d83a69ec1e3420091ca9b4ba056e3ac,
+            function_name=appname,
+            memory_limit_in_mb=128,
+            function_version=$LATEST,
+            invoked_function_arn=arn:aws:lambda:ap-southeast-1:xxx:function:appname,
+            client_context=None,
+            identity=CognitoIdentity([cognito_identity_id=None,cognito_identity_pool_id=None])
+        ])
+        '''
+        # 
+        log_info = {
+            'startTime': int(time.time()),
+            'logStreamName': context.log_stream_name,
+            'Date': context.log_stream_name.split('[', 1)[0]
+        }
         self.task_inst.run()
+        log_info['endTime'] = int(time.time())
+        self.task_inst.log_inst[context.aws_request_id] = log_info
+        LOG.debug(f'Run task and save log_info: {log_info}')
 
 
 class Eventscheduler():

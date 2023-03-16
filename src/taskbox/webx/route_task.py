@@ -54,11 +54,9 @@ def get_task(req):
             raise exception.NeedAuth('需要登录')
 
         task_id = req.path_list[1]
-        task_mng = TaskManager(task_id)
+        task_log_inst = TaskManager(task_id).task_inst.log_inst
 
-        task_log_inst = task_mng.task_inst.log_inst
-
-        log_detail = task_log_inst.get_log_event_by_stream(req.path_list[3])
+        log_detail = task_log_inst.get_log_event_by_reqid(req.path_list[3])
         return req.make_resp(
             content=f'<h4>任务日志</h4><p>{log_detail}</p>',
             template_name='escape.html')

@@ -7,6 +7,7 @@ class TaskConfigInvalid(TaskBaseException):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
+
 class TaskExcuteError(TaskBaseException):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)

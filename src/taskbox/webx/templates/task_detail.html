@@ -15,9 +15,9 @@
   <article>
     {% if req.is_authed %}<b>当前配置</b><p>{{ task.conf }}</p>{% endif %}
     <details>
-      <summary role="button">日志</summary>
-      <p>{% for i in task.log_inst %}
-          <a href="./log/{{ i }}">{{ i }}</a>
+      <summary role="button" class="outline">日志</summary>
+      <p>{% for key, info in task.log_inst.items() %}
+          <i>{{info.get('Date')}}</i><a href="./log/{{ key }}">{{ key }}</a>
         {% endfor %}</p>
     </details>
   </article>
@@ -29,7 +29,7 @@
       <input type="submit" value="提交">
     </form>
     <details>
-      <summary role="button">规则说明</summary>
+      <summary role="button">表达式规则说明</summary>
       <p>表达式的写法有三种：
         <ul>
           <li>rate(5minutes) 每五分钟执行一次，同理 rate(1 hours), rate(3 days)</li>
