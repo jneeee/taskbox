@@ -15,9 +15,9 @@
   <article>
     {% if req.is_authed %}<b>当前配置</b><p>{{ task.conf }}</p>{% endif %}
     <details>
-      <summary role="button" class="outline">日志</summary>
+      <summary role="button" class="secondary">日志</summary>
       <p>{% for key, info in task.log_inst.items() %}
-          <i>{{info.get('Date')}}</i><a href="./log/{{ key }}">{{ key }}</a>
+          <i>{{ info.get('Date') }}</i><a href="./log/{{ key }}">{{ key }}</a>
         {% endfor %}</p>
     </details>
   </article>

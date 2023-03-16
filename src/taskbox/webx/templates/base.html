@@ -14,8 +14,8 @@
         <li><a href="/cmd">执行</a></li>
         <li><a href="/db">数据库</a></li>
     {% if req.is_authed %}
-        <a href="/auth/logout" class="MenuLink">登出</a>{% else %}
-        <a href="/auth/login" class="MenuLink">登录</a>
+        <a href="/auth/logout" role="button">登出</a>{% else %}
+        <a href="/auth/login" role="button">登录</a>
     {% endif %}
 </ul></nav>
 <br>

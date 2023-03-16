@@ -147,7 +147,6 @@ class Task(object):
         self.exc_info['cforce_cost'] = (time.perf_counter()-start)*180
         self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
         self.last_run_time = int(time.time())
-        self._save()
 
     def get_conf_display(self):
         '''Implement me

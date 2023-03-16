@@ -115,12 +115,13 @@ class TaskManager():
         log_info = {
             'startTime': int(time.time()),
             'logStreamName': context.log_stream_name,
-            'Date': context.log_stream_name.split('[', 1)[0]
+            'Date': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
         }
         self.task_inst.run()
         log_info['endTime'] = int(time.time())
         self.task_inst.log_inst[context.aws_request_id] = log_info
         LOG.debug(f'Run task and save log_info: {log_info}')
+        self.task_inst._save()
 
 
 class Eventscheduler():
