@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block content %}
 <h2>任务详情</h2>
-<table cellspacing="1" cellpadding="6" border="0">
+<figure><table>
   <thead><tr>{% for key in task.info_format.keys() %}
     <th width="60">{{ key }}</th>
   {% endfor %}</tr>
@@ -8,7 +8,7 @@
   <tbody><tr>
   {% for _, val in task.info_format.items() %}
     <td>{{ val }}</td>
-  {% endfor %}</tr></tbody></table>
+  {% endfor %}</tr></tbody></table></figure>
 <p><b>任务说明</b>：{{ task.__doc__ }}</p>
 <div class="grid">
   <div>
@@ -16,9 +16,9 @@
     {% if req.is_authed %}<b>当前配置</b><p>{{ task.conf }}</p>{% endif %}
     <details>
       <summary role="button" class="secondary">日志</summary>
-      <p>{% for key, info in task.log_inst.items() %}
-          <i>{{ info.get('Date') }}</i><a href="./log/{{ key }}">{{ key }}</a>
-        {% endfor %}</p>
+        <ul>{% for key, info in task.log_inst.items() %}
+        <li><a href="/task/{{ task.name }}/log/{{ key }}">{{ info.get('Date') }}</a></li>
+        {% endfor %}</ul>
     </details>
   </article>
   <article>

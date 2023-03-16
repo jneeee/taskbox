@@ -37,14 +37,18 @@ class TaskLog(OrderedDict):
         log_info = self.get(req_id)
         assert(isinstance(log_info, dict))
 
-        LOG.debug(f'Try get log info of: {log_info}')
+        LOG.info(f'Try get log info of: {log_info}')
         response = self.client.get_log_events(
             logGroupName=getenv('LOG_GROUP'),
             logStreamName=log_info.get('logStreamName'),
             startTime=log_info.get('startTime'),
             endTime=log_info.get('endTime'),
         )
-        return response.get('events')
+        return response
 
-    def append(self, item: dict):
-        pass
+
+    def __setitem__(self, key, value):
+        if len(self) > 30:
+            item = self.popitem(last=False)
+            LOG.info(f'Delete log item: {item}')
+        super().__setitem__(key, value)

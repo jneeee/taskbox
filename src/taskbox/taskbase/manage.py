@@ -112,11 +112,11 @@ class TaskManager():
             identity=CognitoIdentity([cognito_identity_id=None,cognito_identity_pool_id=None])
         ])
         '''
-        # 
+        startTime = int(time.time())
         log_info = {
-            'startTime': int(time.time()),
+            'startTime': startTime,
             'logStreamName': context.log_stream_name,
-            'Date': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
+            'Date': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(startTime + 28800)),
         }
         self.task_inst.run()
         log_info['endTime'] = int(time.time())

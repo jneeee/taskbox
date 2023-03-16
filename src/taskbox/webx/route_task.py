@@ -53,6 +53,7 @@ def get_task(req):
         if not req.is_authed:
             raise exception.NeedAuth('需要登录')
 
+        LOG.info(f'Get log detail, req_path: {req.path_list}')
         task_id = req.path_list[1]
         task_log_inst = TaskManager(task_id).task_inst.log_inst
 

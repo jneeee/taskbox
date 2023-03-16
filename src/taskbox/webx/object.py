@@ -13,6 +13,7 @@ from taskbox.webx import (
     route_db,
     route_static,
 )
+from taskbox.taskbase import exception
 from taskbox.taskbase import task
 from taskbox.utils.tools import LOG
 
@@ -106,6 +107,10 @@ class Request():
     def route(self):
         try:
             return ROUTE[self.path_list[0]](self)
+        except exception.TaskBaseException as e:
+            LOG.info(e)
+            self.msg = ('danger', str(e))
+            return self.make_resp(http_code=404)
         except KeyError as e:
             LOG.exception(e)
             self.msg = ('danger', '没有此页面! ')
