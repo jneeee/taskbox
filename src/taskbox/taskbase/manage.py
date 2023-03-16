@@ -79,6 +79,7 @@ class TaskManager():
                     self.task_inst.status = 'normal'
                 req.msg = ('success', f'Create scheduler success: {expression}')
         except ClientError as e:
+            LOG.exception(e)
             req.msg = (f'warning', f'Failed: {e}')
 
     def update_config(self, req):

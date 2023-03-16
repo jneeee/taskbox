@@ -28,4 +28,5 @@ git submodule add https://github.com/jneeee/hostloc_getPoints.git \
 * 天翼云盘签到: 已内置
 * 定时访问：已内置
 * [jneeee/hostloc_getPoints](https://github.com/jneeee/hostloc_getPoints) 获取hostloc论坛积分
-TODO
+* [jneeee/aliyun-auto-signin](https://github.com/jneeee/aliyun-auto-signin) 阿里云盘签到
+

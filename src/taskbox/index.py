@@ -17,6 +17,7 @@ def lambda_handler(event, context):
         LOG.info(f'New {req}')
         return req.route()
     except TaskBaseException as e:
+        LOG.exception(e)
         req.msg = ('danger', e)
         req.make_resp(http_code=403)
     except Exception as e:

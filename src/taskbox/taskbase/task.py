@@ -71,7 +71,7 @@ class Task(object):
     '''
     # format_seq for the desplay key seqence in web
     format_seq = ['名称', '状态', '定时器', '结果', '上次执行', '算力消耗MBs',
-                  '累计消耗MBs', '累计执行(次)']
+                  '累计消耗GBs', '累计执行(次)']
     # task_dict: key is taskname, val is task object
     task_dict = {}
 
@@ -136,6 +136,7 @@ class Task(object):
             try:
                 self.property['result'].append(self.step(config))
             except TaskBaseException as e:
+                LOG.exception(e)
                 self.status = 'pending' # or pause
                 self.property['result'].append(str(e))
                 break
@@ -143,10 +144,14 @@ class Task(object):
                 LOG.exception(e)
                 self.status = 'pending'
                 self.property['result'].append('执行任务出现错误，请在CloudWatch查看详细日志')
+
+        LOG.info(f'Run Task {self.__class__.__name__} success!.')
+
         # compute force = time * Memerysize(MB)
         self.exc_info['cforce_cost'] = (time.perf_counter()-start)*180
         self.exc_info['total_cf_cost'] += self.exc_info['cforce_cost']
-        self.last_run_time = int(time.time())
+        # timezone UTC +8
+        self.last_run_time = int(time.time()) + 28800
 
     def get_conf_display(self):
         '''Implement me
@@ -231,6 +236,12 @@ class Task(object):
         '''
 
         def get_status(data):
+            '''Explain status:
+
+            normal: everything works fine.
+            pending: need config or scheduler
+            pause: TODO need mannal start
+            '''
             statu_emoji = {
                 'normal': '🟢',
                 'pending': '🟡',
@@ -252,7 +263,7 @@ class Task(object):
             '结果': lambda d: ';'.join((str(i) for i in d.get('property').get('result', []))),
             '上次执行': get_time,
             '算力消耗MBs': lambda d: int(d.get('exc_info', {}).get('cforce_cost')),
-            '累计消耗MBs': lambda d: int(d.get('exc_info', {}).get('total_cf_cost')),
+            '累计消耗GBs': lambda d: int(d.get('exc_info', {}).get('total_cf_cost')) // 1024,
             '累计执行(次)': lambda d: d.get('exc_info', {}).get('run_count'),
         }
         res = OrderedDict()
