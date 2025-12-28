@@ -24,10 +24,9 @@ jobs:
       with:
         submodules: 'true'
     
-    - name: Install dependencies with uv
+    - name: Install dependencies with uv sync
       run: |
-        uv pip install --upgrade pip
-        uv pip install -e .
+        uv sync --python-preference only
         uv pip install pytest moto
     
     - name: Initialize submodules
