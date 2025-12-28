@@ -7,7 +7,7 @@ name = "taskbox"
 version = "0.1.0"
 description = "A personal scheduled task framework running on Serverless platform"
 authors = [
-    {name = "jneeee", email = "your-email@example.com"},
+    {name = "jneeee", email = "jneeee@outlook.com"},
 ]
 readme = "README.md"
 requires-python = ">=3.9"
@@ -18,10 +18,11 @@ dependencies = [
     "Jinja2>=3.1.2",
     "boto3>=1.26.8",
     "botocore>=1.29.8",
+    "pyaes>=1.6.1",
 ]
 
 [tool.uv]
-dev-dependencies = [
+dependency-groups.dev = [
     "pytest>=7.0.0",
     "black>=23.0.0",
     "isort>=5.0.0",
@@ -64,4 +65,4 @@ skip_gitignore = true
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["src/taskbox/tests"]
+testpaths = ["tests"]

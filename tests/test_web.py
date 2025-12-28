@@ -4,9 +4,13 @@ import copy
 
 from moto import mock_dynamodb
 
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 from taskbox.index import lambda_handler
 from taskbox.utils.tools import LOG
-from taskbox.tests import fixture
+from taskbox.tests.fixture import create_table
 
 
 Fake_event = {
@@ -30,7 +34,7 @@ class Test_web_tasks(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.table = fixture.create_table()
+        cls.table = create_table()
 
     @classmethod
     def tearDownClass(cls):

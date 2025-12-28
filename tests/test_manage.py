@@ -1,14 +1,17 @@
 import os
+import sys
 import unittest
 from unittest import mock
 
-from taskbox.tests import fixture
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+from taskbox.tests.fixture import create_table
 from taskbox.taskbase.manage import TaskManager
 
 class Test_manage(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.table = fixture.create_table()
+        self.table = create_table()
         d = {
             'DDB_TABLE': 'table_name',
             'AWS_ACCESS_KEY_ID': "keyid",

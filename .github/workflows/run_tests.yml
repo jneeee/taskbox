@@ -1,0 +1,49 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+    branches: [ dev, master ]
+  push:
+    branches: [ dev, master ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+jobs:
+  test:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:python3.12-bookworm
+      options: --user root
+      env:
+        UV_INDEX_URL: https://pypi.org/simple
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+    
+    - name: Install dependencies with uv sync
+      run: |
+        uv sync --python-preference only
+        uv pip install pytest moto
+    
+    - name: Initialize submodules
+      run: git submodule update --init --recursive
+    
+    - name: Run tests
+      run: pytest tests/ -v
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: us-east-1
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          test-results/
+          .pytest_cache/
