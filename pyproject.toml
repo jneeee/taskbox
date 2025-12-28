@@ -65,4 +65,4 @@ skip_gitignore = true
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["src/taskbox/tests"]
+testpaths = ["tests"]
