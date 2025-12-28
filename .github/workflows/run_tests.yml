@@ -13,19 +13,16 @@ jobs:
   test:
     name: Run Python Tests
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:python3.12-bookworm
+      options: --user root
+      env:
+        UV_INDEX_URL: https://pypi.org/simple
     
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: 'true'
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    
-    - name: Install uv
-      run: curl -LsSf https://astral.sh/uv/install.sh | sh
     
     - name: Install dependencies with uv
       run: |
