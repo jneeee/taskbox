@@ -16,13 +16,13 @@ jobs:
           submodules: 'true'
       - uses: actions/setup-python@v3
         with:
-          python-version: '3.9'
+          python-version: '3.12'
       - uses: aws-actions/setup-sam@v2
       - uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-1
-      - run: find ./ -name requirements.txt -type f -exec pip install -t dependencies/python -r "{}" \;
+      - run: pip install -t dependencies/python --upgrade --force-reinstall $(python -c "import toml; print(' '.join(dep.split('>=')[0] for dep in toml.load('pyproject.toml')['project']['dependencies']))")
       - run: sam build
       - run: sam deploy --parameter-overrides 'Password=${{ secrets.WEB_PASSWORD }}'
