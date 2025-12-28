@@ -34,7 +34,6 @@ Resources:
           auth_passwd: !Sub '${Password}'
           FUNC_ARN: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:taskbox'
           ROLE_ARN: !GetAtt excrole.Arn
-          PYTHONPATH: '/opt/python'
       # 如果日志出现缺少dynamodb get权限，在函数配置界面创个不用鉴权的函数url再试试
       Events:
         ExplicitApi:
