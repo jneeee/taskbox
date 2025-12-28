@@ -23,7 +23,7 @@ Resources:
       FunctionName: taskbox
       CodeUri: ./src
       Handler: taskbox.index.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       MemorySize: 180
       Description: A crontask frame and HTTP service.
       Environment:
@@ -64,10 +64,10 @@ Resources:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: Taskboxlayer
-      Description: "flask rsa requests"
+      Description: "jinja2 rsa requests boto3"
       ContentUri: dependencies/
       CompatibleRuntimes:
-        - python3.9
+        - python3.12
       RetentionPolicy: Delete
 
   # libs:
